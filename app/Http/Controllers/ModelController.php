@@ -152,6 +152,7 @@ class ModelController extends Controller
     {
 
     }
+
     public function getViewField(Request $req)
     {
         $id=$req->get('id');
@@ -170,6 +171,7 @@ class ModelController extends Controller
             return json_encode($re);
         }
     }
+    
     public function getDeleteField(Request $req)
     {
 

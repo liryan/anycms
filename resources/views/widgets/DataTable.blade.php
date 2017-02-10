@@ -73,7 +73,7 @@
 //数据表中的编辑对话框的提交处理
 $(function(){
 	$('#submitBt').on('click', function (e) {
-        dt=way.get('formdata');
+        dt=$('#editForm').serializeArray();
         $.post("{{$edit_url}}" ,dt,function(req){
             alert(req);
         },"json");
@@ -86,7 +86,7 @@ function addData(){
     $.get("{{$view_url}}?id=0",function(rep){
         dt=rep;
         dt.dialogTitle="添加";
-        way.set("formdata",dt);
+        $("#editForm").autofill(dt);
         $("#model_new").modal();
     },'json');
 }
@@ -99,8 +99,7 @@ function viewData(id){
     }
     $.get("{{$view_url}}?id="+id,function(rep){
         dt=rep;
-        dt.dialogTitle="修改";
-        way.set("formdata",dt);
+        $("#editForm").autofill(dt);
         $("#model_new").modal();
     },'json');
     $("#model_new").modal();
@@ -127,7 +126,7 @@ function editData(id){
     $.get("{{$view_url}}?id="+id,function(rep){
         dt=rep;
         dt.dialogTitle="修改";
-        way.set("formdata",dt);
+        $("#editForm").fill(dt);
         $("#model_new").modal();
     },'json');
     $("#model_new").modal();
