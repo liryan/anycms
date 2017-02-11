@@ -147,10 +147,39 @@ class ModelController extends Controller
             );
         }
     }
-
+    /**
+     * [postModifyField description]
+     * @method postModifyField
+     * @param  Request         $req [description]
+     * @return [type]               [description]
+     */
     public function postModifyField(Request $req)
     {
+        $modelid=$req->get('modelid');
+        $action=$req->get('action');
+        if($modelid<1){
+            return;
+        }
+        switch($action){
+            case "add":
+            $name=$req->get('name');
+            $note=$req->get('note');
+            $setting=$req->get('setting');
 
+            $dtmodel=new DataTable();
+            $result=$dtmodel->addTable($name,Array('note'=>$note,'setting'=>$setting));
+            return json_encode($result);
+            break;
+
+            case "edit":
+            $id=$req->get('id');
+            $note=$req->get('note');
+            $setting=$req->get('setting');
+
+            $dtmodel=new DataTable();
+            $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>$setting));
+            return json_encode($result);
+            break;
     }
 
     public function getViewField(Request $req)
