@@ -7,7 +7,7 @@
 @require_once('<script src="/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>')
-<!-- @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>') -->
+@require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -19,6 +19,7 @@
           <form role="form" method="post" id="editForm">
               <input type="hidden" name="action" />
               <input type="hidden" name="_token" />
+              <input type="hidden" name="id" />
               <div class="box-body">
 				  @foreach($inputs as $k=>$input)
 	              <div class="form-group">

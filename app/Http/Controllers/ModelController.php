@@ -138,7 +138,7 @@ class ModelController extends Controller
                 "delete_url"=>$this->getUrl("deletefield"),
                 "field_url"=>'',
             ];
-            $dialog_html=$table_widget->showFieldEditWidget(Array("const_url"=>$this->getUrl("consts")));
+            $dialog_html=$table_widget->showFieldEditWidget(Array("const_url"=>$this->getUrl("consts"),'modelid'=>$id));
             $list_html=$table_widget->showFieldListWidget("模型列表",$urlconfig,$dialog_html);
             return $this->View("models")->with(
                 [
@@ -171,7 +171,7 @@ class ModelController extends Controller
             return json_encode($re);
         }
     }
-    
+
     public function getDeleteField(Request $req)
     {
 

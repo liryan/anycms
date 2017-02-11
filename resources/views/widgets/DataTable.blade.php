@@ -75,7 +75,7 @@ $(function(){
 	$('#submitBt').on('click', function (e) {
         dt=$('#editForm').serializeArray();
         $.post("{{$edit_url}}" ,dt,function(req){
-            alert(req);
+            alert(req.msg);
         },"json");
 	});
     //CKEDITOR.replace('editor_html');
@@ -126,7 +126,7 @@ function editData(id){
     $.get("{{$view_url}}?id="+id,function(rep){
         dt=rep;
         dt.dialogTitle="修改";
-        $("#editForm").fill(dt);
+        $("#editForm").autofill(dt);
         $("#model_new").modal();
     },'json');
     $("#model_new").modal();

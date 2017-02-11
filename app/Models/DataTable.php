@@ -67,7 +67,7 @@ class DataTable extends BaseSetting
             'setting'=>$data['setting']
         ];
 
-        $count=$this->where('parentid',self::TREE_ID)->where([['id','!=',$id],["note",'!=',$data['note']]])->count();
+        $count=$this->where('parentid',self::TREE_ID)->where([['id','!=',$id],["note",'=',$data['note']]])->count();
         if($count>0){
             return Array('code'=>0,'msg'=>'模型已经存在了');
         }

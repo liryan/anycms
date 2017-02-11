@@ -1,5 +1,5 @@
-@require_once('<script src="/adminlte/dist/js/way.min.js"></script>')
-<!-- @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>') -->
+@require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
+@require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -8,9 +8,11 @@
         <h4 class="modal-title"><span way-data="formdata.dialogTitle"></span></h4>
       </div>
       <div class="modal-body">
-          <form role="form" method="post" id="form_1" way-data="formdata" way-persistent>
+          <form role="form" method="post" id="editForm">
               <input type="hidden" name="action" />
               <input type="hidden" name="_token" />
+              <input type="hidden" name="modelid" value="{{$modelid}}"/>
+              <input type="hidden" name="id" />
               <div class="box-body">
 	              <div class="form-group">
 					  <label for="exampleInputEmail1">字段名</label>
@@ -18,11 +20,11 @@
 				  </div>
 				  <div class="form-group">
 					  <label for="exampleInputEmail1">表字段名</label>
-					  <input type="text" name="note" class="form-control" placeholder="字段名字(字符)" value="">
+					  <input type="text" name="name" class="form-control" placeholder="字段名字(字符)" value="">
 				  </div>
 				  <div class="form-group">
 					  <label for="exampleInputEmail1">类型</label>
-					  <select class="form-control" id="fieldtype">
+					  <select class="form-control" id="fieldtype" name="type">
 						<option value="1">数字</<option>
 						<option value="2">文本</<option>
 						<option value="3">编辑器</<option>
@@ -33,6 +35,7 @@
 					  </select>
 				  </div>
 				  <div class="form-group" id="const_table_panel" style="diaplay:none">
+
 				  </div>
 				   <div class="form-group">
 					   <input type="checkbox" name="listable">是否出现在数据列表中

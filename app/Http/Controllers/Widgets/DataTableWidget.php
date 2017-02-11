@@ -25,6 +25,13 @@ class DataTableWidget extends Controller
 		['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
 		['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
 	];
+
+	private $field_setting=[
+		["name"=>"tablename",'label'=>'关联表名','default'=>''],
+		["name"=>"tablefield",'label'=>'关联表字段','default'=>''],
+		["name"=>"listable",'label'=>'可列表','default'=>'0'],
+		["name"=>"default",'label'=>'缺省值','default'=>''],
+	];
 	/**
 	 * [showModelListWidget description]
 	 * @method showModelListWidget
@@ -97,6 +104,9 @@ class DataTableWidget extends Controller
 	public function getDefaultFieldDefine()
 	{
 		$data=[];
+		foreach($this->field_setting as $row){
+			$data[$row['name']]=$row['default'];
+		}
 		return $data;
 	}
 
