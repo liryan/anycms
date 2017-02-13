@@ -8,52 +8,73 @@
         <h4 class="modal-title"><span way-data="formdata.dialogTitle"></span></h4>
       </div>
       <div class="modal-body">
-          <form role="form" method="post" id="editForm">
-              <input type="hidden" name="action" />
-              <input type="hidden" name="_token" />
-              <input type="hidden" name="modelid" value="{{$modelid}}"/>
-              <input type="hidden" name="id" />
               <div class="box-body">
-	              <div class="form-group">
-					  <label for="exampleInputEmail1">字段名</label>
-					  <input type="text" name="note" class="form-control" placeholder="字段名字(中文)" value="">
-				  </div>
-				  <div class="form-group">
-					  <label for="exampleInputEmail1">表字段名</label>
-					  <input type="text" name="name" class="form-control" placeholder="字段名字(字符)" value="">
-				  </div>
-				  <div class="form-group">
-					  <label for="exampleInputEmail1">类型</label>
-					  <select class="form-control" id="fieldtype" name="type">
-						<option value="1">数字</<option>
-						<option value="2">文本</<option>
-						<option value="3">编辑器</<option>
-						<option value="4">日期</<option>
-						<option value="5">选择列表</<option>
-						<option value="6">多选列表</<option>
-						<option value="7">图片</<option>
-					  </select>
-				  </div>
-				  <div class="form-group" id="const_table_panel" style="diaplay:none">
+                  <form role="form" class="form-horizontal" method="post" id="editForm">
+                      <input type="hidden" name="action" />
+                      <input type="hidden" name="_token" />
+                      <input type="hidden" name="modelid" value="{{$modelid}}"/>
+                      <input type="hidden" name="id" />
+    	              <div class="form-group">
+    					  <label for="exampleInputEmail1">字段名</label>
+    					  <input type="text" name="note" class="form-control" placeholder="字段名字(中文)" value="">
+    				  </div>
+    				  <div class="form-group">
+    					  <label for="exampleInputEmail1">表字段名</label>
+    					  <input type="text" name="name" class="form-control" placeholder="字段名字(字符)" value="">
+    				  </div>
+    				  <div class="form-group">
+    					  <label for="exampleInputEmail1">类型</label>
+    					  <select class="form-control" id="fieldtype" name="type">
+                              @foreach($types as $type)
+    						<option value="{{$type['value']}}">{{$type['name']}}</<option>
+                              @endforeach
+    					  </select>
+    				  </div>
+    				  <div class="form-group" id="const_table_panel" style="diaplay:none"></div>
+    				  <div class="form-group">
+    					   <input type="checkbox" class="control-label" name="listable" value="1">是否出现在数据列表中
+    	              </div>
+    				  <div class="form-group">
+        				<label>关联外表字段</label><br/>
+                        <label class="col-sm-1 control-label">表</label>
+        				<div class="col-sm-5"><input type="text" name="tablename" class="form-control" placeholder="数据表名" value=""></div>
+                        <label class="col-sm-2 control-label">字段</label>
+        				<div class="col-sm-4"><input type="text" name="tablefield" class="form-control" placeholder="字段名" value=""></div>
+    				  </div>
 
-				  </div>
-				   <div class="form-group">
-					   <input type="checkbox" name="listable">是否出现在数据列表中
-	              </div>
-				  <div class="form-group">
-					  <label for="exampleInputEmail1">关联外表字段</label>
-					  <div class="row">
-						  <div class="col-md-5"><input type="text" name="tablename" class="form-control" placeholder="数据表名" value="1"></div>
-					      <div class="col-md-5"><input type="text" name="tablefield" class="form-control" placeholder="字段名" value="1"></div>
-				      </div>
-				  </div>
-				  <div class="form-group">
- 					 <label for="exampleInputEmail1">缺省值</label>
- 					 <input type="text" name="default" class="form-control" placeholder="数据表名" value="1">
- 				 </div>
+                  </form>
+                  <div class="form-group" id="string" style="display:none">
+                        <label>设置</label><br/>
+                        <label class="col-sm-2 control-label">长度</label>
+                        <div class="col-sm-4"><input type="text" name="size" class="form-control" placeholder="长度" value="255"></div>
+                        <label class="col-sm-2 control-label">缺省值</label>
+                        <div class="col-sm-4"><input type="text" name="default" class="form-control" placeholder="缺省值" value=""></div>
+                  </div>
+                  <div class="form-group" id="integer" style="display:none">
+                        <label>设置</label><br/>
+                        <label class="col-sm-2 control-label">长度</label>
+                        <div class="col-sm-4"><input type="text" name="size" class="form-control" placeholder="长度" value="11"></div>
+                        <label class="col-sm-2 control-label">缺省值</label>
+                        <div class="col-sm-4"><input type="text" name="default" class="form-control" placeholder="缺省值" value=""></div>
+                  </div>
+                  <div class="form-group" id="number" style="display:none">
+                    <label>设置</label><br/>
+                    <label class="col-sm-2 control-label">整数位宽</label>
+                    <div class="col-sm-2"><input type="text" name="size" class="form-control" placeholder="长度" value="8"></div>
+                    <label class="col-sm-2 control-label">小数位宽</label>
+                    <div class="col-sm-2"><input type="text" name="size_bit" class="form-control" placeholder="长度" value="2"></div>
+                    <label class="col-sm-2 control-label">缺省值</label>
+                    <div class="col-sm-2"><input type="text" name="default" class="form-control" placeholder="缺省值" value=""></div>
+                  </div>
+                  <div class="form-group" id="datetime" style="display:none">
+                      <label for="exampleInputEmail1">日期类型</label>
+                      <select class="form-control" id="datetime" name="size">
+                         <option value="1">长格式(2016-08-12 12:10:02)</option>
+                         <option value="2">短格式(2016-08-12)</option>
+                     </select>
+                  </div>
               </div>
               <!-- /.box-body -->
-          </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
@@ -69,10 +90,15 @@ $(function(){
 		type=$("#fieldtype").val()*1;
 		switch(type){
 			case 1:
+            showContext('integer');
 			case 2:
+            showContext('string');
+            break;
 			case 3:
+            $("#const_table_panel").css("display","none");
+            break;
 			case 4:
-			$("#const_table_panel").css("display","none");
+            showContext('datetime');
 			break;
 			case 5:
 			case 6:
@@ -80,11 +106,22 @@ $(function(){
 			break;
 			$("#const_table_panel").css("display","none");
 			case 7:
-
+            showContext('string');
+            break;
+            case 8:
+            showContext('number');
+            break;
 		}
 	});
+    showContext("integer");
 });
+
 treepath=new Array();
+function showContext(id){
+    $("#const_table_panel").html($("#"+id).html());
+    $("#const_table_panel").css("display","block");
+}
+
 function requireConstData(id,type){
 	$.get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
 		if(req.data.length==1)

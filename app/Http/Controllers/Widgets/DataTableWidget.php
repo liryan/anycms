@@ -32,8 +32,53 @@ class DataTableWidget extends Controller
 		["name"=>"tablefield",'label'=>'关联表字段','default'=>''],
 		["name"=>"listable",'label'=>'可列表','default'=>'0'],
 		["name"=>"default",'label'=>'缺省值','default'=>''],
-		['name'=>'constid','label'=>'选择的常量ID','default'=>'']
+		['name'=>'const','label'=>'选择的常量ID','default'=>''],
+		['name'=>'size','label'=>'字段大小','default'=>'']
 	];
+	//字段的类型映射
+	private $field_type=[
+
+	];
+	public function __construct(){
+		$this->field_type=[
+			['name'=>'整数字','value'=>'1','type'=>'integer','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("integer(%d) default %d",$data['size'],$data['default']);
+				return sprintf("integer(%d)",$data['size']?$data['size']:11);
+			}],
+			['name'=>'文本','value'=>'2','type'=>'varchar','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+			}],
+			['name'=>'编辑器','value'=>'3','type'=>'text','DBdefine'=>function($data){
+				return "text";
+			}],
+			['name'=>'日期','value'=>'4','type'=>'datetime','DBdefine'=>function($data){
+				return $data['size']==1?'datetime':'date';
+			}],
+			['name'=>'选择列表','value'=>'5','type'=>'integer','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("integer(11) default %d",$data['default']);
+				return sprintf("integer(11)");
+			}],
+			['name'=>'多选列表','value'=>'6','type'=>'varchar','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+			}],
+			['name'=>'图片','value'=>'7','type'=>'varchar','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+			}],
+			['name'=>'小数点数字','value'=>'8','type'=>'number','DBdefine'=>function($data){
+				if(strlen($data['default'])>0)
+					return sprintf("decimal(%d,%d) default %.02f",$data['size'],$data['size_bit'],$data['default']);
+				return sprintf("decimal(%d,%d)",$data['size'],$data['size_bit']);
+			}],
+		];
+	}
 	/**
 	 * [showModelListWidget description]
 	 * @method showModelListWidget
@@ -84,6 +129,7 @@ class DataTableWidget extends Controller
 	public function showFieldEditWidget($urlconfig)
 	{
 		$view=View::make("widgets.FieldEdit");
+		$view->with('types',$this->field_type);
 		$view->with($urlconfig);
 		return $view->with(['dialog_id'=>self::$DIALOG_ID++])->render();
 	}
@@ -111,22 +157,45 @@ class DataTableWidget extends Controller
 	 */
 	public function tranformFieldSetting(&$data,$in)
 	{
+		$result=[];
 		if($in){
 			$setting=[];
 			foreach($this->field_setting as $row){
+				if(!isset($data[$row['name']])){
+					$data[$row['name']]='';
+				}
 				$setting[$row['name']]=$data[$row['name']];
+				if($row['name']=='size'){
+					if(isset($data['size_bit'])){
+						$setting[$row['name']].=".".$data['size_bit'];
+					}
+				}
 			}
-			$data['setting']=json_encode($setting);
-		}
-		else{
-
-			$obj=json_decode($data['setting'],true);
-			if(is_array($obj)){
-				foreach($obj as $k=>$v){
-					$data[$k]=>$v;
+			$result['setting']=json_encode($setting);
+			foreach($this->field_type as $row){
+				if($row['value']==$data['type']){
+					$result['type']=$row['DBdefine']($data);
 				}
 			}
 		}
+		else{
+			$obj=json_decode($data['setting'],true);
+			if(is_array($obj)){
+				foreach($obj as $k=>$v){
+					if($k=='size'){
+						$ar=explode(".",$v);
+						if(sizeof($ar)==2){
+							$data['size']=$ar[0];
+							$data['size_bit']=$ar[1];
+						}
+					}
+					else{
+						$data[$k]=$v;
+					}
+				}
+			}
+		}
+		return $result;
 	}
 
 	public function getDefaultFieldDefine()

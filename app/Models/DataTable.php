@@ -24,14 +24,14 @@ class DataTable extends BaseSetting
         return false;
     }
 
-    private function _fieldExist($tablename)
+    private function _fieldExist($tablename,$fieldname)
     {
         $dbname="Tables_in_".Config::get("database.connections.mysql.database");
 
-        $alltable=DB::select("desc tables");
+        $alltable=DB::select("desc $tablename");
 
         foreach($alltable as $tb){
-            if(strcasecmp($tb->$dbname,$tablename)==0){
+            if(strcasecmp($tb->Field,$fieldname)==0){
                 return true;
             }
         }
@@ -105,7 +105,7 @@ class DataTable extends BaseSetting
             return Array('code'=>0,'msg'=>'表已经存在了');
         }
 
-        $count=$this->where('parentid',self::TREE_ID)->where('name','$tablename')->count();
+        $count=$this->where('parentid',self::TREE_ID)->where('name',$tablename)->count();
 
         if($count>0){
             return Array('code'=>0,'msg'=>'表已经存在了');
@@ -139,9 +139,30 @@ class DataTable extends BaseSetting
         return Array('total'=>$total,'data'=>$data);
 	}
 
-	public function addField($tableid,$name,$label,$type,$default)
+	public function addField($tableid,$type,$data)
 	{
+        $fieldname=strtolower($data['name']);
+        $data['parentid']=$tableid;
+        $parent_table=$this->where('id',$tableid)->first();
+        if(!$parent_table){
+            return Array('code'=>0,'msg'=>'对应模型不存在');
+        }
+        if($this->_fieldExist($parent_table->name,$fieldname)){
+            return Array('code'=>0,'msg'=>'字段已经存在了');
+        }
 
+        $count=$this->where('parentid',$tableid)->where('name',$fieldname)->count();
+        if($count>0){
+            return Array('code'=>0,'msg'=>'字段已经存在了');
+        }
+
+        $this->newData($tableid,$data);
+        $re=DB::statement("alter table $parent_table->name add $fieldname $type");
+        if(!$re){
+            return Array('code'=>0,'msg'=>'创建'.$data['note']."失败了");
+        }
+        //创建索引:TODO
+        return Array('code'=>1,'msg'=>'成功创建'.$data['note']);
 	}
 
 	public function deleteField($tableid,$id){

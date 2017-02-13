@@ -114,6 +114,7 @@ class ModelController extends Controller
             //Redirect::to($this->getUrl());
         }
         if($req->ajax()){
+
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
@@ -132,14 +133,16 @@ class ModelController extends Controller
         else{
             $table_widget=new DataTableWidget();
             $urlconfig=[
-                "url"=>$this->getUrl('field'),
+                "url"=>$this->getUrl('field')."?id=".$id,
                 "edit_url"=>$this->getUrl("modifyfield"),
                 "view_url"=>$this->getUrl("viewfield"),
                 "delete_url"=>$this->getUrl("deletefield"),
                 "field_url"=>'',
             ];
+            $dt=new DataTable();
+            $tableinfo=$dt->getDataById($id);
             $dialog_html=$table_widget->showFieldEditWidget(Array("const_url"=>$this->getUrl("consts"),'modelid'=>$id));
-            $list_html=$table_widget->showFieldListWidget("模型列表",$urlconfig,$dialog_html);
+            $list_html=$table_widget->showFieldListWidget(sprintf("模型-%s[%s]",$tableinfo['note'],$tableinfo['name']),$urlconfig,$dialog_html);
             return $this->View("models")->with(
                 [
                     "table_widget"=>$list_html,
@@ -162,12 +165,18 @@ class ModelController extends Controller
         }
         switch($action){
             case "add":
-            $name=$req->get('name');
-            $note=$req->get('note');
-            $setting=$req->get('setting');
-
+            $fieldwidget=new DataTableWidget();
+            $allinput=$req->all();
+            $setdata=$fieldwidget->tranformFieldSetting($allinput,true);
+            print_r($setdata);
+            $data=Array(
+                'note'=>$req->get("note"),
+                'name'=>$req->get("name"),
+                'setting'=>$setdata["setting"],
+                'order'=>0,
+            );
             $dtmodel=new DataTable();
-            $result=$dtmodel->addTable($name,Array('note'=>$note,'setting'=>$setting));
+            $result=$dtmodel->addField($modelid,$setdata['type'],$data);
             return json_encode($result);
             break;
 
@@ -180,6 +189,7 @@ class ModelController extends Controller
             $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>$setting));
             return json_encode($result);
             break;
+        }
     }
 
     public function getViewField(Request $req)
