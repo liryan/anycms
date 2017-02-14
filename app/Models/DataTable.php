@@ -181,9 +181,36 @@ class DataTable extends BaseSetting
         $result=$this->deleteData($id);
         return $result>0;
 	}
-
-    public function editField()
+    /**
+     * [editField description]
+     * @method editField
+     * @param  [type]    $id   [字段ID]
+     * @param  [type]    $data [Array('name'=>$name,'note'=>$note,'setting'=>$setdata["setting"]]
+     * @return [type]          [description]
+     */
+    public function editField($id,$data)
     {
+        if($id<=0){
+            return Array('code'=>0,'msg'=>'非法修改');
+        }
+        $fddata=$this->where("id",$id)->first();
+        if(!$fddata){
+            return false;
+        }
+        $fieldname=$fddata->name;
+        $tbdata=$this->where("id",$fddata->parentid)->first();
+        if(!$tbdata){
+            return false;
+        }
 
+        $tbname=$tbdata->name;
+        DB::statement("alter table $tbname change $fieldname ".$data['name']." ".$data['type']);
+        $newdata=[
+            'note'=>$data['note'],
+            'setting'=>$data['setting'],
+            'name'=>$data['name'],
+        ];
+        $this->editData($id,$newdata);
+        return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
     }
 }

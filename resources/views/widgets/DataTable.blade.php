@@ -21,7 +21,7 @@
               </thead>
               <tbody>
               </tbody>
-             
+
             </table>
           </div>
           <!-- /.box-body -->
@@ -73,11 +73,15 @@ beforeFillForm=function(data){}
 
 
 $(function(){
+    $('#editForm').ajaxForm({
+        url:'{{$edit_url}}',
+        dataType:'json',
+        success:function(rep){
+                    alert(rep.msg);
+                }
+    });
 	$('#submitBt').on('click', function (e) {
-        dt=$('#editForm').serializeArray();
-        $.post("{{$edit_url}}" ,dt,function(req){
-            alert(req.msg);
-        },"json");
+        $("#editForm").submit();
 	});
     //CKEDITOR.replace('editor_html');
 });

@@ -187,9 +187,12 @@ class ModelController extends Controller
             $id=$req->get('id');
             $note=$req->get('note');
             $setting=$req->get('setting');
-
+            $name=$req->get("name");
+            $allinput=$req->all();
+            $fieldwidget=new DataTableWidget();
+            $setdata=$fieldwidget->tranformFieldSetting($allinput,true);
             $dtmodel=new DataTable();
-            $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>$setting));
+            $result=$dtmodel->editField($id,Array('name'=>$name,'note'=>$note,'type'=>$setdata['type'],'setting'=>$setdata["setting"]));
             return json_encode($result);
             break;
         }

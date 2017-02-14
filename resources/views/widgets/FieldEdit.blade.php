@@ -10,6 +10,7 @@
       <div class="modal-body">
               <div class="box-body">
                   <form role="form" class="form-horizontal" method="post" id="editForm">
+                      <input type="hidden" id="fortype" />
                       <input type="hidden" name="action" />
                       <input type="hidden" name="_token" />
                       <input type="hidden" name="modelid" value="{{$modelid}}"/>
@@ -127,7 +128,6 @@ function requireConstData(id,constid){
 	$.get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
 		if(req.data.length==1)
 			return;
-
 		if(id==0){
 			treepath.push({id:0,name:'所有'});
 		}
@@ -157,6 +157,11 @@ function requireConstData(id,constid){
 
 beforeFillForm=function(data){
     type=data.type;
+    if(data.id>0){
+        $("#fortype").attr("name","type");
+        $("#fortype").attr("value",type);
+        $("#fieldtype").attr("disabled",true);
+    }
     switch(type){
         case 1:
         showContext('integer');
