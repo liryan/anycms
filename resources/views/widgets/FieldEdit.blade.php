@@ -5,7 +5,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"><span way-data="formdata.dialogTitle"></span></h4>
+        <h4 class="modal-title" id="dialogTitle"></h4>
       </div>
       <div class="modal-body">
               <div class="box-body">
@@ -102,7 +102,7 @@ $(function(){
 			break;
 			case 5:
 			case 6:
-			requireConstData(0);
+			requireConstData(0,0);
 			break;
 			$("#const_table_panel").css("display","none");
 			case 7:
@@ -117,12 +117,13 @@ $(function(){
 });
 
 treepath=new Array();
+
 function showContext(id){
     $("#const_table_panel").html($("#"+id).html());
     $("#const_table_panel").css("display","block");
 }
 
-function requireConstData(id,type){
+function requireConstData(id,constid){
 	$.get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
 		if(req.data.length==1)
 			return;
@@ -135,7 +136,7 @@ function requireConstData(id,type){
 		}
 		html="<ol class='breadcrumb'>";
 		for(i=0;i<treepath.length;i++){
-			html+='<li><a href="javascript:requireConstData('+treepath[i].id+')">'+treepath[i].name+'</a></li>';
+			html+='<li><a href="javascript:requireConstData('+treepath[i].id+',0)">'+treepath[i].name+'</a></li>';
 			if(treepath[i].id==id){
 				treepath=treepath.slice(0,i+1);
 				break;
@@ -143,11 +144,43 @@ function requireConstData(id,type){
 		}
 		html+="</ol><div class='radio'>";
 		for(i=0;i<req.data.length;i++){
-			html+='<label><input type="radio" name="const" value='+req.data[i].id+'>'+'<a href="javascript:requireConstData('+req.data[i].id+')">'+req.data[i].name+'</a>'+"</label>";
+            check_html='';
+            if(req.data[i].id==constid)
+                 check_html='checked="checked"';
+			html+='<label><input type="radio" name="const" '+check_html+' value='+req.data[i].id+'>'+'<a href="javascript:requireConstData('+req.data[i].id+',0)">'+req.data[i].name+'</a>'+"</label>";
 		}
 		html+="</div>";
 		$("#const_table_panel").html(html);
 		$("#const_table_panel").css("display","block");
 	},"json");
+}
+
+beforeFillForm=function(data){
+    type=data.type;
+    switch(type){
+        case 1:
+        showContext('integer');
+        case 2:
+        showContext('string');
+        break;
+        case 3:
+        $("#const_table_panel").css("display","none");
+        break;
+        case 4:
+        showContext('datetime');
+        break;
+        case 5:
+        case 6:
+        treepath.push({id:0,name:'所有'});
+        requireConstData(data.const_parentid,data.const);
+        break;
+        $("#const_table_panel").css("display","none");
+        case 7:
+        showContext('string');
+        break;
+        case 8:
+        showContext('number');
+        break;
+    }
 }
 </script>

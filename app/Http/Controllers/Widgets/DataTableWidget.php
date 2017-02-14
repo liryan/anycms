@@ -125,7 +125,13 @@ class DataTableWidget extends Controller
 		}
 		return $data;
 	}
-
+	public function isConstField($data)
+	{
+		if($data['type']==5){
+			return true;
+		}
+		return false;
+	}
 	public function showFieldEditWidget($urlconfig)
 	{
 		$view=View::make("widgets.FieldEdit");
@@ -188,6 +194,9 @@ class DataTableWidget extends Controller
 							$data['size']=$ar[0];
 							$data['size_bit']=$ar[1];
 						}
+						else{
+							$data[$k]=$v;
+						}
 					}
 					else{
 						$data[$k]=$v;
@@ -206,5 +215,15 @@ class DataTableWidget extends Controller
 		}
 		return $data;
 	}
-
+	public function translateData(&$data)
+	{
+		foreach($data as &$row){
+			foreach($this->field_type as $define){
+				if($row['type']==$define['value']){
+					$row['type']=$define['name'];
+				}
+			}
+			$row['_internal_field']='';
+		}
+	}
 }

@@ -224,9 +224,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><a href="index.html"><i class="fa fa-table"></i>模型管理</a></li>
-            <li><a href="index2.html"><i class="fa fa-bars"></i>菜单管理</a></li>
-            <li><a href="index2.html"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
+            <li class="active"><a href="/model"><i class="fa fa-table"></i>模型管理</a></li>
+            <li><a href="/menu"><i class="fa fa-bars"></i>菜单管理</a></li>
+            <li><a href="/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
+            <li><a href="/roles"><i class="fa fa-graduation-cap"></i>角色管理</a></li>
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>SubMenu</span>
@@ -239,6 +240,19 @@
                     <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
                 </ul>
             </li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-asterisk"></i> <span>内容管理</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="active"><a href="index.html"><i class="fa fa-table"></i>模型管理</a></li>
+            <li><a href="index2.html"><i class="fa fa-bars"></i>菜单管理</a></li>
+            <li><a href="index2.html"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
           </ul>
         </li>
       </ul>

@@ -165,7 +165,25 @@ class DataTable extends BaseSetting
         return Array('code'=>1,'msg'=>'成功创建'.$data['note']);
 	}
 
-	public function deleteField($tableid,$id){
-
+	public function deleteField($id)
+    {
+        $data=$this->where("id",$id)->first();
+        if(!$data){
+            return false;
+        }
+        $fieldname=$data->name;
+        $data=$this->where("id",$data->parentid)->first();
+        if(!$data){
+            return false;
+        }
+        $tbname=$data->name;
+        DB::statement("alter table $tbname drop $fieldname");
+        $result=$this->deleteData($id);
+        return $result>0;
 	}
+
+    public function editField()
+    {
+
+    }
 }

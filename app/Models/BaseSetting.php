@@ -82,6 +82,7 @@ class BaseSetting extends Model
 		$newobj->setting=$data['setting'];
 		$newobj->name=$data['name'];
 		$newobj->order=intval($data['order']);
+        $newobj->type=intval($data['type']);
         $newobj->note=$data['note'];
 		$newobj->save();
 	}

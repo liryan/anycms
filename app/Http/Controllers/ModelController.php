@@ -20,7 +20,7 @@ class ModelController extends Controller
             $draw=intval($req->get('draw'));
             $dt=new DataTable();
             $result=$dt->tables($start,$length);
-            $this->FilterPrivileges($result['data']);
+            (new DataTableWidget())->translateData($result['data']);
             $data=Array(
                 "draw"=>$draw,
                 "recordsTotal"=>$result['total'],
@@ -39,6 +39,7 @@ class ModelController extends Controller
                 "view_url"=>$this->getUrl("view"),
                 "delete_url"=>$this->getUrl("delete"),
                 "field_url"=>$this->getUrl("field"),
+                "pri"=>'11111',
             ];
             $dialog_html=$table_widget->showModelEditWidget($urlconfig);
             $list_html=$table_widget->showModelListWidget("模型列表",$urlconfig,$dialog_html);
@@ -120,7 +121,8 @@ class ModelController extends Controller
             $draw=intval($req->get('draw'));
             $dt=new DataTable();
             $result=$dt->fields($id,$start,$length);
-            $this->FilterPrivileges($result['data']);
+            $widget=new DataTableWidget();
+            $widget->translateData($result['data']);
             $data=Array(
                 "draw"=>$draw,
                 "recordsTotal"=>$result['total'],
@@ -138,6 +140,7 @@ class ModelController extends Controller
                 "view_url"=>$this->getUrl("viewfield"),
                 "delete_url"=>$this->getUrl("deletefield"),
                 "field_url"=>'',
+                "pri"=>'11110',
             ];
             $dt=new DataTable();
             $tableinfo=$dt->getDataById($id);
@@ -168,10 +171,10 @@ class ModelController extends Controller
             $fieldwidget=new DataTableWidget();
             $allinput=$req->all();
             $setdata=$fieldwidget->tranformFieldSetting($allinput,true);
-            print_r($setdata);
             $data=Array(
                 'note'=>$req->get("note"),
                 'name'=>$req->get("name"),
+                'type'=>$req->get("type"),
                 'setting'=>$setdata["setting"],
                 'order'=>0,
             );
@@ -205,6 +208,13 @@ class ModelController extends Controller
         else{
             $tb=new DataTable();
             $re=$tb->getDataById($id);
+            $table_widget=new DataTableWidget();
+            $table_widget->tranformFieldSetting($re,false);
+            if($table_widget->isConstField($re)){
+                $data=$tb->getDataById($re['const']);
+                $re['const_parentid']=$data['parentid'];
+            }
+
             $re['action']='edit';
             $re['_token']=csrf_token();
             return json_encode($re);
@@ -213,7 +223,13 @@ class ModelController extends Controller
 
     public function getDeleteField(Request $req)
     {
-
+        $id=$req->get('id');
+        $dtmodel=new DataTable();
+        $result=$dtmodel->deleteField($id);
+        if($result){
+            return json_encode(Array('code'=>1));
+        }
+        return json_encode(Array('code'=>0,'msg'=>'删除失败'));
     }
 
     public function getConsts(Request $req)
@@ -228,7 +244,6 @@ class ModelController extends Controller
             $draw=intval($req->get('draw'));
             $cd=new ConstDefine();
             $result=$cd->consts($id,$start,$length);
-            $this->FilterPrivileges($result['data']);
 
             $data=Array(
                 "draw"=>$draw,

@@ -28,7 +28,7 @@ class Controller extends BaseController
     	}
     	return str_replace("controller","",strtolower($class_name));
     }
-    
+
     protected function getUrl($method='')
     {
         return '/'.$this->getClassName().'/'.strtolower($method);
@@ -37,11 +37,13 @@ class Controller extends BaseController
     protected function widget($name){
         return View::make("widgets.".$name);
     }
-
-    protected function FilterPrivileges(&$data)
+    /**
+     * 获取列表后面的权限
+     * @method FilterTablePrivileges
+     * @param  [type]                $data [description]
+     */
+    protected function FilterTablePrivileges()
     {
-        foreach($data as &$row){
-            $row['_internal_field']='11111';
-        }
+        return "11111";
     }
 }
