@@ -39,3 +39,4 @@ function RouteController($prefix,$controller)
 
 Route::get('/',"IndexController@anyIndex");
 RouteController("/model","ModelController");
+RouteController("/category","CategoryController");

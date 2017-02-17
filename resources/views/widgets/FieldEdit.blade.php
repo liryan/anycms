@@ -42,7 +42,6 @@
                         <label class="col-sm-2 control-label">字段</label>
         				<div class="col-sm-4"><input type="text" name="tablefield" class="form-control" placeholder="字段名" value=""></div>
     				  </div>
-
                   </form>
                   <div class="form-group" id="string" style="display:none">
                         <label>设置</label><br/>

@@ -228,6 +228,7 @@
             <li><a href="/menu"><i class="fa fa-bars"></i>菜单管理</a></li>
             <li><a href="/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
             <li><a href="/roles"><i class="fa fa-graduation-cap"></i>角色管理</a></li>
+            <li><a href="/category"><i class="fa fa-graduation-cap"></i>频道管理</a></li>
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>SubMenu</span>

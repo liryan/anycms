@@ -100,16 +100,7 @@ function addData(){
 
 //显示查看对话框
 function viewData(id){
-    if(id<0){
-        alert("无效的参数");
-        return;
-    }
-    $.get("{{$view_url}}?id="+id,function(rep){
-        dt=rep;
-        $("#editForm").autofill(dt);
-        $("#model_new").modal();
-    },'json');
-    $("#model_new").modal();
+    window.location.href="{{$view_url}}?id="+id;
 }
 
 //删除数据

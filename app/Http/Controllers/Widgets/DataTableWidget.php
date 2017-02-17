@@ -5,80 +5,10 @@ namespace App\Http\Controllers\Widgets;
 use App\Models\DataTable;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
+
 class DataTableWidget extends Controller
 {
 	private static $DIALOG_ID=1;
-	//模型表单字段
-	private $model_fields=[
-		['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'number'],
-		['name'=>'note','label'=>'模型名字','place_holder'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'name','label'=>'表名','place_holder'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'setting','label'=>'备注','place_holder'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>'html'],
-		['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
-		['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
-	];
-	//模型字段的属性定义
-	private $fields_it=[
-		['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'number'],
-		['name'=>'note','label'=>'字段名字','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'name','label'=>'表字段','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'type','label'=>'类型','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
-		['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
-	];
-	//字段的扩展属性定义
-	private $field_setting=[
-		["name"=>"tablename",'label'=>'关联表名','default'=>''],
-		["name"=>"tablefield",'label'=>'关联表字段','default'=>''],
-		["name"=>"listable",'label'=>'可列表','default'=>'0'],
-		["name"=>"default",'label'=>'缺省值','default'=>''],
-		['name'=>'const','label'=>'选择的常量ID','default'=>''],
-		['name'=>'size','label'=>'字段大小','default'=>'']
-	];
-	//字段的类型映射
-	private $field_type=[
-
-	];
-	public function __construct(){
-		$this->field_type=[
-			['name'=>'整数字','value'=>'1','type'=>'integer','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("integer(%d) default %d",$data['size'],$data['default']);
-				return sprintf("integer(%d)",$data['size']?$data['size']:11);
-			}],
-			['name'=>'文本','value'=>'2','type'=>'varchar','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-			}],
-			['name'=>'编辑器','value'=>'3','type'=>'text','DBdefine'=>function($data){
-				return "text";
-			}],
-			['name'=>'日期','value'=>'4','type'=>'datetime','DBdefine'=>function($data){
-				return $data['size']==1?'datetime':'date';
-			}],
-			['name'=>'选择列表','value'=>'5','type'=>'integer','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("integer(11) default %d",$data['default']);
-				return sprintf("integer(11)");
-			}],
-			['name'=>'多选列表','value'=>'6','type'=>'varchar','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-			}],
-			['name'=>'图片','value'=>'7','type'=>'varchar','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-			}],
-			['name'=>'小数点数字','value'=>'8','type'=>'number','DBdefine'=>function($data){
-				if(strlen($data['default'])>0)
-					return sprintf("decimal(%d,%d) default %.02f",$data['size'],$data['size_bit'],$data['default']);
-				return sprintf("decimal(%d,%d)",$data['size'],$data['size_bit']);
-			}],
-		];
-	}
 	/**
 	 * [showModelListWidget description]
 	 * @method showModelListWidget
@@ -91,7 +21,7 @@ class DataTableWidget extends Controller
 	{
 		$view=View::make("widgets.DataTable");
 		$fields=[];
-		foreach($this->model_fields as $row){
+		foreach(DataTable::$model_fields as $row){
 			if($row['listable']){
 				$fields[]=$row;
 			}
@@ -107,7 +37,7 @@ class DataTableWidget extends Controller
 		$view=View::make("widgets.DataEdit");
 		$view->with($urlconfig);
 		$fields=[];
-		foreach($this->model_fields as $row){
+		foreach(DataTable::$model_fields as $row){
 			if($row['editable']){
 				$fields[]=$row;
 			}
@@ -118,7 +48,7 @@ class DataTableWidget extends Controller
 	public function getDefaultModelDefine()
 	{
 		$data=[];
-		foreach($this->model_fields as $row){
+		foreach(DataTable::$model_fields as $row){
 			if($row['editable']){
 				$data[$row['name']]=$row['default'];
 			}
@@ -135,7 +65,7 @@ class DataTableWidget extends Controller
 	public function showFieldEditWidget($urlconfig)
 	{
 		$view=View::make("widgets.FieldEdit");
-		$view->with('types',$this->field_type);
+		$view->with('types',DataTable::$field_type);
 		$view->with($urlconfig);
 		return $view->with(['dialog_id'=>self::$DIALOG_ID++])->render();
 	}
@@ -144,7 +74,7 @@ class DataTableWidget extends Controller
 	{
 		$view=View::make("widgets.DataTable");
 		$fields=[];
-		foreach($this->fields_it as $row){
+		foreach(DataTable::$fields_it as $row){
 			if($row['listable']){
 				$fields[]=$row;
 			}
@@ -166,7 +96,7 @@ class DataTableWidget extends Controller
 		$result=[];
 		if($in){
 			$setting=[];
-			foreach($this->field_setting as $row){
+			foreach(DataTable::$field_setting as $row){
 				if(!isset($data[$row['name']])){
 					$data[$row['name']]='';
 				}
@@ -178,7 +108,7 @@ class DataTableWidget extends Controller
 				}
 			}
 			$result['setting']=json_encode($setting);
-			foreach($this->field_type as $row){
+			foreach(DataTable::$field_type as $row){
 				if($row['value']==$data['type']){
 					$result['type']=$row['DBdefine']($data);
 				}
@@ -210,7 +140,7 @@ class DataTableWidget extends Controller
 	public function getDefaultFieldDefine()
 	{
 		$data=[];
-		foreach($this->field_setting as $row){
+		foreach(DataTable::$field_setting as $row){
 			$data[$row['name']]=$row['default'];
 		}
 		return $data;
@@ -218,7 +148,7 @@ class DataTableWidget extends Controller
 	public function translateData(&$data)
 	{
 		foreach($data as &$row){
-			foreach($this->field_type as $define){
+			foreach(DataTable::$field_type as $define){
 				if($row['type']==$define['value']){
 					$row['type']=$define['name'];
 				}
