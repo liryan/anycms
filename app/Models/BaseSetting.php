@@ -8,8 +8,13 @@ class BaseSetting extends Model
 {
     protected $table = 't_setting';
 	/**
-	*
-	*/
+	 * [getDataPageByParentId 获取某个ID下面的所有的子节点]
+	 * @method getDataPageByParentId
+	 * @param  [type]                $id     [根节点ID]
+	 * @param  integer               $start  [开始]
+	 * @param  integer               $length [长度]
+	 * @return [type]                        [数据]
+	 */
 	protected function getDataPageByParentId($id,$start=0,$length=0)
 	{
 		if($start==0 && $length==0){
@@ -27,12 +32,23 @@ class BaseSetting extends Model
             return Array();
 		}
 	}
-
+    /**
+     * [getCount 获得子节点个数]
+     * @method getCount
+     * @param  [type]   $id [description]
+     * @return [type]       [description]
+     */
     protected function getCount($id)
     {
         return $this->where('parentid',$id)->count();
     }
-
+    /**
+     * [getDataByParentId 获取某个ID下面的所有的子节点]
+     * @method getDataByParentId
+     * @param  [type]            $id      [父节点]
+     * @param  boolean           $inclsub [是否包含子节点]
+     * @return [type]                     [description]
+     */
 	protected function getDataByParentId($id,$inclsub=false)
 	{
 		$allrow=[];
@@ -96,4 +112,29 @@ class BaseSetting extends Model
 	{
         return $this->where("id",$id)->delete();
 	}
+    /**
+     * [getPath 获得到此节点的路径]
+     * @method getPath
+     * @param  [type]  $id [description]
+     * @return [type]      [description]
+     */
+    public function getPath($id)
+    {
+        $re=[];
+        do{
+            $data=$this->where("id",$id)->first();
+            if($data){
+                array_unshift($re,['note'=>$data->note,'name'=>$data->name,'id'=>$data->id]);
+                $id=$data->parentid;
+            }
+            else{
+                break;
+            }
+            if(sizeof($re)>10){ //不要超过10级
+                break;
+            }
+        }
+        while(true);
+        return $re;
+    }
 }

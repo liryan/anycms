@@ -243,7 +243,7 @@
             </li>
           </ul>
         </li>
-        <li class="treeview">
+        <li class="active treeview">
           <a href="#">
             <i class="fa fa-asterisk"></i> <span>内容管理</span>
             <span class="pull-right-container">
@@ -251,9 +251,23 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><a href="index.html"><i class="fa fa-table"></i>模型管理</a></li>
-            <li><a href="index2.html"><i class="fa fa-bars"></i>菜单管理</a></li>
-            <li><a href="index2.html"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
+              @foreach($categories as $row)
+                @if($row['subdata']=='>')
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>{{$row['note']}}</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                @elseif($row['subdata']=='|')
+                    <li class="active"><a href="/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['note']}}</a></li>
+                @elseif($row['subdata']=='<')
+                    </ul>
+                </li>
+                @endif
+              @endforeach
           </ul>
         </li>
       </ul>
@@ -270,8 +284,10 @@
         <small>控制面板</small>
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
-        <li class="active">面板</li>
+          <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        @foreach($breadcrumb as $row)
+        <li class="active"><a href="{{$row['url']}}">{{$row['note']}}</a></li>
+        @endforeach
       </ol>
     </section>
 

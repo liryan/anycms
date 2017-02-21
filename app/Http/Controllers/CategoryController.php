@@ -12,15 +12,16 @@ use App\Http\Controllers\Widgets\CategoryWidget;
 
 class CategoryController extends Controller
 {
+
     public function index(Request $req)
 	{
 		$id=$req->get("id",0);
+        $cate=new Category();
         if($req->ajax()){
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
-            $dt=new Category();
-            $result=$dt->categories($start,$length,$id);
+            $result=$cate->categories($start,$length,$id);
 			foreach($result['data'] as &$row){
 				$row['_internal_field']='';
 			}
@@ -33,22 +34,26 @@ class CategoryController extends Controller
             return json_encode($data);
         }
         else{
+            $models=new DataTable();
+            $this->breadcrumb=$cate->getPath($id?$id:Category::CATEGORY_ID);
+            foreach($this->breadcrumb as &$row){
+                $row['url']=$this->getUrl()."?id=".$row['id'];
+            }
             $cat_widget=new CategoryWidget();
-			$models=new DataTable();
             $urlconfig=[
-                "url"=>$this->getUrl(),
+                "url"=>$this->getUrl()."?id=$id",
                 "edit_url"=>$this->getUrl("modify"),
                 "view_url"=>$this->getUrl("view"),
+                "open_url"=>$this->geturl(""),
                 "delete_url"=>$this->getUrl("delete"),
                 "field_url"=>$this->getUrl("field"),
-                "pri"=>'11111',
-				"catid"=>$id,
+                "pri"=>'11110',
+				"id"=>$id,
 				"models"=>$models->tables(0,200)['data'],
             ];
 
             $dialog_html=$cat_widget->showEditWidget($urlconfig);
             $list_html=$cat_widget->showListWidget("栏目管理",$urlconfig,$dialog_html);
-
             return $this->View("index")->with(
                 [
                     "table_widget"=>$list_html,
@@ -66,8 +71,10 @@ class CategoryController extends Controller
             return json_encode($re);
         }
         else{
-            $tb=new DataTable();
-            $re=$tb->getDataById($id);
+            $cate=new Category();
+            $re=$cate->getDataById($id);
+            $widgets=new CategoryWidget();
+            $widgets->tranformSetting($re,false);
             $re['action']='edit';
             $re['_token']=csrf_token();
             return json_encode($re);
@@ -76,26 +83,25 @@ class CategoryController extends Controller
 
     public function postModify(Request $req)
     {
-
+        $id=$req->get("id",0);
         $action=$req->get('action');
         switch($action){
             case "add":
-            $name=$req->get('name');
-            $note=$req->get('note');
-            $setting=$req->get('setting');
-
-            $dtmodel=new DataTable();
-            $result=$dtmodel->addTable($name,Array('note'=>$note,'setting'=>$setting));
+            $widget=new CategoryWidget();
+            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
+            $widget->tranformSetting($data,true);
+            print_r($data);
+            $cate=new Category();
+            $result=$cate->addCategory($id,$data);
             return json_encode($result);
             break;
 
             case "edit":
-            $id=$req->get('id');
-            $note=$req->get('note');
-            $setting=$req->get('setting');
-
-            $dtmodel=new DataTable();
-            $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>$setting));
+            $widget=new CategoryWidget();
+            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
+            $widget->tranformSetting($data,true);
+            $cate=new Category();
+            $result=$cate->editCategory($id,$data);
             return json_encode($result);
             break;
         }
@@ -103,11 +109,11 @@ class CategoryController extends Controller
     public function getDelete(Request $req)
     {
         $id=$req->get('id');
-        $dtmodel=new DataTable();
-        $result=$dtmodel->deleteTable($id);
+        $cat=new Category();
+        $result=$cat->deleteCat($id);
         if($result){
             return json_encode(Array('code'=>1));
         }
-        return json_encode(Array('code'=>0,'msg'=>'表中含有数据,不能删除'));
+        return json_encode(Array('code'=>0,'msg'=>'删除失败'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\DataTable;
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 
@@ -13,7 +14,7 @@ class CategoryWidget extends Controller
 	{
 		$view=View::make("widgets.DataTable");
 		$fields=[];
-		foreach(DataTable::$model_fields as $row){
+		foreach(Category::$cate_fields as $row){
 			if($row['listable']){
 				$fields[]=$row;
 			}
@@ -29,7 +30,7 @@ class CategoryWidget extends Controller
 		$view=View::make("widgets.CategoryEdit");
 		$view->with($urlconfig);
 		$fields=[];
-		foreach(DataTable::$model_fields as $row){
+		foreach(Category::$cate_fields as $row){
 			if($row['editable']){
 				$fields[]=$row;
 			}
@@ -37,4 +38,28 @@ class CategoryWidget extends Controller
 		return $view->with(['inputs'=>$fields,'dialog_id'=>self::$DIALOG_ID++])->render();
 	}
 
+	public function tranformSetting(&$data,$in)
+	{
+		$result=[];
+		if($in){
+			$setting=[];
+			foreach(Category::$field_setting as $row){
+				if(!isset($data[$row['name']])){
+					$data[$row['name']]=0;
+				}
+				$setting[$row['name']]=$data[$row['name']];
+			}
+			$result['setting']=json_encode($setting);
+			$data['setting']=$result['setting'];
+		}
+		else{
+			$obj=json_decode($data['setting'],true);
+			if(is_array($obj)){
+				foreach($obj as $k=>$v){
+					$data[$k]=$v;
+				}
+			}
+		}
+		return $result;
+	}
 }

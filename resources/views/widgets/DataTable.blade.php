@@ -100,7 +100,7 @@ function addData(){
 
 //显示查看对话框
 function viewData(id){
-    window.location.href="{{$view_url}}?id="+id;
+    window.location.href="{{$open_url}}?id="+id;
 }
 
 //删除数据

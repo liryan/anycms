@@ -7,17 +7,19 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\View;
-use App\Models\Menus;
+use App\Models\Category;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+    protected $breadcrumb; //面包屑导航数组
     protected function View($name)
     {
-    	$res=(new Menus())->where([['status','=',0]])->get()->toArray();
     	$view=View::make("templates.".$this->getClassName().".".$name);
+        $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
+        $view->with('categories',$this->getCategoryMenu());
     	return $view;
     }
+
 
     protected function getClassName()
     {
@@ -45,5 +47,31 @@ class Controller extends BaseController
     protected function FilterTablePrivileges()
     {
         return "11111";
+    }
+
+    protected function getCategoryMenu()
+    {
+        $cate=new Category();
+        $data=$cate->getAllCategory();
+        $re=[];
+        $this->treeToArray($re,$data[0]);
+        return $re;
+    }
+
+    protected function treeToArray(&$data,$treedata)
+    {
+        $subdata=isset($treedata['subdata'])?$treedata['subdata']:[];
+        if(is_array($subdata) && sizeof($subdata)>0){
+            $treedata['subdata']='>';
+            $data[]=$treedata;
+            foreach($subdata as $sub){
+                $this->treeToArray($data,$sub);
+            }
+            $data[]=['note'=>'close','subdata'=>'<'];
+        }
+        else{
+            $treedata['subdata']='|';
+            $data[]=$treedata;
+        }
     }
 }

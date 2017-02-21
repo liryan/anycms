@@ -41,6 +41,7 @@ class DataTable extends BaseSetting
     public function __construct()
     {
         if(!static::$field_type){
+            // format:  根据字段type，调用DBdefine返回表字段的定义，该函数读取setting的具体数值
             static::$field_type=[
     			['name'=>'整数字','value'=>'1','type'=>'integer','DBdefine'=>function($data){
     				if(strlen($data['default'])>0)

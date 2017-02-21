@@ -39,6 +39,7 @@ class ModelController extends Controller
                 "view_url"=>$this->getUrl("view"),
                 "delete_url"=>$this->getUrl("delete"),
                 "field_url"=>$this->getUrl("field"),
+                "open_url"=>'',
                 "pri"=>'11111',
             ];
             $dialog_html=$table_widget->showModelEditWidget($urlconfig);
@@ -140,6 +141,7 @@ class ModelController extends Controller
                 "view_url"=>$this->getUrl("viewfield"),
                 "delete_url"=>$this->getUrl("deletefield"),
                 "field_url"=>'',
+                "open_url"=>'',
                 "pri"=>'11110',
             ];
             $dt=new DataTable();

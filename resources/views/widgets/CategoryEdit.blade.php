@@ -13,7 +13,7 @@
                       <input type="hidden" id="fortype" />
                       <input type="hidden" name="action" />
                       <input type="hidden" name="_token" />
-                      <input type="hidden" name="catid" value="{{$catid}}"/>
+                      <input type="hidden" name="id" value="{{$id}}"/>
     	              <div class="form-group">
     					  <label for="exampleInputEmail1">栏目名字</label>
     					  <input type="text" name="note" class="form-control" placeholder="请输入中文" value="">
@@ -24,7 +24,7 @@
     				  </div>
 					 <div class="form-group">
 						<label for="exampleInputEmail1">绑定模型</label>
-						<select class="form-control" name="model">
+						<select class="form-control" name="modelid">
 							@foreach($models as $row)
 							<option value="{{$row['id']}}">{{$row['note']}}</option>
 							@endforeach
