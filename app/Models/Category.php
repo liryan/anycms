@@ -101,4 +101,14 @@ class Category extends BaseSetting
 	{
 		return $this->getDataByParentId(self::CATEGORY_ID,true);
 	}
+
+	public function getModelId($id)
+	{
+		$data=$this->getDataById($id);
+		if($data){
+			$obj=json_decode($data['setting'],true);
+			return $obj['modelid'];
+		}
+		return 0;
+	}
 }

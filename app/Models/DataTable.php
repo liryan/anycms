@@ -7,24 +7,85 @@ use Config;
 class DataTable extends BaseSetting
 {
     protected const TREE_ID=4;
+
+    public const DEF_INTEGER=1;
+    public const DEF_CHAR=2;
+    public const DEF_TEXT=3;
+    public const DEF_DATE=4;
+    public const DEF_LIST=5;
+    public const DEF_MULTI_LIST=6;
+    public const DEF_IMAGE=7;
+    public const DEF_FLOAT=8;
+    //字段的类型映射,
+
+    public static $field_type;
+    public function __construct()
+    {
+        if(!static::$field_type){
+            static::$field_type=[
+                ['name'=>'整数字','value'=>DataTable::DEF_INTEGER,'type'=>'integer','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("integer(%d) default %d",$data['size'],$data['default']);
+                    return sprintf("integer(%d)",$data['size']?$data['size']:11);
+                }],
+                ['name'=>'文本','value'=>DataTable::DEF_CHAR,'type'=>'varchar','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                }],
+                ['name'=>'编辑器','value'=>DataTable::DEF_TEXT,'type'=>'text','DBdefine'=>function($data){
+                    return "text";
+                }],
+                ['name'=>'日期','value'=>DataTable::DEF_DATE,'type'=>'datetime','DBdefine'=>function($data){
+                    return $data['size']==1?'datetime':'date';
+                }],
+                ['name'=>'选择列表','value'=>DataTable::DEF_LIST,'type'=>'integer','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("integer(11) default %d",$data['default']);
+                    return sprintf("integer(11)");
+                }],
+                ['name'=>'多选列表','value'=>DataTable::DEF_MULTI_LIST,'type'=>'varchar','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                }],
+                ['name'=>'图片','value'=>DataTable::DEF_IMAGE,'type'=>'varchar','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
+                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                }],
+                ['name'=>'小数点数字','value'=>DataTable::DEF_FLOAT,'type'=>'number','DBdefine'=>function($data){
+                    if(strlen($data['default'])>0)
+                        return sprintf("decimal(%d,%d) default %.02f",$data['size'],$data['size_bit'],$data['default']);
+                    return sprintf("decimal(%d,%d)",$data['size'],$data['size_bit']);
+                }],
+            ];
+        }
+    }
+
+    /*****************************************
+    * 上面的定义与界面无关
+    * ***************************************/
+
+    //视图：模型列表列的展示=>datatable,新模型会根据此表单生成，采用通用表单
     public static $model_fields=[
-        ['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'number'],
-        ['name'=>'note','label'=>'模型名字','place_holder'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-        ['name'=>'name','label'=>'表名','place_holder'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-        ['name'=>'setting','label'=>'备注','place_holder'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>'html'],
-        ['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
-        ['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
+        ['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
+        ['name'=>'note','label'=>'模型名字','place_holder'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'name','label'=>'表名','place_holder'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'setting','label'=>'备注','place_holder'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
+        ['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_CHAR]
     ];
-    //模型字段的属性定义
+    //视图：模型字段列表的数据展现列定义=>datatable,表单为定制表单
     public static $fields_it=[
-        ['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'number'],
-        ['name'=>'note','label'=>'字段名字','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-        ['name'=>'name','label'=>'表字段','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-        ['name'=>'type','label'=>'类型','place_holder'=>'','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-        ['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
-        ['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
+        ['name'=>'id','label'=>'编号','listable'=>true],
+        ['name'=>'note','label'=>'字段名字','listable'=>true],
+        ['name'=>'name','label'=>'表字段','listable'=>true],
+        ['name'=>'type','label'=>'类型','listable'=>true],
+        ['name'=>'created_at','label'=>'创建日期','listable'=>true],
+        ['name'=>'_internal_field','label'=>'操作','listable'=>true]
     ];
-    //字段的扩展属性定义
+    //视图：字段的扩展属性定义=>edit setting define
     public static $field_setting=[
         ["name"=>"tablename",'label'=>'关联表名','default'=>''],
         ["name"=>"tablefield",'label'=>'关联表字段','default'=>''],
@@ -33,58 +94,21 @@ class DataTable extends BaseSetting
         ['name'=>'const','label'=>'选择的常量ID','default'=>''],
         ['name'=>'size','label'=>'字段大小','default'=>'']
     ];
-    //字段的类型映射
-    public static $field_type=[
 
+    //视图+数据库：默认表中会含有以下字段
+    public static $default_columns=[
+        ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false],
+        ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false],
+        ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false],
+        ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false]
     ];
 
-    public function __construct()
-    {
-        if(!static::$field_type){
-            // format:  根据字段type，调用DBdefine返回表字段的定义，该函数读取setting的具体数值
-            static::$field_type=[
-    			['name'=>'整数字','value'=>'1','type'=>'integer','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("integer(%d) default %d",$data['size'],$data['default']);
-    				return sprintf("integer(%d)",$data['size']?$data['size']:11);
-    			}],
-    			['name'=>'文本','value'=>'2','type'=>'varchar','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-    				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-    			}],
-    			['name'=>'编辑器','value'=>'3','type'=>'text','DBdefine'=>function($data){
-    				return "text";
-    			}],
-    			['name'=>'日期','value'=>'4','type'=>'datetime','DBdefine'=>function($data){
-    				return $data['size']==1?'datetime':'date';
-    			}],
-    			['name'=>'选择列表','value'=>'5','type'=>'integer','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("integer(11) default %d",$data['default']);
-    				return sprintf("integer(11)");
-    			}],
-    			['name'=>'多选列表','value'=>'6','type'=>'varchar','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-    				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-    			}],
-    			['name'=>'图片','value'=>'7','type'=>'varchar','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-    				return sprintf("varchar(%d)",$data['size']?$data['size']:255);
-    			}],
-    			['name'=>'小数点数字','value'=>'8','type'=>'number','DBdefine'=>function($data){
-    				if(strlen($data['default'])>0)
-    					return sprintf("decimal(%d,%d) default %.02f",$data['size'],$data['size_bit'],$data['default']);
-    				return sprintf("decimal(%d,%d)",$data['size'],$data['size_bit']);
-    			}],
-    		];
-        }
-    }
 	/**
-	*
-	*/
+	 * [_tableExist 判断一个表是否存在]
+	 * @method _tableExist
+	 * @param  [type]      $tablename [description]
+	 * @return [type]                 [description]
+	 */
     private function _tableExist($tablename)
     {
         $dbname="Tables_in_".Config::get("database.connections.mysql.database");
@@ -98,7 +122,13 @@ class DataTable extends BaseSetting
         }
         return false;
     }
-
+    /**
+     * [_fieldExist 判断某个字段是否存在]
+     * @method _fieldExist
+     * @param  [type]      $tablename [description]
+     * @param  [type]      $fieldname [description]
+     * @return [type]                 [description]
+     */
     private function _fieldExist($tablename,$fieldname)
     {
         $dbname="Tables_in_".Config::get("database.connections.mysql.database");
@@ -112,7 +142,13 @@ class DataTable extends BaseSetting
         }
         return false;
     }
-
+    /**
+     * [tables 获取模型列表]
+     * @method tables
+     * @param  [type] $start  [description]
+     * @param  [type] $length [description]
+     * @return [type]         [description]
+     */
 	public function tables($start,$length)
 	{
 		if($start<0)
@@ -164,10 +200,15 @@ class DataTable extends BaseSetting
             if($count>0){
                 return false;
             }
+            else{
+                DB::statement("drop table $tbname");
+                $result=$this->deleteData($tableid);
+            }
         }
-        DB::statement("drop table $tbname");
-        $result=$this->deleteData($tableid);
-        return $result>0;
+        else{
+            $result=$this->deleteData($tableid);
+        }
+        return true;
 	}
 
 	public function addTable($tablename,$data)
@@ -175,6 +216,7 @@ class DataTable extends BaseSetting
         $tablename=strtolower($tablename);
         $data['order']=0;
         $data['name']=$tablename;
+        $data['type']=0;
 
         if($this->_tableExist($tablename)){
             return Array('code'=>0,'msg'=>'表已经存在了');
@@ -186,7 +228,13 @@ class DataTable extends BaseSetting
             return Array('code'=>0,'msg'=>'表已经存在了');
         }
         $this->newData(self::TREE_ID,$data);
-        $re=DB::statement("create table $tablename(id int(11) auto_increment primary key,updated_at datetime not null,created_at datetime not null,category int(11) default 0)");
+
+        $coldef='';
+        foreach(static::$default_columns as $col){
+            $coldef.=$col['name']." ".$col['def'].",";
+        }
+
+        $re=DB::statement("create table $tablename(".trim($coldef,",").")");
         if(!$re){
             return Array('code'=>0,'msg'=>'创建'.$data['note']."失败了");
         }
@@ -287,5 +335,25 @@ class DataTable extends BaseSetting
         ];
         $this->editData($id,$newdata);
         return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
+    }
+
+    public function tableColumns($modelid)
+    {
+        $modeldata=$this->getDataById($modelid);
+        $data=$this->getDataByParentId($modelid);
+        $re=[];
+        foreach(static::$default_columns as $row){
+            $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'setting'=>'','listable'=>$row['listable'],'editable'=>true];
+        }
+
+        if($data){
+            foreach($data as $row){
+                $obj=json_decode($row['setting'],true);
+                $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'listable'=>$obj['listable'],'setting'=>$obj,'editable'=>true];
+            }
+        }
+        $modeldata['columns']=$re;
+;
+        return $modeldata;
     }
 }

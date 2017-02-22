@@ -8,6 +8,7 @@
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
+@import_const(app\Models\DataTable)
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -23,7 +24,7 @@
               <div class="box-body">
 				  @foreach($inputs as $k=>$input)
 	              <div class="form-group">
-					@if($input['type']=="text")
+					@if($input['type']==DataTable::DEF_CHAR)
 					  	<label for="exampleInputEmail1">{{$input['label']}}</label>
   	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['place_holder']}}" value="{{$input['default']}}">
 					@elseif($input['type']=="checkbox")

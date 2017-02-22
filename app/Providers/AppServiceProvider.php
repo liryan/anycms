@@ -21,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
                 return "<?php echo $string; ?>";
             }
         });
+
+        Blade::directive('import_const',function($string){
+            return "<?php use ".with($string)." ?>";
+        });
     }
 
     /**

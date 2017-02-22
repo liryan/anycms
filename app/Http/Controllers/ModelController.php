@@ -8,7 +8,7 @@ use App\Models\Member;
 use App\Models\DataTable;
 use App\Models\ConstDefine;
 use App\Http\Requests\MenuModify;
-use App\Http\Controllers\Widgets\DataTableWidget;
+use App\Http\Controllers\Widgets\ModelWidget;
 
 class ModelController extends Controller
 {
@@ -20,7 +20,7 @@ class ModelController extends Controller
             $draw=intval($req->get('draw'));
             $dt=new DataTable();
             $result=$dt->tables($start,$length);
-            (new DataTableWidget())->translateData($result['data']);
+            (new ModelWidget())->translateData($result['data']);
             $data=Array(
                 "draw"=>$draw,
                 "recordsTotal"=>$result['total'],
@@ -31,7 +31,7 @@ class ModelController extends Controller
             return json_encode($data);
         }
         else{
-            $table_widget=new DataTableWidget();
+            $table_widget=new ModelWidget();
 
             $urlconfig=[
                 "url"=>$this->getUrl(),
@@ -57,7 +57,7 @@ class ModelController extends Controller
     {
         $id=$req->get('id');
         if($id==0){
-            $table_widget=new DataTableWidget();
+            $table_widget=new ModelWidget();
             $re=$table_widget->getDefaultModelDefine();
             $re['action']='add';
             $re['_token']=csrf_token();
@@ -122,7 +122,7 @@ class ModelController extends Controller
             $draw=intval($req->get('draw'));
             $dt=new DataTable();
             $result=$dt->fields($id,$start,$length);
-            $widget=new DataTableWidget();
+            $widget=new ModelWidget();
             $widget->translateData($result['data']);
             $data=Array(
                 "draw"=>$draw,
@@ -134,7 +134,7 @@ class ModelController extends Controller
             return json_encode($data);
         }
         else{
-            $table_widget=new DataTableWidget();
+            $table_widget=new ModelWidget();
             $urlconfig=[
                 "url"=>$this->getUrl('field')."?id=".$id,
                 "edit_url"=>$this->getUrl("modifyfield"),
@@ -170,7 +170,7 @@ class ModelController extends Controller
         }
         switch($action){
             case "add":
-            $fieldwidget=new DataTableWidget();
+            $fieldwidget=new ModelWidget();
             $allinput=$req->all();
             $setdata=$fieldwidget->tranformFieldSetting($allinput,true);
             $data=Array(
@@ -191,7 +191,7 @@ class ModelController extends Controller
             $setting=$req->get('setting');
             $name=$req->get("name");
             $allinput=$req->all();
-            $fieldwidget=new DataTableWidget();
+            $fieldwidget=new ModelWidget();
             $setdata=$fieldwidget->tranformFieldSetting($allinput,true);
             $dtmodel=new DataTable();
             $result=$dtmodel->editField($id,Array('name'=>$name,'note'=>$note,'type'=>$setdata['type'],'setting'=>$setdata["setting"]));
@@ -204,7 +204,7 @@ class ModelController extends Controller
     {
         $id=$req->get('id');
         if($id==0){
-            $table_widget=new DataTableWidget();
+            $table_widget=new ModelWidget();
             $re=$table_widget->getDefaultFieldDefine();
             $re['action']='add';
             $re['_token']=csrf_token();
@@ -213,7 +213,7 @@ class ModelController extends Controller
         else{
             $tb=new DataTable();
             $re=$tb->getDataById($id);
-            $table_widget=new DataTableWidget();
+            $table_widget=new ModelWidget();
             $table_widget->tranformFieldSetting($re,false);
             if($table_widget->isConstField($re)){
                 $data=$tb->getDataById($re['const']);
