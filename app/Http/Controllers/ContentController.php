@@ -22,9 +22,10 @@ class ContentController extends Controller
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
-
+			$widget=new ContentWidget($table_define);
+			$search_clouser=$widget->generateSearchClouser($id,$req->all());
 			$content=new ContentTable();
-            $result=$content->getList($start,$length,$table_define,$id);
+            $result=$content->getList($start,$length,$table_define,$id,$search_clouser);
 			foreach($result['data'] as &$row){
 				$row['_internal_field']='';
 			}
@@ -44,6 +45,7 @@ class ContentController extends Controller
                 $row['url']=$this->getUrl()."?id=".$row['id'];
             }
             $widget=new ContentWidget($table_define);
+			$search_clouser=$widget->generateSearchClouser($id,$req->all());
             $urlconfig=[
                 "url"=>$this->getUrl()."?id=$id",
                 "edit_url"=>$this->getUrl("modify"),
@@ -56,7 +58,7 @@ class ContentController extends Controller
             ];
 
             $dialog_html=$widget->showEditWidget($urlconfig);
-            $list_html=$widget->showListWidget("内容列表",$urlconfig,$dialog_html);
+            $list_html=$widget->showListWidget($table_define['note'],$urlconfig,$dialog_html,$table_define);
             return $this->View("index")->with(
                 [
                     "table_widget"=>$list_html,

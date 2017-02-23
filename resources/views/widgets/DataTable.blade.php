@@ -3,13 +3,14 @@
         <div class="box box-info">
           <div class="box-header">
             <h3 class="box-title">{{$name}}</h3>
+            @if($pri[0]==1)
+   			  <div class="pull-right"><button class="btn bg-orange margin" onclick="addData()">[+]新增</button></div>
+            @endif
           </div>
           <!-- /.box-header -->
-          @if($pri[0]==1)
-		  <div class="box-body">
-			  <div class="pull-right"><button class="btn bg-orange margin" onclick="addData()">[+]新增</button></div>
-		  </div>
-          @endif
+          <div class="row">
+          {!!$search_widget!!}
+          </div>
           <div class="box-body">
             <table id="datagrid" class="table table-bordered table-hover">
               <thead>
@@ -40,8 +41,9 @@ beforeFillForm=function(data){}
 <script src="/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript">
+  var table=null;
   $(function () {
-    $("#datagrid").DataTable({
+    table=$("#datagrid").DataTable({
         "processing":true,
         "serverSide":true,
         "paging": true,
@@ -73,27 +75,34 @@ beforeFillForm=function(data){}
 
 
 $(function(){
-    $('#editForm').ajaxForm({
+    $('#edit_form').ajaxForm({
         url:'{{$edit_url}}',
         dataType:'json',
         success:function(rep){
                     alert(rep.msg);
+                    table.ajax.reload();
                 }
     });
 	$('#submitBt').on('click', function (e) {
-        $("#editForm").submit();
+        $("#edit_form").submit();
 	});
+
+    $('#search_form').submit(function(){
+            keyword=$('#search_form').serialize();
+            table.ajax.url("{{$url}}&"+keyword).load();
+            return false;
+    });
     //CKEDITOR.replace('editor_html');
 });
 
 //显示新数据对话框
 function addData(){
-    $("#editForm")[0].reset();
+    $("#edit_form")[0].reset();
     $.get("{{$view_url}}?id=0",function(rep){
         dt=rep;
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
-        $("#editForm").autofill(dt);
+        $("#edit_form").autofill(dt);
         $("#model_new").modal();
     },'json');
 }
@@ -111,6 +120,7 @@ function deleteData(id){
                 alert(rep.msg);
             else {
                 alert("删除成功");
+                table.ajax.reload();
             }
         },'json');
     }
@@ -126,7 +136,7 @@ function editData(id){
         dt=rep;
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
-        $("#editForm").autofill(dt);
+        $("#edit_form").autofill(dt);
         $("#model_new").modal();
     },'json');
     $("#model_new").modal();

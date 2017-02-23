@@ -92,15 +92,16 @@ class DataTable extends BaseSetting
         ["name"=>"listable",'label'=>'可列表','default'=>'0'],
         ["name"=>"default",'label'=>'缺省值','default'=>''],
         ['name'=>'const','label'=>'选择的常量ID','default'=>''],
-        ['name'=>'size','label'=>'字段大小','default'=>'']
+        ['name'=>'size','label'=>'字段大小','default'=>''],
+        ['name'=>'searchable','label'=>'是否可搜索','default'=>''],
     ];
 
     //视图+数据库：默认表中会含有以下字段
     public static $default_columns=[
-        ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false],
-        ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false],
-        ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false],
-        ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false]
+        ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false,'searchable'=>true],
+        ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
+        ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false,'searchable'=>true],
+        ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false]
     ];
 
 	/**
@@ -343,13 +344,13 @@ class DataTable extends BaseSetting
         $data=$this->getDataByParentId($modelid);
         $re=[];
         foreach(static::$default_columns as $row){
-            $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'setting'=>'','listable'=>$row['listable'],'editable'=>true];
+            $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'setting'=>'','listable'=>$row['listable'],'editable'=>true,'searchable'=>$row['searchable']];
         }
 
         if($data){
             foreach($data as $row){
                 $obj=json_decode($row['setting'],true);
-                $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'listable'=>$obj['listable'],'setting'=>$obj,'editable'=>true];
+                $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'listable'=>@$obj['listable'],'setting'=>$obj,'editable'=>true,'searchable'=>@$obj['searchable']];
             }
         }
         $modeldata['columns']=$re;

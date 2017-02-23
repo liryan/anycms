@@ -4,7 +4,7 @@ namespace App\Models;
 use DB;
 use Config;
 
-class ContentTable extends BaseSetting
+class ContentTable extends BaseModel
 {
 	/**
 	 * [getList 读取数据列表]
@@ -18,18 +18,6 @@ class ContentTable extends BaseSetting
 	 */
 	public function getList($start,$length,$table_define,$id,$search=[])
 	{
-		if($search){
-			if(!isset($search['condition'])){
-				$search['condition']=['id','>',0];
-			}
-			if(!isset($search['order']) ){
-				$search['order']='id desc';
-			}
-		}
-		else{
-			$search=['condition'=>['id','>',0],'order'=>'id desc'];
-		}
-
 		$field=[];
 		$query=null;
 		foreach($table_define['columns'] as $row){
@@ -47,6 +35,7 @@ class ContentTable extends BaseSetting
 		if($data){
 			$data=$data->toArray();
 		}
+		//print_r(DB::getQueryLog());
 		return Array('total'=>$count,'data'=>$data);
 	}
 }

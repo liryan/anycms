@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BaseSetting extends Model
+class BaseSetting extends BaseModel
 {
     protected $table = 't_setting';
 	/**

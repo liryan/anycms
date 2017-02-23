@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Widgets;
 
 use App\Models\DataTable;
 use App\Models\Category;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 
-class CategoryWidget extends Controller
+class CategoryWidget extends Widget
 {
 	private static $DIALOG_ID=1;
 	public function showListWidget($name,$urlconfig,$new_dialog_html="")
 	{
-		$view=View::make("widgets.DataTable");
+		$view=$this->getDataTableView();
 		$fields=[];
 		foreach(Category::$cate_fields as $row){
 			if($row['listable']){
@@ -22,12 +21,13 @@ class CategoryWidget extends Controller
 		$view->with("fields",$fields);
 		$view->with("name",$name);
 		$view->with($urlconfig);
+		$view->with('search_widget','');
 		return $view->with('new_dialog',$new_dialog_html)->render();
 	}
 
 	public function showEditWidget($urlconfig)
 	{
-		$view=View::make("widgets.CategoryEdit");
+		$view=$this->getView("CategoryEdit");
 		$view->with($urlconfig);
 		$fields=[];
 		foreach(Category::$cate_fields as $row){

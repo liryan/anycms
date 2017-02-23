@@ -17,7 +17,7 @@
         <h4 class="modal-title" id="dialogTitle"></h4>
       </div>
       <div class="modal-body">
-          <form role="form" method="post" id="editForm" action="{{$edit_url}}">
+          <form role="form" method="post" id="edit_form" action="{{$edit_url}}">
               <input type="hidden" name="action" />
               <input type="hidden" name="_token" />
               <input type="hidden" name="id" />

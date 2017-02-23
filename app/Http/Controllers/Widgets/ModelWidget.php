@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\DataTable;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 
-class ModelWidget extends Controller
+class ModelWidget extends Widget
 {
 	private static $DIALOG_ID=1;
 	/**
@@ -19,7 +18,7 @@ class ModelWidget extends Controller
 	 */
 	public function showModelListWidget($name,$urlconfig,$new_dialog_html="")
 	{
-		$view=View::make("widgets.DataTable");
+		$view=$this->getDataTableView();
 		$fields=[];
 		foreach(DataTable::$model_fields as $row){
 			if($row['listable']){
@@ -29,12 +28,13 @@ class ModelWidget extends Controller
 		$view->with("fields",$fields);
 		$view->with("name",$name);
 		$view->with($urlconfig);
+		$view->with('search_widget','');
 		return $view->with('new_dialog',$new_dialog_html)->render();
 	}
 
 	public function showModelEditWidget($urlconfig)
 	{
-		$view=View::make("widgets.DataEdit");
+		$view=$this->getView("DataEdit");
 		$view->with($urlconfig);
 		$fields=[];
 		foreach(DataTable::$model_fields as $row){
@@ -64,7 +64,7 @@ class ModelWidget extends Controller
 	}
 	public function showFieldEditWidget($urlconfig)
 	{
-		$view=View::make("widgets.FieldEdit");
+		$view=$this->getView("FieldEdit");
 		$view->with('types',DataTable::$field_type);
 		$view->with($urlconfig);
 		return $view->with(['dialog_id'=>self::$DIALOG_ID++])->render();
@@ -72,7 +72,7 @@ class ModelWidget extends Controller
 
 	public function showFieldListWidget($name,$urlconfig,$new_dialog_html="")
 	{
-		$view=View::make("widgets.DataTable");
+		$view=$this->getDataTableView();
 		$fields=[];
 		foreach(DataTable::$fields_it as $row){
 			if($row['listable']){
