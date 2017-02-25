@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Widgets;
 
 use App\Models\DataTable;
@@ -53,7 +52,7 @@ class ContentWidget extends Widget
 			$fields=[];
 			foreach($this->define['columns'] as $row){
 				if($row['searchable']){
-					$fields[]=['name'=>$row['name'],'note'=>$row['label']];
+					$fields[]=['name'=>$row['name'],'note'=>$row['note']];
 				}
 			}
 			$view->with('fields',$fields);
@@ -64,6 +63,13 @@ class ContentWidget extends Widget
 		return $view->render();
 	}
 
+	/**
+	 * [generateSearchClouser 获取对应ID的搜索闭包]
+	 * @method generateSearchClouser
+	 * @param  [type]                $categoryid [description]
+	 * @param  [type]                $input      [description]
+	 * @return [type]                            [description]
+	 */
 	public function generateSearchClouser($categoryid,$input)
 	{
 		$this->registerConditionClouser($input);
@@ -75,7 +81,7 @@ class ContentWidget extends Widget
 		return ['condition'=>$this->search_clouser[0]['condition'],'order'=>$this->search_clouser[0]['order']($input)];
 	}
 	/**
-	 * [registerConditionClouser 注册内容列表的条件搜索闭包]
+	 * [registerConditionClouser 注册内容列表的条件搜索闭包，搜索所有的search_xxx函数]
 	 * @method registerConditionClouser
 	 * @param  [type]                   $input [description]
 	 * @return [type]                          [description]
@@ -90,8 +96,15 @@ class ContentWidget extends Widget
 			}
 		}
 	}
+
 	/************************************************
 	* 注册搜索框，prototype:  search_categoryid ,0缺省的搜索
+	* 1.首先在templates/widgets/search/目录下创建search_xxx.blade.php
+	* 模板，包含搜索表单
+	* 2.在这儿定义一个新的搜索方法 search_xxx
+	* 3.xxx为要定制搜索表单的内容频道ID号码，展现这个频道内容列表的时候
+	* 就会用对应的搜索框
+	* 4.构建condition闭包函数，在里面增加查询条件，input含有搜索表单所有的元素
 	* **********************************************/
 	/**
 	 * [search_0 搜索处理函数]

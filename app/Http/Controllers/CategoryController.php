@@ -90,7 +90,6 @@ class CategoryController extends Controller
             $widget=new CategoryWidget();
             $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
             $widget->tranformSetting($data,true);
-            print_r($data);
             $cate=new Category();
             $result=$cate->addCategory($id,$data);
             return json_encode($result);

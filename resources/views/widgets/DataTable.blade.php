@@ -16,7 +16,7 @@
               <thead>
               <tr>
 				  @foreach($fields as $field)
-                	<th>{{$field['label']}}</th>
+                	<th>{{$field['note']}}</th>
 				  @endforeach
               </tr>
               </thead>

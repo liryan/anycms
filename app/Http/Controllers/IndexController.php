@@ -1,10 +1,11 @@
 <?php
 namespace App\Http\Controllers;
-
+use DB;
 class IndexController extends Controller
 {
     public function anyIndex()
     {
-        return $this->View('index');
+
+        DB::table("member")->insert(array('email' => 'john@example.com', 'votes' => 0))
     }
 }

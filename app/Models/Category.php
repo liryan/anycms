@@ -8,16 +8,16 @@ class Category extends BaseSetting
 {
 	//定义栏目列表字段以及新增栏目的字段
 	public static $cate_fields=[
-		['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'number'],
-		['name'=>'note','label'=>'栏目名字','place_holder'=>'请输入(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'name','label'=>'栏目字母','place_holder'=>'请输入(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>'text'],
-		['name'=>'setting','label'=>'备注','place_holder'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>'html'],
-		['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>'datetime'],
-		['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>'text']
+		['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
+		['name'=>'note','note'=>'栏目名字','comment'=>'请输入(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'name','note'=>'栏目字母','comment'=>'请输入(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'setting','note'=>'备注','comment'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
+		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
+		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
 	];
 
 	public static $field_setting=[
-        ["name"=>"modelid",'label'=>'关联模型','default'=>''],
+        ["name"=>"modelid",'note'=>'关联模型','default'=>''],
 	];
 
 	public const CATEGORY_ID=1;

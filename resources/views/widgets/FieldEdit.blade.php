@@ -161,6 +161,9 @@ beforeFillForm=function(data){
         $("#fortype").attr("value",type);
         $("#fieldtype").attr("disabled",true);
     }
+    else{
+        $("#fieldtype").attr("disabled",false);
+    }
     switch(type){
         case 1:
         showContext('integer');

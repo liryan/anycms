@@ -18,8 +18,8 @@ class DataTable extends BaseSetting
     public const DEF_FLOAT=8;
     //字段的类型映射,
 
-    public static $field_type;
-    public function __construct()
+    private static $field_type;
+    public static function field_type()
     {
         if(!static::$field_type){
             static::$field_type=[
@@ -61,6 +61,7 @@ class DataTable extends BaseSetting
                 }],
             ];
         }
+        return static::$field_type;
     }
 
     /*****************************************
@@ -69,31 +70,34 @@ class DataTable extends BaseSetting
 
     //视图：模型列表列的展示=>datatable,新模型会根据此表单生成，采用通用表单
     public static $model_fields=[
-        ['name'=>'id','label'=>'编号','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
-        ['name'=>'note','label'=>'模型名字','place_holder'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
-        ['name'=>'name','label'=>'表名','place_holder'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
-        ['name'=>'setting','label'=>'备注','place_holder'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
-        ['name'=>'created_at','label'=>'创建日期','place_holder'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
-        ['name'=>'_internal_field','label'=>'操作','place_holder'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_CHAR]
+        ['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
+        ['name'=>'note','note'=>'模型名字','comment'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'name','note'=>'表名','comment'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'setting','note'=>'备注','comment'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
+        ['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_CHAR]
     ];
     //视图：模型字段列表的数据展现列定义=>datatable,表单为定制表单
     public static $fields_it=[
-        ['name'=>'id','label'=>'编号','listable'=>true],
-        ['name'=>'note','label'=>'字段名字','listable'=>true],
-        ['name'=>'name','label'=>'表字段','listable'=>true],
-        ['name'=>'type','label'=>'类型','listable'=>true],
-        ['name'=>'created_at','label'=>'创建日期','listable'=>true],
-        ['name'=>'_internal_field','label'=>'操作','listable'=>true]
+        ['name'=>'id','note'=>'编号','listable'=>true],
+        ['name'=>'note','note'=>'字段名字','listable'=>true],
+        ['name'=>'name','note'=>'表字段','listable'=>true],
+        ['name'=>'type','note'=>'类型','listable'=>true],
+        ['name'=>'created_at','note'=>'创建日期','listable'=>true],
+        ['name'=>'_internal_field','note'=>'操作','listable'=>true]
     ];
     //视图：字段的扩展属性定义=>edit setting define
     public static $field_setting=[
-        ["name"=>"tablename",'label'=>'关联表名','default'=>''],
-        ["name"=>"tablefield",'label'=>'关联表字段','default'=>''],
-        ["name"=>"listable",'label'=>'可列表','default'=>'0'],
-        ["name"=>"default",'label'=>'缺省值','default'=>''],
-        ['name'=>'const','label'=>'选择的常量ID','default'=>''],
-        ['name'=>'size','label'=>'字段大小','default'=>''],
-        ['name'=>'searchable','label'=>'是否可搜索','default'=>''],
+        ["name"=>"tablename",'note'=>'关联表名','default'=>''],
+        ["name"=>"tablefield",'note'=>'关联表字段','default'=>''],
+        ["name"=>"editable",'note'=>'可编辑','default'=>'1'],
+        ["name"=>"listable",'note'=>'可列表','default'=>'0'],
+        ["name"=>"default",'note'=>'缺省值','default'=>''],
+        ['name'=>'const','note'=>'选择的常量ID','default'=>''],
+        ['name'=>'size','note'=>'字段大小','default'=>''],
+        ['name'=>'searchable','note'=>'是否可搜索','default'=>''],
+        ['name'=>'comment','note'=>'字段提示','default'=>''],
+        ['name'=>'format','note'=>'格式说明','default'=>''],
     ];
 
     //视图+数据库：默认表中会含有以下字段
@@ -338,19 +342,38 @@ class DataTable extends BaseSetting
         return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
     }
 
+    public function readSetting(&$data)
+    {
+        if(isset($data['setting'])&&$data['setting']){
+            $obj=json_decode($data['setting'],true);
+        }
+        else{
+            $obj=$data;
+        }
+        foreach(static::$field_setting as $row){
+            if(isset($obj[$row['name']])){
+                $data[$row['name']]=$obj[$row['name']];
+            }
+            else{
+                $data[$row['name']]=$row['default'];
+            }
+        }
+    }
+
     public function tableColumns($modelid)
     {
-        $modeldata=$this->getDataById($modelid);
-        $data=$this->getDataByParentId($modelid);
+        $modeldata=$this->getDataById($modelid); //获取模型定义
+        $data=$this->getDataByParentId($modelid);//获取字段定义
         $re=[];
         foreach(static::$default_columns as $row){
-            $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'setting'=>'','listable'=>$row['listable'],'editable'=>true,'searchable'=>$row['searchable']];
+            $this->readSetting($row);
+            $re[]=$row;
         }
 
         if($data){
             foreach($data as $row){
-                $obj=json_decode($row['setting'],true);
-                $re[]=['label'=>$row['note'],'name'=>$row['name'],'type'=>$row['type'],'listable'=>@$obj['listable'],'setting'=>$obj,'editable'=>true,'searchable'=>@$obj['searchable']];
+                $this->readSetting($row);
+                $re[]=$row;
             }
         }
         $modeldata['columns']=$re;

@@ -65,7 +65,7 @@ class ModelWidget extends Widget
 	public function showFieldEditWidget($urlconfig)
 	{
 		$view=$this->getView("FieldEdit");
-		$view->with('types',DataTable::$field_type);
+		$view->with('types',DataTable::field_type());
 		$view->with($urlconfig);
 		return $view->with(['dialog_id'=>self::$DIALOG_ID++])->render();
 	}
@@ -108,7 +108,7 @@ class ModelWidget extends Widget
 				}
 			}
 			$result['setting']=json_encode($setting);
-			foreach(DataTable::$field_type as $row){
+			foreach(DataTable::field_type() as $row){
 				if($row['value']==$data['type']){
 					$result['type']=$row['DBdefine']($data);
 				}
@@ -148,7 +148,7 @@ class ModelWidget extends Widget
 	public function translateData(&$data)
 	{
 		foreach($data as &$row){
-			foreach(DataTable::$field_type as $define){
+			foreach(DataTable::field_type() as $define){
 				if($row['type']==$define['value']){
 					$row['type']=$define['name'];
 				}

@@ -25,23 +25,19 @@
 				  @foreach($inputs as $k=>$input)
 	              <div class="form-group">
 					@if($input['type']==DataTable::DEF_CHAR)
-					  	<label for="exampleInputEmail1">{{$input['label']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['place_holder']}}" value="{{$input['default']}}">
+					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
+  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
 					@elseif($input['type']=="checkbox")
 						<label>
-	              			<input type="checkbox" name="{{$input['name']}}">{{$input['label']}}
+	              			<input type="checkbox" name="{{$input['name']}}">{{$input['note']}}
 	                	</label>
 					@elseif($input['type']=="html")
-                        <label for="exampleInputEmail1">{{$input['label']}}</label>
+                        <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <textarea id="editor_html" name="{{$input['name']}}" class="form-control">
                             {{$input['place_holder']}}
                         </textarea>
-					@elseif($input['type']=="datatime")
-					@elseif($input['type']=="image")
-					@elseif($input['type']=="date")
-					@elseif($input['type']=="const")
-					@elseif($input['type']=="select")
-					@elseif($input['type']=="multiselect")
+					@elseif($input['type']==DataTable::DEF_DATE)
+					@elseif($input['type']==DataTable::DEF_IMAGE)
 					@endif
 	              </div>
 				  @endforeach

@@ -35,7 +35,7 @@ class ContentTable extends BaseModel
 		if($data){
 			$data=$data->toArray();
 		}
-		//print_r(DB::getQueryLog());
+
 		return Array('total'=>$count,'data'=>$data);
 	}
 }
