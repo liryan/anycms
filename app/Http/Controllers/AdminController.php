@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 use Auth;
-use Redirect;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
-class Controller extends BaseController
+class AdminController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $breadcrumb; //面包屑导航数组
-
-    protected function AuthAdmin()
-    {
-        $user=Auth::check();
-        if(!$user){
-            header("Location: /user/login");
-        }
-    }
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
 
     protected function View($name)
     {
@@ -29,7 +24,6 @@ class Controller extends BaseController
         $view->with('categories',$this->getCategoryMenu());
     	return $view;
     }
-
 
     protected function getClassName()
     {

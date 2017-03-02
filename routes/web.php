@@ -42,3 +42,4 @@ RouteController("/model","ModelController");
 RouteController("/category","CategoryController");
 RouteController("/content","ContentController");
 RouteController("/index","IndexController");
+RouteController("/user","UserController");

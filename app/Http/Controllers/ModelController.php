@@ -10,7 +10,7 @@ use App\Models\ConstDefine;
 use App\Http\Requests\MenuModify;
 use App\Http\Controllers\Widgets\ModelWidget;
 
-class ModelController extends Controller
+class ModelController extends AdminController
 {
     public function index(Request $req)
 	{

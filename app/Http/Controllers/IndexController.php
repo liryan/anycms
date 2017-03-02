@@ -6,9 +6,13 @@ use Illuminate\Http\Request;
 function loginfo($msg){
     \error_log(Date('Ymd H:i:s')."\t".$msg."\n",3,"/tmp/debug.log");
 }
-class IndexController extends Controller
+class IndexController extends AdminController
 {
     public function anyIndex(Request $req)
+    {
+        
+    }
+    public function anyIndex1(Request $req)
     {
         $myage=$req->get('v');
 

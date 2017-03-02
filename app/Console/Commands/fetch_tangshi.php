@@ -208,22 +208,55 @@ class fetch_tangshi extends Command
 
     protected function parse_content($content)
     {
-
+        $age='';
+        $author='';
+        $text='';
+        if(preg_match('/<span>朝代：</span>([^<]+)</i',$content,$ma)){
+            $age=$ma[1];
+        }
+        if(preg_match('/<span>作者：</span>([^<]+)<\/a/i',$content,$ma)){
+            $author=$ma[1];
+        }
+        if(preg_match('/<span>原文：</span><\/p>([^<]+)<\/div/i',$content,$ma)){
+            $text=$ma[1];
+        }
+        $yiwen=[];
+        if(preg_match('/\/fanyi_[0-9]+\.aspx/i',$content,$ma)){
+            if(!is_array($ma[0])){
+                $ma[0]=[$ma[0]];
+            }
+            foreach($ma[0] as $url){
+                $yiwen[]=$this->parse_fanyi("http://so.gushiwen.org".$url);
+            }
+        }
+        $shangxi=[];
+        if(preg_match('/\/shangxi_[0-9]+\.aspx/i',$content,$ma)){
+            if(!is_array($ma[0])){
+                $ma[0]=[$ma[0]];
+            }
+            foreach($ma[0] as $url){
+                $shangxi[]=$this->parse_xiangxi("http://so.gushiwen.org".$url);
+            }
+        }
+        $author_text='';
+        if(preg_match('/\/author_[0-9]+\.aspx/i',$content,$ma)){
+            $author_text[]=$this->parse_author("http://so.gushiwen.org".$url);
+        }
     }
 
     protected function parse_xiangxi($url)
     {
-
+        //$content=file_get_contents($url);
     }
 
     protected function parse_fanyi($url)
     {
-
+        //$content=file_get_contents($url);
     }
 
     protected function parse_author($url)
     {
-
+        //$content=file_get_contents($url);
     }
 
     public function handle()

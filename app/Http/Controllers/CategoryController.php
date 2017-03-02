@@ -10,7 +10,7 @@ use App\Models\ConstDefine;
 use App\Http\Requests\MenuModify;
 use App\Http\Controllers\Widgets\CategoryWidget;
 
-class CategoryController extends Controller
+class CategoryController extends AdminController
 {
 
     public function index(Request $req)
