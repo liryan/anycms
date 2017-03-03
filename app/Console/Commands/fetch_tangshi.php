@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console\Commands;
-
+use DB;
 use Illuminate\Console\Command;
 
 class fetch_tangshi extends Command
@@ -161,7 +161,7 @@ class fetch_tangshi extends Command
             $page=$obj['page'];
             $url=sprintf($this->url,$page,$tag,$age,$type);
             $this->tlog("fetch $url",1);
-            $result=$this->parse_list($url);
+            $result=$this->parse_list($url,['tag'=>$tag,'age'=>$age,'type'=>$type]);
             $this->tlog(json_encode($obj));
             if(!$result){
                 $this->tlog("page finished",2);
@@ -189,16 +189,26 @@ class fetch_tangshi extends Command
     protected function test_url(){
         //file_put_contents("/tmp/txt.txt",file_get_contents('http://so.gushiwen.org/type.aspx?p=1&t=写景&c=唐代&x=诗'));
     }
-    protected function parse_list($url)
+    protected function fetchUrl($url)
     {
-        //$content=file_get_contents($url);
+        sleep(1);
+        return file_get_contents($url);
+    }
+    protected function parse_list($url,$context)
+    {
+        //$content=$this->fetchUrl($url);
         $content=file_get_contents("/tmp/txt.txt");
-        if(preg_match_all('/14px;" href="(\/view_[0-9]+\.aspx)/i',$content,$ma)){
+        if(preg_match_all('/14px;" href="(\/view_[0-9]+\.aspx)[^>]+>([^<]+)</i',$content,$ma)){
             if(!$ma[1]){
                 return false;
             }
-            foreach($ma[1] as $detail_url){
-                $this->parse_content(file_get_contents("http://so.gushiwen.org".$detail_url));
+            $tx=[];
+            foreach($ma[1] as $k=>$detail_url){
+                $tx['title']=$ma[2][$k];
+                $tx['age']=$this->age[$context['age']];
+                $tx['type']=$this->type[$context['type']];
+                $tx['tag']=$this->tag[$context['tag']];
+                $this->parse_content($this->fetchUrl("http://so.gushiwen.org".$detail_url),$tx);
                 die();
             }
         }
@@ -207,7 +217,7 @@ class fetch_tangshi extends Command
         }
     }
 
-    protected function parse_content($content)
+    protected function parse_content($content,$tx)
     {
         $age='';
         $author='';
@@ -248,29 +258,106 @@ class fetch_tangshi extends Command
         $data['age']=$this->filter_tag($age);
         $data['author']=$this->filter_tag($author);
         $data['text']=$this->filter_tag($text);
+        $data['yiwen']=[];
+        $data['shangxi']=[];
         foreach($yiwen as $row){
-            $data['yiwen']=$this->filter_tag($row);
+            $data['yiwen'][]=$this->filter_tag($row);
         }
         foreach($shangxi as $row){
-            $data['shangxi']=$this->filter_tag($row);
+            $data['shangxi'][]=$this->filter_tag($row);
         }
         $data['author_info']=$this->filter_tag($author_text);
-        print_r($data);
+        $this->save_db(array_merge($tx,$data));
+    }
+
+    protected function save_db($data)
+    {
+        $row=Array(
+            'name'=>$data['author'],
+            'age'=>$data['age'],
+            'text'=>$data['author_info'],
+            'created_at'=>date('Y-m-d H:i:s'),
+            'updated_at'=>date('Y-m-d H:i:s'),
+        );
+        $old=DB::table('t_authorinfo')->where('age',$data['age'])->where('name',$data['author'])->first();
+        $authorid=0;
+        if($old){
+            $authorid=$old->id;
+        }
+        else
+            $authorid=DB::table("t_authorinfo")->insertGetId($row);
+        if($authorid){
+            $row=Array(
+                'title'=>$data['title'],
+                'text'=>$data['text'],
+                'author'=>$data['author'],
+                'authorid'=>$authorid,
+                'age'=>$data['age'],
+                'tag'=>$data['tag'],
+                'type'=>$data['type'],
+                'created_at'=>date('Y-m-d H:i:s'),
+                'updated_at'=>date('Y-m-d H:i:s'),
+                'keyword'=>$this->make_keyword($data['author'].trim($data['title']).$data['age'].$data['type'].$data['tag'].$data['text']),
+            );
+            $old=DB::table('t_content')->where('authorid',$authorid)->where('title',$data['title'])->first();
+            if($old){
+                return;
+            }
+            $contentid=DB::table("t_content")->insertGetId($row);
+            foreach($data['yiwen'] as $txt){
+                $row=[
+                    'contentid'=>$contentid,
+                    'text'=>$txt,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s'),
+                ];
+                $contentid=DB::table("t_comment")->insertGetId($row);
+            }
+
+            foreach($data['shangxi'] as $txt){
+                $row=[
+                    'contentid'=>$contentid,
+                    'text'=>$txt,
+                    'created_at'=>date('Y-m-d H:i:s'),
+                    'updated_at'=>date('Y-m-d H:i:s'),
+                ];
+                $contentid=DB::table("t_note")->insertGetId($row);
+            }
+        }
+    }
+
+    protected function make_keyword($keyword)
+    {
+        $keyword=preg_replace("/[a-z<>\/!@#$%^&*(_+=) ]+/i",'',$keyword);
+        $result='';
+        $sh=scws_open();
+        scws_set_charset($sh,'utf8');
+        scws_set_dict($sh,'/usr/local/scws/etc/dict.utf8.xdb');
+        scws_set_rule($sh,'/usr/local/scws/etc/rules.utf8.ini');
+        scws_set_ignore($sh,true);
+        scws_set_multi($sh,true);
+        scws_set_duality($sh,true);
+        $top=scws_send_text($sh,$keyword);
+        $ar=scws_get_result($sh);
+        foreach($ar as $row){
+            $result.=$row['word']." ";
+        }
+        return trim($result);
     }
 
     protected function filter_tag($content)
     {
         $content= preg_replace("/<([a-z]+) ?[^>]+>/i","<$1>",$content);
-        $remove=["<div>","</div>","<img>","<a>","</a>","下载","纠错","加资料"];
+        $remove=["<div>","</div>","<img>","<a>","</a>","下载","纠错","加资料","站务邮箱：service@gushiwen.org","gushiwen.org","古诗文网"];
         foreach($remove as $k){
             $content=str_replace($k,"",$content);
         }
-        return $content;
+        return trim($content);
     }
 
     protected function parse_xiangxi($url)
     {
-        $content=file_get_contents($url);
+        $content=$this->fetchUrl($url);
         if(preg_match("/<div class=\"shangxicont\">([\s\S]+)<div class=\"youorno\">/i",$content,$ma)){
             return $ma[1];
         }
@@ -279,7 +366,7 @@ class fetch_tangshi extends Command
 
     protected function parse_fanyi($url)
     {
-        $content=file_get_contents($url);
+        $content=$this->fetchUrl($url);
         if(preg_match("/<div class=\"shangxicont\">([\s\S]+)<div class=\"youorno\">/i",$content,$ma)){
             return $ma[1];
         }
@@ -288,7 +375,7 @@ class fetch_tangshi extends Command
 
     protected function parse_author($url)
     {
-        $content=file_get_contents($url);
+        $content=$this->fetchUrl($url);
         if(preg_match("/<div class=\"son2\" style=\"overflow:auto;\">([\s\S]+)<div class=\"shoucang\">/i",$content,$ma)){
             return $ma[1];
         }
@@ -299,7 +386,7 @@ class fetch_tangshi extends Command
     {
         $this->test_url();
         $this->tlog("task is start",0);
-        $this->parse_list('');
+        $this->parse_list('',['tag'=>0,'age'=>0,'type'=>0]);
         //$this->fetch_list_url();
         $this->tlog("task is over",0);
     }
