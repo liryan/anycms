@@ -131,7 +131,7 @@ class fetch_tangshi extends Command
         if($lineend===2){
             echo "$msg\n";
         }
-        else if($lineend===0){
+        else if($lineend==0){
             echo date('Y-m-d H:i:s')."\t".$msg."\n";
         }
         else if($lineend===1){
@@ -186,18 +186,17 @@ class fetch_tangshi extends Command
             file_put_contents($logfile,serialize($obj));
         }while(1);
     }
-    protected function test_url(){
-        //file_put_contents("/tmp/txt.txt",file_get_contents('http://so.gushiwen.org/type.aspx?p=1&t=写景&c=唐代&x=诗'));
-    }
+
     protected function fetchUrl($url)
     {
         sleep(1);
+        $this->tlog("start fetch $url");
         return file_get_contents($url);
     }
     protected function parse_list($url,$context)
     {
-        //$content=$this->fetchUrl($url);
-        $content=file_get_contents("/tmp/txt.txt");
+        $content=$this->fetchUrl($url);
+        //$content=file_get_contents("/tmp/txt.txt");
         if(preg_match_all('/14px;" href="(\/view_[0-9]+\.aspx)[^>]+>([^<]+)</i',$content,$ma)){
             if(!$ma[1]){
                 return false;
@@ -205,11 +204,10 @@ class fetch_tangshi extends Command
             $tx=[];
             foreach($ma[1] as $k=>$detail_url){
                 $tx['title']=$ma[2][$k];
-                $tx['age']=$this->age[$context['age']];
-                $tx['type']=$this->type[$context['type']];
-                $tx['tag']=$this->tag[$context['tag']];
+                $tx['age']=$context['age'];
+                $tx['type']=$context['type'];
+                $tx['tag']=$context['tag'];
                 $this->parse_content($this->fetchUrl("http://so.gushiwen.org".$detail_url),$tx);
-                die();
             }
         }
         else{
@@ -384,10 +382,8 @@ class fetch_tangshi extends Command
 
     public function handle()
     {
-        $this->test_url();
         $this->tlog("task is start",0);
-        $this->parse_list('',['tag'=>0,'age'=>0,'type'=>0]);
-        //$this->fetch_list_url();
+        $this->fetch_list_url();
         $this->tlog("task is over",0);
     }
 }
