@@ -30,7 +30,7 @@
   <!-- Bootstrap 3.3.6 -->
   <script src="/adminlte/bootstrap/js/bootstrap.min.js"></script>
 </head>
-<body class="hold-transition skin-yellow-light sidebar-mini">
+<body class="hold-transition skin-red-light sidebar-mini">
 <div class="wrapper">
   <header class="main-header">
     <!-- Logo -->
@@ -106,6 +106,15 @@
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
+		  <style>
+			 .tag{
+				 display:inline-block;
+				 text-align:center;
+				 margin:0.2rem;
+				 color:#FFF;
+			 }
+			
+		  </style>
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form">
         <div class="input-group">
@@ -127,12 +136,8 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu">
-            <li><a href="/model"><i class="fa fa-lemon-o"></i>模型管理</a></li>
-            <li><a href="/menu"><i class="fa fa-lemon-o"></i>菜单管理</a></li>
-            <li><a href="/privilege"><i class="fa fa-lemon-o"></i>权限管理</a></li>
-            <li><a href="/roles"><i class="fa fa-lemon-o"></i>角色管理</a></li>
-            <li><a href="/category"><i class="fa fa-lemon-o"></i>频道管理</a></li>
+          <ul class="treeview-menu" style="white-space:normal;padding-bottom:1.1rem;padding-left:2rem;">
+			  <a class="btn-warning btn-xs tag" style="color:#FFF">模型管</a>
           </ul>
         </li>
 		<li class="active treeview">
@@ -142,20 +147,11 @@
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-          <ul class="treeview-menu" style="white-space:normal;word-break">
-			  <style>
-			     .tag{
-					 display:inline-block;
-					 text-align:center;
-					 margin:0.2rem;
-					 color:#FFF;
-				 }
-			  </style>
-			  <a class="btn-info btn-xs tag">模型管</a>
-			  <a class="btn-info btn-xs tag">模型管理</a>
-			  <a class="btn-info btn-xs tag">模型管理</a>
-			  <a class="btn-info btn-xs tag">模型管理理</a>
-			  <a class="btn-info btn-xs tag">模型管理</a>
+          <ul class="treeview-menu" style="white-space:normal;padding-bottom:1.1rem;padding-left:2rem;">
+			  <a class="btn-warning btn-xs tag" style="color:#FFF">模型管</a>
+			  <a class="btn-success btn-xs tag" style="color:#FFF">模型管</a>
+			  <a class="btn-info btn-xs tag" style="color:#FFF">模型管</a>
+			  <a class="btn-danger btn-xs tag" style="color:#FFF">模型管</a>
           </ul>
         </li>
 		<li class="active treeview">
@@ -165,12 +161,8 @@
 			  <i class="fa fa-angle-left pull-right"></i>
 			</span>
 		  </a>
-		  <ul class="treeview-menu">
-			<li><a href="/model"><i class="fa fa-paperclip"></i>模型管理</a></li>
-			<li><a href="/menu"><i class="fa fa-paperclip"></i>菜单管理</a></li>
-			<li><a href="/privilege"><i class="fa fa-paperclip"></i>权限管理</a></li>
-			<li><a href="/roles"><i class="fa fa-paperclip"></i>角色管理</a></li>
-			<li><a href="/category"><i class="fa  fa-paperclip"></i>频道管理</a></li>
+		  <ul class="treeview-menu" style="white-space:normal;padding-bottom:1.1rem;padding-left:2rem;">
+			  <a class="btn-success btn-xs tag" style="color:#FFF">模型管</a>
 		  </ul>
 		</li>
       </ul>
@@ -180,32 +172,16 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        主导航
-        <small>控制面板</small>
-      </h1>
-      <ol class="breadcrumb">
-          <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
-        @foreach($breadcrumb as $row)
-        <li class="active"><a href="{{$row['url']}}">{{$row['note']}}</a></li>
-        @endforeach
-      </ol>
-    </section>
-
-    <!-- Main content -->
     <section class="content">
         @yield('content')
     </section>
-    <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
       <b>Version</b> 2.3.8
     </div>
-    <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights
+    <strong>Copyright &copy; 2014-2016 <a href="http://iwiwen.com">最美古诗</a>.</strong> All rights
     reserved.
   </footer>
 

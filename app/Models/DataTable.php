@@ -6,16 +6,16 @@ use Config;
 
 class DataTable extends BaseSetting
 {
-    protected const TREE_ID=4;
+    const TREE_ID=4;
 
-    public const DEF_INTEGER=1;
-    public const DEF_CHAR=2;
-    public const DEF_TEXT=3;
-    public const DEF_DATE=4;
-    public const DEF_LIST=5;
-    public const DEF_MULTI_LIST=6;
-    public const DEF_IMAGE=7;
-    public const DEF_FLOAT=8;
+    const DEF_INTEGER=1;
+    const DEF_CHAR=2;
+    const DEF_TEXT=3;
+    const DEF_DATE=4;
+    const DEF_LIST=5;
+    const DEF_MULTI_LIST=6;
+    const DEF_IMAGE=7;
+    const DEF_FLOAT=8;
     //字段的类型映射,
 
     private static $field_type;

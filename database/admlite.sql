@@ -27,8 +27,8 @@ CREATE TABLE `t_acl` (
   `keyid` int(11) NOT NULL COMMENT '0超级管理员, >0 权限项目：菜单id / 表ID',
   `param` text COMMENT '具体设置参数',
   `status` tinyint(4) DEFAULT '1' COMMENT '0:失效 1：有效',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL,
+  `created_at` timestamp NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -61,8 +61,8 @@ CREATE TABLE `t_setting` (
   `order` int(11) DEFAULT '0',
   `type` tinyint(4) DEFAULT '0',
   `setting` text,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL,
+  `created_at` timestamp NOT NULL,
   `status` tinyint(4) DEFAULT '1',
   `note` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)

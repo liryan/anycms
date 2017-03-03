@@ -20,7 +20,7 @@ class Category extends BaseSetting
         ["name"=>"modelid",'note'=>'关联模型','default'=>''],
 	];
 
-	public const CATEGORY_ID=1;
+	const CATEGORY_ID=1;
 	public function categories($start,$length,$id=0)
 	{
 		if($id==0){

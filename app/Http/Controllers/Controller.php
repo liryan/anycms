@@ -17,8 +17,6 @@ class Controller extends BaseController
     protected function View($name)
     {
     	$view=View::make("templates.".$this->getClassName().".".$name);
-        $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
-        $view->with('categories',$this->getCategoryMenu());
     	return $view;
     }
 
