@@ -194,11 +194,12 @@ class fetch_tangshi extends Command
         //$content=file_get_contents($url);
         $content=file_get_contents("/tmp/txt.txt");
         if(preg_match_all('/14px;" href="(\/view_[0-9]+\.aspx)/i',$content,$ma)){
-            if($ma[1]){
+            if(!$ma[1]){
                 return false;
             }
             foreach($ma[1] as $detail_url){
-                $this->parse_content(file_get_contents($detail_url));
+                $this->parse_content(file_get_contents("http://so.gushiwen.org".$detail_url));
+                die();
             }
         }
         else{
@@ -211,13 +212,13 @@ class fetch_tangshi extends Command
         $age='';
         $author='';
         $text='';
-        if(preg_match('/<span>朝代：</span>([^<]+)</i',$content,$ma)){
+        if(preg_match('/<span[^>]*>朝代：<\/span>([^<]+)</i',$content,$ma)){
             $age=$ma[1];
         }
-        if(preg_match('/<span>作者：</span>([^<]+)<\/a/i',$content,$ma)){
+        if(preg_match('/<span[^>]*>作者：<\/span><a [^>]+>([^<]+)</i',$content,$ma)){
             $author=$ma[1];
         }
-        if(preg_match('/<span>原文：</span><\/p>([^<]+)<\/div/i',$content,$ma)){
+        if(preg_match('/<div class=\"cont\" id=\"cont\">:?([\s\S]+?)<\/div/i',$content,$ma)){
             $text=$ma[1];
         }
         $yiwen=[];
@@ -240,23 +241,58 @@ class fetch_tangshi extends Command
         }
         $author_text='';
         if(preg_match('/\/author_[0-9]+\.aspx/i',$content,$ma)){
-            $author_text[]=$this->parse_author("http://so.gushiwen.org".$url);
+            $url=$ma[0];
+            $author_text=$this->parse_author("http://so.gushiwen.org".$url);
         }
+        $data=[];
+        $data['age']=$this->filter_tag($age);
+        $data['author']=$this->filter_tag($author);
+        $data['text']=$this->filter_tag($text);
+        foreach($yiwen as $row){
+            $data['yiwen']=$this->filter_tag($row);
+        }
+        foreach($shangxi as $row){
+            $data['shangxi']=$this->filter_tag($row);
+        }
+        $data['author_info']=$this->filter_tag($author_text);
+        print_r($data);
+    }
+
+    protected function filter_tag($content)
+    {
+        $content= preg_replace("/<([a-z]+) ?[^>]+>/i","<$1>",$content);
+        $remove=["<div>","</div>","<img>","<a>","</a>","下载","纠错","加资料"];
+        foreach($remove as $k){
+            $content=str_replace($k,"",$content);
+        }
+        return $content;
     }
 
     protected function parse_xiangxi($url)
     {
-        //$content=file_get_contents($url);
+        $content=file_get_contents($url);
+        if(preg_match("/<div class=\"shangxicont\">([\s\S]+)<div class=\"youorno\">/i",$content,$ma)){
+            return $ma[1];
+        }
+        return "";
     }
 
     protected function parse_fanyi($url)
     {
-        //$content=file_get_contents($url);
+        $content=file_get_contents($url);
+        if(preg_match("/<div class=\"shangxicont\">([\s\S]+)<div class=\"youorno\">/i",$content,$ma)){
+            return $ma[1];
+        }
+        return "";
     }
 
     protected function parse_author($url)
     {
-        //$content=file_get_contents($url);
+        $content=file_get_contents($url);
+        if(preg_match("/<div class=\"son2\" style=\"overflow:auto;\">([\s\S]+)<div class=\"shoucang\">/i",$content,$ma)){
+            return $ma[1];
+        }
+        return "";
     }
 
     public function handle()

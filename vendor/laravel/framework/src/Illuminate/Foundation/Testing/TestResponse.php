@@ -4,13 +4,17 @@ namespace Illuminate\Foundation\Testing;
 
 use Closure;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Symfony\Component\HttpFoundation\Cookie;
 
 class TestResponse extends Response
 {
+    use Macroable;
+
     /**
      * Convert the given response into a TestResponse.
      *
@@ -214,6 +218,69 @@ class TestResponse extends Response
     }
 
     /**
+     * Assert that the response contains the given JSON fragment.
+     *
+     * @param  array  $data
+     * @return $this
+     */
+    public function assertJsonFragment(array $data)
+    {
+        $actual = json_encode(Arr::sortRecursive(
+            (array) $this->decodeResponseJson()
+        ));
+
+        foreach (Arr::sortRecursive($data) as $key => $value) {
+            $expected = substr(json_encode([$key => $value]), 1, -1);
+
+            PHPUnit::assertTrue(
+                Str::contains($actual, $expected),
+                'Unable to find JSON fragment: '.PHP_EOL.PHP_EOL.
+                "[{$expected}]".PHP_EOL.PHP_EOL.
+                'within'.PHP_EOL.PHP_EOL.
+                "[{$actual}]."
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that the response has a given JSON structure.
+     *
+     * @param  array|null  $structure
+     * @param  array|null  $responseData
+     * @return $this
+     */
+    public function assertJsonStructure(array $structure = null, $responseData = null)
+    {
+        if (is_null($structure)) {
+            return $this->assertJson();
+        }
+
+        if (is_null($responseData)) {
+            $responseData = $this->decodeResponseJson();
+        }
+
+        foreach ($structure as $key => $value) {
+            if (is_array($value) && $key === '*') {
+                PHPUnit::assertInternalType('array', $responseData);
+
+                foreach ($responseData as $responseDataItem) {
+                    $this->assertJsonStructure($structure['*'], $responseDataItem);
+                }
+            } elseif (is_array($value)) {
+                PHPUnit::assertArrayHasKey($key, $responseData);
+
+                $this->assertJsonStructure($structure[$key], $responseData[$key]);
+            } else {
+                PHPUnit::assertArrayHasKey($value, $responseData);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Validate and return the decoded response JSON.
      *
      * @return array
@@ -231,6 +298,16 @@ class TestResponse extends Response
         }
 
         return $decodedResponse;
+    }
+
+    /**
+     * Validate and return the decoded response JSON.
+     *
+     * @return array
+     */
+    public function json()
+    {
+        return $this->decodeResponseJson();
     }
 
     /**
@@ -345,6 +422,32 @@ class TestResponse extends Response
                 $this->assertSessionHas($value);
             } else {
                 $this->assertSessionHas($key, $value);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Assert that the session has the given errors.
+     *
+     * @param  string|array  $keys
+     * @param  mixed  $format
+     * @return $this
+     */
+    public function assertSessionHasErrors($keys = [], $format = null)
+    {
+        $this->assertSessionHas('errors');
+
+        $keys = (array) $keys;
+
+        $errors = app('session.store')->get('errors');
+
+        foreach ($keys as $key => $value) {
+            if (is_int($key)) {
+                PHPUnit::assertTrue($errors->has($value), "Session missing error: $value");
+            } else {
+                PHPUnit::assertContains($value, $errors->get($key, $format));
             }
         }
 

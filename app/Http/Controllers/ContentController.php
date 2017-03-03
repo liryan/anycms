@@ -8,7 +8,7 @@ use App\Models\DataTable;
 use App\Models\Category;
 use App\Models\ContentTable;
 use App\Http\Controllers\Widgets\ContentWidget;
-class ContentController extends Controller
+class ContentController extends AdminController
 {
 	public function index(Request $req)
 	{

@@ -10,7 +10,7 @@ class IndexController extends AdminController
 {
     public function anyIndex(Request $req)
     {
-        
+
     }
     public function anyIndex1(Request $req)
     {
