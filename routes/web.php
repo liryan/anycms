@@ -43,3 +43,4 @@ RouteController("/category","CategoryController");
 RouteController("/content","ContentController");
 RouteController("/index","IndexController");
 RouteController("/user","UserController");
+Route::get("/login","UserController@getLogin");

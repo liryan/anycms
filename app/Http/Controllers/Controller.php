@@ -14,14 +14,6 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $breadcrumb; //面包屑导航数组
 
-    protected function AuthAdmin()
-    {
-        $user=Auth::check();
-        if(!$user){
-            header("Location: /user/login");
-        }
-    }
-
     protected function View($name)
     {
     	$view=View::make("templates.".$this->getClassName().".".$name);
@@ -54,11 +46,6 @@ class Controller extends BaseController
      * @method FilterTablePrivileges
      * @param  [type]                $data [description]
      */
-    protected function FilterTablePrivileges()
-    {
-        return "11111";
-    }
-
     protected function getCategoryMenu()
     {
         $cate=new Category();
