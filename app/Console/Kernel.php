@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-       Commands\fetch_tangshi::class         
+       Commands\fetch_tangshi::class,   
+       Commands\fetch_1688::class         
     ];
 
     /**

@@ -2,26 +2,41 @@
 
 namespace App\Http\Controllers;
 use Auth;
+use Config;
+use App;
+use Tools;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\View;
+use Illuminate\Http\Request;
 use App\Models\Category;
 class AdminController extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $breadcrumb; //面包屑导航数组
+    protected $user;
+    protected $prefix='admin';
 	public function __construct()
 	{
+        //修改admin认证的驱动
+        //修改
 		$this->middleware('auth');
 	}
+    protected function user()
+    {
+        if(!$this->user)
+            $this->user=Auth::user();
+        return $this->user;
+    }
 
     protected function View($name)
     {
     	$view=View::make("templates.".$this->getClassName().".".$name);
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('categories',$this->getCategoryMenu());
+        $view->with('username',$this->user()->name);
     	return $view;
     }
 
@@ -37,7 +52,7 @@ class AdminController extends BaseController
 
     protected function getUrl($method='')
     {
-        return '/'.$this->getClassName().'/'.strtolower($method);
+        return '/'.$this->prefix."/".$this->getClassName().'/'.strtolower($method);
     }
 
     protected function widget($name){

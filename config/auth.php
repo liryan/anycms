@@ -67,8 +67,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'database',
-             'table' => 't_admin',
+             'table' => 't_member',
         ],
+
+        'admin'=>[
+            'driver' => 'database',
+            'table' =>'t_admin',
+        ]
     ],
 
     /*

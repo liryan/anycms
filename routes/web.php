@@ -37,10 +37,15 @@ function RouteController($prefix,$controller)
 	}
 }
 
-Route::get('/',"IndexController@anyIndex");
-RouteController("/model","ModelController");
-RouteController("/category","CategoryController");
-RouteController("/content","ContentController");
+
+Route::group(['prefix' => 'admin'], function () {
+	RouteController("/model","ModelController");
+	RouteController("/category","CategoryController");
+	RouteController("/content","ContentController");
+	Route::get("/login","UserController@getLogin");
+	Route::post("/dologin","UserController@postDoLogin");
+});
+
 RouteController("/index","IndexController");
 RouteController("/user","UserController");
-Route::get("/login","UserController@getLogin");
+Route::get('/',"IndexController@anyIndex");

@@ -142,15 +142,14 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="/adminlte/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Alexander Pierce</span>
+              <span class="hidden-xs">{{$username}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
                 <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-
                 <p>
-                  Alexander Pierce - Web Developer
+                  {{$username}}
                   <small>Member since Nov. 2012</small>
                 </p>
               </li>
@@ -175,7 +174,7 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="/user/logout" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -198,8 +197,8 @@
           <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>管理员名字</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+          <p>{{$username}}</p>
+          <a href="/user/logout"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
       <!-- search form -->
@@ -218,34 +217,22 @@
         <li class="header">导航</li>
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-asterisk"></i> <span>系统面板</span>
+            <i class="fa fa-folder-o"></i> <span>系统面板</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><a href="/model"><i class="fa fa-table"></i>模型管理</a></li>
-            <li><a href="/menu"><i class="fa fa-bars"></i>菜单管理</a></li>
-            <li><a href="/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
-            <li><a href="/roles"><i class="fa fa-graduation-cap"></i>角色管理</a></li>
-            <li><a href="/category"><i class="fa fa-graduation-cap"></i>频道管理</a></li>
-            <li class="treeview">
-                <a href="#">
-                    <i class="fa fa-dashboard"></i> <span>SubMenu</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                    <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                </ul>
-            </li>
+            <li class="active"><a href="/admin/model"><i class="fa fa-table"></i>模型管理</a></li>
+            <li><a href="/admin/menu"><i class="fa fa-bars"></i>菜单管理</a></li>
+            <li><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
+            <li><a href="/admin/roles"><i class="fa fa-user-plus"></i>角色管理</a></li>
+            <li><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
           </ul>
         </li>
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-asterisk"></i> <span>内容管理</span>
+            <i class="fa fa-folder-o"></i> <span>内容管理</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -262,7 +249,7 @@
                     </a>
                     <ul class="treeview-menu">
                 @elseif($row['subdata']=='|')
-                    <li class="active"><a href="/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['note']}}</a></li>
+                    <li class="active"><a href="/admin/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['note']}}</a></li>
                 @elseif($row['subdata']=='<')
                     </ul>
                 </li>

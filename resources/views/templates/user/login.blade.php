@@ -34,7 +34,7 @@
   <div class="login-box-body">
     <p class="login-box-msg">欢迎登录系统</p>
 
-    <form action="/user/dologin" method="post">
+    <form action="dologin" method="post">
       {{csrf_field()}}
       <div class="form-group has-feedback">
         <input type="email" name="email" class="form-control" placeholder="邮件">
