@@ -1,14 +1,54 @@
 @require_once('<link rel="stylesheet" href="/adminlte/plugins/datepicker/datepicker3.css">')
 @require_once('<link rel="stylesheet" href="/adminlte/plugins/daterangepicker/daterangepicker.css">')
 @require_once('<link rel="stylesheet" href="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">')
+@require_once('<link href="/adminlte/plugins/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>')
+@require_once('<link href="/adminlte/plugins/fileinput/themes/explorer/theme.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<script src="/adminlte/plugins/ckeditor/ckeditor.js"></script>')
 @require_once('<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>')
-@require_once('<script src="/adminlte/plugins/daterangepicker/daterangepicker.js"></script>')
 @require_once('<script src="/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>')
+@require_once('<script src="/adminlte/plugins/fileinput/js/plugins/sortable.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/fileinput/js/fileinput.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/fileinput/js/locales/zh.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/fileinput/themes/explorer/theme.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
 @import_const(app\Models\DataTable)
+<script type="text/javascript">
+    var data={
+        'language':'zh',
+        'theme': 'explorer',
+        'uploadUrl': '/admin/content/uploadfile',
+        'showCancel':false,
+        'showClose':false,
+        'showCaption':false,
+        overwriteInitial: false,
+        initialPreviewAsData: true,
+        initialPreview: [],
+        initialPreviewConfig: []
+    };
+    var images=[];
+    function init_image(id){
+        images.push(id);
+        $("#"+id).fileinput(data);
+        $("#"+id).css("background","#FFF");
+    }
+
+    beforeFillForm=function(data){
+        for(img in images){
+            var d1=data;
+            for(obj in data.keys){
+                if(img.indexOf(obj)>0){
+                    for(i=0;i<data[obj].length;i++){
+                        d1.initialPreview.push(data[obj][i].url);
+                        d1.initialPreviewConfig.push({caption:data[obj][i].name , size: data[obj][i].size, width: data[obj][i].width, url: '/admin/content/deletefile', key: data[obj][i].id})
+                    }
+                    $("#"+img).fileinput(d1);
+                }
+            }
+        }
+    }
+</script>
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -17,29 +57,31 @@
         <h4 class="modal-title" id="dialogTitle"></h4>
       </div>
       <div class="modal-body">
-          <form role="form" method="post" id="edit_form" action="{{$edit_url}}">
+          <form role="form" method="post" id="edit_form" action="{{$edit_url}}"  enctype="multipart/form-data">
               <input type="hidden" name="action" />
               <input type="hidden" name="_token" />
               <input type="hidden" name="id" />
               <div class="box-body">
 				  @foreach($inputs as $k=>$input)
-	              <div class="form-group">
-					@if($input['type']==DataTable::DEF_CHAR)
+					@if($input['type']==DataTable::DEF_INTEGER)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
   	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
-					@elseif($input['type']=="checkbox")
+					@elseif($input['type']==DataTable::DEF_CHAR)
 						<label>
 	              			<input type="checkbox" name="{{$input['name']}}">{{$input['note']}}
 	                	</label>
-					@elseif($input['type']=="html")
+					@elseif($input['type']==DataTable::DEF_TEXT)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <textarea id="editor_html" name="{{$input['name']}}" class="form-control">
                             {{$input['place_holder']}}
                         </textarea>
-					@elseif($input['type']==DataTable::DEF_DATE)
-					@elseif($input['type']==DataTable::DEF_IMAGE)
+                    @elseif($input['type']==DataTable::DEF_DATE)
+                    @elseif($input['type']==DataTable::DEF_LIST)
+                    @elseif($input['type']==DataTable::DEF_MULTI_LIST)
+					@elseif($input['type']==DataTable::DEF_FLOAT)
+                    @elseif($input['type']==DataTable::DEF_IMAGE)
+                        <input id="kv-explorer_{{$input['name']}}" type="file" multiple><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
 					@endif
-	              </div>
 				  @endforeach
               </div>
               <!-- /.box-body -->

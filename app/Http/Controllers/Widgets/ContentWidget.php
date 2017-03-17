@@ -100,11 +100,11 @@ class ContentWidget extends Widget
 	/************************************************
 	* 注册搜索框，prototype:  search_categoryid ,0缺省的搜索
 	* 1.首先在templates/widgets/search/目录下创建search_xxx.blade.php
-	* 模板，包含搜索表单
+	* ,这是模板要包含搜索表单
 	* 2.在这儿定义一个新的搜索方法 search_xxx
 	* 3.xxx为要定制搜索表单的内容频道ID号码，展现这个频道内容列表的时候
 	* 就会用对应的搜索框
-	* 4.构建condition闭包函数，在里面增加查询条件，input含有搜索表单所有的元素
+	* 4.构建condition闭包函数，在里面增加查询条件，input含有搜索表单提交的所有的元素
 	* **********************************************/
 	/**
 	 * [search_0 搜索处理函数]

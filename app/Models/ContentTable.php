@@ -38,4 +38,10 @@ class ContentTable extends BaseModel
 
 		return Array('total'=>$count,'data'=>$data);
 	}
+
+	public function getDataById($tableid,$id)
+	{
+		
+		print_r($define);
+	}
 }

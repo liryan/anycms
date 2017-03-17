@@ -85,11 +85,10 @@
 }
 
 .file-preview {
-    border-radius: 5px;
-    border: 1px solid #ddd;
     padding: 5px;
     width: 100%;
     margin-bottom: 5px;
+    background: #FFF;
 }
 
 .krajee-default.file-preview-frame {
@@ -276,6 +275,9 @@
 .file-zoom-dialog .file-other-icon {
     font-size: 8em;
     font-size: 65vmin;
+}
+.file-input {
+    background: #FFF;
 }
 
 .file-input-new .file-preview, .file-input-new .close, .file-input-new .glyphicon-file,

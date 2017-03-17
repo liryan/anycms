@@ -96,9 +96,21 @@ $(function(){
 });
 
 //显示新数据对话框
+function formatUrl(url,paramstring)
+{
+    if(url.indexOf('?')>0){
+        url+="&"+paramstring;
+    }
+    else {
+        url+="?"+paramstring;
+    }
+    return url;
+}
+
 function addData(){
     $("#edit_form")[0].reset();
-    $.get("{{$view_url}}?id=0",function(rep){
+
+    $.get(formatUrl("{{$view_url}}","id=0"),function(rep){
         dt=rep;
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
@@ -109,13 +121,13 @@ function addData(){
 
 //显示查看对话框
 function viewData(id){
-    window.location.href="{{$open_url}}?id="+id;
+    window.location.href=formatUrl("{{$open_url}}","id="+id);
 }
 
 //删除数据
 function deleteData(id){
     if(confirm("确定要删除吗")){
-        $.get("{{$delete_url}}?id="+id,function(rep){
+        $.get(formatUrl("{{$delete_url}}","id="+id),function(rep){
             if(rep.code==0)
                 alert(rep.msg);
             else {
@@ -132,7 +144,7 @@ function editData(id){
         alert("无效的参数");
         return;
     }
-    $.get("{{$view_url}}?id="+id,function(rep){
+    $.get(formatUrl("{{$view_url}}","id="+id),function(rep){
         dt=rep;
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
@@ -146,7 +158,7 @@ function editData(id){
 function modifyField(id)
 {
     if("{{$field_url}}"!=""){
-        window.location.href="{{$field_url}}?id="+id;
+        window.location.href=formatUrl("{{$field_url}}","id="+id);
     }
 }
 </script>

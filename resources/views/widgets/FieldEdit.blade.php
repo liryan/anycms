@@ -33,7 +33,8 @@
     				  </div>
     				  <div class="form-group" id="const_table_panel" style="diaplay:none"></div>
     				  <div class="form-group">
-    					   <input type="checkbox" class="control-label" name="listable" value="1">是否出现在数据列表中
+    					   <label><input type="checkbox" class="control-label" name="listable" value="1">可列表</label>
+                           <label><input type="checkbox" class="control-label" name="editable" value="1">可编辑</label>
     	              </div>
     				  <div class="form-group">
         				<label>关联外表字段</label><br/>

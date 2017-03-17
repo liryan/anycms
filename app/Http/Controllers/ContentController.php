@@ -48,22 +48,55 @@ class ContentController extends AdminController
 			$search_clouser=$widget->generateSearchClouser($id,$req->all());
             $urlconfig=[
                 "url"=>$this->getUrl()."?id=$id",
-                "edit_url"=>$this->getUrl("modify"),
-                "view_url"=>$this->getUrl("view"),
-                "open_url"=>$this->geturl(""),
-                "delete_url"=>$this->getUrl("delete"),
+                "edit_url"=>$this->getUrl("modify")."?modelid=$id",
+                "view_url"=>$this->getUrl("view")."?modelid=$id",
+                "open_url"=>$this->geturl("")."?modelid=$id",
+                "delete_url"=>$this->getUrl("delete")."?modelid=$id",
                 "field_url"=>'',
                 "pri"=>'11110',
 				"id"=>$id,
             ];
 
             $dialog_html=$widget->showEditWidget($urlconfig);
-            $list_html=$widget->showListWidget($table_define['note'],$urlconfig,$dialog_html,$table_define);
+            $list_html=$widget->showListWidget($table_define['note'],$urlconfig,$dialog_html);
             return $this->View("index")->with(
                 [
                     "table_widget"=>$list_html,
                 ]
             );
         }
+	}
+
+	public function getView(Request $req)
+	{
+		if(!$req->ajax()){
+			return;
+		}
+		$modelid=$req->get('modelid');
+		$id=$req->get('id');
+		$dt=new DataTable();
+		$table_define=$dt->tableColumns($modelid);
+		if($id==0){
+			$re['action']='add';
+			$re['_token']=csrf_token();
+			return json_encode($re);
+		}
+		else{
+			$content=new ContentTable();
+            $result=$content->getDataById($modelid,$id);
+			$re['action']='edit';
+			$re['_token']=csrf_token();
+			return json_encode($re);
+		}
+	}
+
+	public function postUploadfile(Request $req)
+	{
+
+	}
+
+	public function getDeletefile(Request $req)
+	{
+
 	}
 }

@@ -18,7 +18,7 @@ class DataTable extends BaseSetting
     const DEF_FLOAT=8;
     //字段的类型映射,
 
-    private static $field_type;
+    private static $field_type;  //模型表的字段类型
     public static function field_type()
     {
         if(!static::$field_type){
@@ -68,7 +68,7 @@ class DataTable extends BaseSetting
     * 上面的定义与界面无关
     * ***************************************/
 
-    //视图：模型列表列的展示=>datatable,新模型会根据此表单生成，采用通用表单
+    //视图（列表页）：模型列表展示=>datatable,展示这些数据，同时，新模型弹出页面也会根据此表单生成，采用通用表单
     public static $model_fields=[
         ['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
         ['name'=>'note','note'=>'模型名字','comment'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
@@ -77,7 +77,7 @@ class DataTable extends BaseSetting
         ['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
         ['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_CHAR]
     ];
-    //视图：模型字段列表的数据展现列定义=>datatable,表单为定制表单
+    //视图（列表页）：模型字段列表的数据展现列定义=>datatable,表单为定制表单
     public static $fields_it=[
         ['name'=>'id','note'=>'编号','listable'=>true],
         ['name'=>'note','note'=>'字段名字','listable'=>true],
@@ -100,7 +100,7 @@ class DataTable extends BaseSetting
         ['name'=>'format','note'=>'格式说明','default'=>''],
     ];
 
-    //视图+数据库：默认表中会含有以下字段
+    //视图+数据库：默认表中会含有以下字段（获取表的定义的时候，会把这些字段合并到定义中，因为这些字段不出现在模型定义中）
     public static $default_columns=[
         ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
@@ -248,7 +248,7 @@ class DataTable extends BaseSetting
 	}
 
     /**
-     * 获取一个表的所有字段
+     * 获取一个表的所有字段，分页
      * @method fields
      * @param  [type] $id     [表ID]
      * @param  [type] $start  [description]
@@ -267,6 +267,14 @@ class DataTable extends BaseSetting
         return Array('total'=>$total,'data'=>$data);
 	}
 
+
+    /**
+     * 新增字段
+     * @method addField
+     * @param  [type]   $tableid [description]
+     * @param  [type]   $type    [description]
+     * @param  [type]   $data    [description]
+     */
 	public function addField($tableid,$type,$data)
 	{
         $fieldname=strtolower($data['name']);
@@ -293,6 +301,12 @@ class DataTable extends BaseSetting
         return Array('code'=>1,'msg'=>'成功创建'.$data['note']);
 	}
 
+    /**
+     * 删除字段
+     * @method deleteField
+     * @param  [type]      $id [description]
+     * @return [type]          [description]
+     */
 	public function deleteField($id)
     {
         $data=$this->where("id",$id)->first();
@@ -341,10 +355,15 @@ class DataTable extends BaseSetting
         $this->editData($id,$newdata);
         return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
     }
-
+    /**
+     * 获取一个字段定义的扩展类型字段，读取setting字段
+     * @method readSetting
+     * @param  [type]      $data [description]
+     * @return [type]            [description]
+     */
     public function readSetting(&$data)
     {
-        if(isset($data['setting'])&&$data['setting']){
+        if(isset($data['setting']) && $data['setting'] ){
             $obj=json_decode($data['setting'],true);
         }
         else{
@@ -359,15 +378,23 @@ class DataTable extends BaseSetting
             }
         }
     }
-
-    public function tableColumns($modelid)
+    /**
+     * [获取一个表的所有字段定义]
+     * @method tableColumns
+     * @param [type]        $includeDefault  是否包含默认字段
+     * @param  [type]       $modelid [description]
+     * @return [type]                [description]
+     */
+    public function tableColumns($modelid,$includeDefault=true)
     {
         $modeldata=$this->getDataById($modelid); //获取模型定义
         $data=$this->getDataByParentId($modelid);//获取字段定义
         $re=[];
-        foreach(static::$default_columns as $row){
-            $this->readSetting($row);
-            $re[]=$row;
+        if($includeDefault){
+            foreach(static::$default_columns as $row){
+                $this->readSetting($row);
+                $re[]=$row;
+            }
         }
 
         if($data){
@@ -377,7 +404,6 @@ class DataTable extends BaseSetting
             }
         }
         $modeldata['columns']=$re;
-;
         return $modeldata;
     }
 }
