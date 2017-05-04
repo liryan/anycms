@@ -11,23 +11,33 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\SessionGuard;
 class UserController extends Controller
 {
-	public function __construct(CurlInterface $api)
-	{
-	}
-
 	public function getLogin(Request $req)
 	{
 		$req->session()->put('return_url',$req->get('return_url'));
 		return $this->View("login")->with('prefix',$req->is('admin/*')?'admin':'user');
 	}
 
+    public function checkLogin(Request $req)
+    {
+        $user=Auth::check();
+        if($user){
+		    $url=$req->session()->get('return_url');;
+            if($url){
+			    return redirect($url);
+            }
+            else{
+			    return redirect("model");
+            }
+        }
+    }
+
 	public function postDoLogin(Request $req)
 	{
 		$url=$req->session()->get('return_url');;
-		$user=Auth::attempt(['email'=>$req->get('email'),'password'=>$req->get('password')]);
+        $password=$req->get('password');
+		$user=Auth::attempt(['email'=>$req->get('email'),'password'=>$password]);
 		if(!$user){
-			//$res=DB::table("t_admin")->insert(['email'=>$req->get('email'),'password'=>$password]);
-			//return redirect($url);
+			//$res=DB::table("t_admin")->insert(['email'=>$req->get('email'),'password'=>Hash::make($password)]);
 			die('Password is Error');
 		}
 		else{
