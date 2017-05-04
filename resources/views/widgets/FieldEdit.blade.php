@@ -9,7 +9,7 @@
       </div>
       <div class="modal-body">
               <div class="box-body">
-                  <form role="form" class="form-horizontal" method="post" id="edit_form">
+                  <form role="form" method="post" id="edit_form">
                       <input type="hidden" id="fortype" />
                       <input type="hidden" name="action" />
                       <input type="hidden" name="_token" />

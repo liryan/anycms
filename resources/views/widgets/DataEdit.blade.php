@@ -61,15 +61,14 @@
               <input type="hidden" name="action" />
               <input type="hidden" name="_token" />
               <input type="hidden" name="id" />
-              <div class="box-body">
-				  @foreach($inputs as $k=>$input)
+			  @foreach($inputs as $k=>$input)
+    	      <div class="form-group">
 					@if($input['type']==DataTable::DEF_INTEGER)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
   	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
 					@elseif($input['type']==DataTable::DEF_CHAR)
-						<label>
-	              			<input type="checkbox" name="{{$input['name']}}">{{$input['note']}}
-	                	</label>
+						<label  for="exampleInputEmail1">{{$input['note']}}</label>
+  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
 					@elseif($input['type']==DataTable::DEF_TEXT)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <textarea id="editor_html" name="{{$input['name']}}" class="form-control">
@@ -82,8 +81,8 @@
                     @elseif($input['type']==DataTable::DEF_IMAGE)
                         <input id="kv-explorer_{{$input['name']}}" type="file" multiple><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
 					@endif
-				  @endforeach
               </div>
+		    @endforeach
               <!-- /.box-body -->
           </form>
       </div>
