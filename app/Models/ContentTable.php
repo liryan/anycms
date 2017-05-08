@@ -30,18 +30,29 @@ class ContentTable extends BaseModel
 				}
 			}
 		}
-		$count=DB::table($table_define['name'])->where($search['condition'])->count();
-		$data=$query->where($search['condition'])->orderByRaw($search['order'])->skip($start)->take($length)->get();
-		if($data){
-			$data=$data->toArray();
-		}
+        try{
+            $count=DB::table($table_define['name'])->where($search['condition'])->count();
+            $data=$query->where($search['condition'])->orderByRaw($search['order'])->skip($start)->take($length)->get();
+            if($data){
+                $data=$data->toArray();
+            }
 
-		return Array('total'=>$count,'data'=>$data);
+            return Array('total'=>$count,'data'=>$data);
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return Array('total'=>0,'data'=>[]);
+        }
 	}
 
-	public function getDataById($tableid,$id)
-	{
-		
-		print_r($define);
-	}
+    public function editContent($define,$id,$data)
+    {
+        $id=DB::table($define['info']['name'])->where('id',$id)->update($data);     
+        return $id;
+    }
+
+    public function addContent($define,$data)
+    {
+        $id=DB::table($define['info']['name'])->insertGetId($data);     
+        return $id>0;
+    }
 }

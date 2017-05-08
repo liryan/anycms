@@ -224,10 +224,10 @@
           </a>
           <ul class="treeview-menu">
             <li class="active"><a href="/admin/model"><i class="fa fa-table"></i>模型管理</a></li>
-            <li><a href="/admin/menu"><i class="fa fa-bars"></i>菜单管理</a></li>
+            <li><a href="/admin/const"><i class="fa fa-bars"></i>常量管理</a></li>
+            <li><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
             <li><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
             <li><a href="/admin/roles"><i class="fa fa-user-plus"></i>角色管理</a></li>
-            <li><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
           </ul>
         </li>
         <li class="active treeview">

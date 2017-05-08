@@ -105,8 +105,19 @@ class DataTable extends BaseSetting
         ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false,'searchable'=>true],
-        ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false]
+        ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
     ];
+
+    public function fillDefault(&$row)
+    {
+        $row['updated_at']=date('Y-m-d H:i:s');
+        $row['created_at']=date('Y-m-d H:i:s');
+    }
+
+    public function filterForEdit(&$row){
+        unset($row['id']);
+        unset($row['created_at']);
+    }
 
 	/**
 	 * [_tableExist 判断一个表是否存在]
@@ -138,7 +149,7 @@ class DataTable extends BaseSetting
     {
         $dbname="Tables_in_".Config::get("database.connections.mysql.database");
 
-        $alltable=DB::select("desc $tablename");
+        $alltable=DB::select("desc `$tablename`");
 
         foreach($alltable as $tb){
             if(strcasecmp($tb->Field,$fieldname)==0){
@@ -206,7 +217,7 @@ class DataTable extends BaseSetting
                 return false;
             }
             else{
-                DB::statement("drop table $tbname");
+                DB::statement("drop table `$tbname`");
                 $result=$this->deleteData($tableid);
             }
         }
@@ -239,7 +250,7 @@ class DataTable extends BaseSetting
             $coldef.=$col['name']." ".$col['def'].",";
         }
 
-        $re=DB::statement("create table $tablename(".trim($coldef,",").")");
+        $re=DB::statement("create table `$tablename`(".trim($coldef,",").")");
         if(!$re){
             return Array('code'=>0,'msg'=>'创建'.$data['note']."失败了");
         }
@@ -293,7 +304,7 @@ class DataTable extends BaseSetting
         }
 
         $this->newData($tableid,$data);
-        $re=DB::statement("alter table $parent_table->name add $fieldname $type");
+        $re=DB::statement("alter table `$parent_table->name` add `$fieldname` $type");
         if(!$re){
             return Array('code'=>0,'msg'=>'创建'.$data['note']."失败了");
         }
@@ -319,7 +330,7 @@ class DataTable extends BaseSetting
             return false;
         }
         $tbname=$data->name;
-        DB::statement("alter table $tbname drop $fieldname");
+        DB::statement("alter table `$tbname` drop `$fieldname`");
         $result=$this->deleteData($id);
         return $result>0;
 	}
@@ -346,7 +357,7 @@ class DataTable extends BaseSetting
         }
 
         $tbname=$tbdata->name;
-        DB::statement("alter table $tbname change $fieldname ".$data['name']." ".$data['type']);
+        DB::statement("alter table `$tbname` change `$fieldname` ".$data['name']." ".$data['type']);
         $newdata=[
             'note'=>$data['note'],
             'setting'=>$data['setting'],
@@ -404,6 +415,7 @@ class DataTable extends BaseSetting
             }
         }
         $modeldata['columns']=$re;
+        $modeldata['info']=$modeldata;
         return $modeldata;
     }
 }

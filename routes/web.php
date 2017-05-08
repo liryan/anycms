@@ -42,6 +42,7 @@ Route::group(['prefix' => 'admin'], function () {
 	RouteController("/model","ModelController");
 	RouteController("/category","CategoryController");
 	RouteController("/content","ContentController");
+	RouteController("/const","ConstController");
 	Route::get("/login","UserController@getLogin");
 	Route::post("/dologin","UserController@postDoLogin");
 });

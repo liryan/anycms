@@ -239,16 +239,17 @@ class ModelController extends AdminController
 
     public function getConsts(Request $req)
     {
-        $id=$req->get('id');
+        $id=$req->get('id',0);
         if($id<1){
             //Redirect::to($this->getUrl());
+            $id=0;
         }
         if($req->ajax()||true){
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
             $cd=new ConstDefine();
-            $result=$cd->consts($id,$start,$length);
+            $result=$cd->consts($start,$length,$id);
 
             $data=Array(
                 "draw"=>$draw,

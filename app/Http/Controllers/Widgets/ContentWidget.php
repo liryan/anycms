@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Widgets;
 
 use App\Models\DataTable;
 use App\Models\Category;
+use App\Models\ConstDefine;
 use Illuminate\Support\Facades\View;
 
 class ContentWidget extends Widget
@@ -37,7 +38,14 @@ class ContentWidget extends Widget
 		$view=$this->getView("DataEdit");
 		$view->with($urlconfig);
 		$fields=[];
+        $const=new ConstDefine();
 		foreach($this->define['columns'] as $row){
+            if($row['type']==DataTable::DEF_LIST||$row['type']==DataTable::DEF_MULTI_LIST){
+                $subdata=$const->consts(0,200,$row['const']);
+                if($subdata['total']>0){
+                    $row['const_list']=$subdata['data'];
+                }
+            }
 			if($row['editable']){
 				$fields[]=$row;
 			}
@@ -75,7 +83,7 @@ class ContentWidget extends Widget
 		$this->registerConditionClouser($input);
 		if(isset($this->search_clouser[$categoryid]) ){
 			$this->search_categoryid=$categoryid;
-			return ['condition'=>$this->search_clouser[$categoryid]['condition'],'order'=>($this->search_clouser[$categoryid]['order'])($input)];
+			return ['condition'=>$this->search_clouser[$categoryid]['condition'],'order'=>$this->search_clouser[$categoryid]['order']($input)];
 		}
 		$this->search_categoryid=0;
 		return ['condition'=>$this->search_clouser[0]['condition'],'order'=>$this->search_clouser[0]['order']($input)];
@@ -97,6 +105,33 @@ class ContentWidget extends Widget
 		}
 	}
 
+    public function translateData(&$data)
+    {
+        $const=new ConstDefine();
+        foreach($this->define['columns'] as $rd){
+            switch($rd['type']){
+            case DataTable::DEF_LIST:
+                $const_data=$const->getConstArray($rd['const']);
+                foreach($data as &$row){
+                    $row->$rd['name']=$const_data[$row->$rd['name']];
+                }
+                break;
+            case DataTable::DEF_MULTI_LIST:
+                $const_data=$const->getConstArray($rd['const']);
+                foreach($data as &$row){
+                    $ids=explode(",",$row->$rd['name']);
+                    $tmp=[];
+                    foreach($ids as $id){
+                        $tmp[]=$const_data[$id];
+                    }
+                    $row->$rd['name']=implode(",",$tmp);
+                }
+                break;
+            case DataTable::DEF_IMAGE:
+                break;
+            }
+        }
+    }
 	/************************************************
 	* 注册搜索框，prototype:  search_categoryid ,0缺省的搜索
 	* 1.首先在templates/widgets/search/目录下创建search_xxx.blade.php

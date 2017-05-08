@@ -76,8 +76,20 @@
                         </textarea>
                     @elseif($input['type']==DataTable::DEF_DATE)
                     @elseif($input['type']==DataTable::DEF_LIST)
+                        <label for="exampleInputEmail1">{{$input['note']}}</label>
+                        <select name="{{$input['name']}}" class="form-control">
+                        @foreach($input['const_list'] as $item)
+                            <option value="{{$item['id']}}">{{$item['name']}}</option>
+                        @endforeach
+                        </select>
                     @elseif($input['type']==DataTable::DEF_MULTI_LIST)
+                        <label for="exampleInputEmail1">{{$input['note']}}</label>
+                        @foreach($input['const_list'] as $item)
+                        <label><input type="checkbox" name="{{$input['name']}}[]" value="{{$item['id']}}">{{$item['name']}}</label>
+                        @endforeach
 					@elseif($input['type']==DataTable::DEF_FLOAT)
+					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
+  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGE)
                         <input id="kv-explorer_{{$input['name']}}" type="file" multiple><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
 					@endif
@@ -93,3 +105,7 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<script type="text/javascript">
+beforeFillForm=function(data){
+}
+</script>
