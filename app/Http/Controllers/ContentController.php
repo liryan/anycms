@@ -33,7 +33,7 @@ class ContentController extends AdminController
 			foreach($result['data'] as &$row){
 				$row->_internal_field='';
 			}
-            $widget->translateData($result['data']);
+            $widget->translateData($result['data']); //常量更改成名称 
             $data=Array(
                 "draw"=>$draw,
                 "recordsTotal"=>$result['total'],
@@ -53,7 +53,7 @@ class ContentController extends AdminController
             $urlconfig=[
                 "url"=>$this->getUrl()."?id=$id",
                 "edit_url"=>$this->getUrl("modify")."?catid=$id",
-                "view_url"=>$this->getUrl("view")."?catidd=$id",
+                "view_url"=>$this->getUrl("view")."?catid=$id",
                 "open_url"=>$this->geturl("")."?catid=$id",
                 "delete_url"=>$this->getUrl("delete")."?catid=$id",
                 "field_url"=>'',
@@ -75,9 +75,11 @@ class ContentController extends AdminController
 		if(!$req->ajax()){
 			return;
 		}
-		$modelid=$req->get('modelid');
-		$id=$req->get('catid');
+        $id=$req->get('id',0);
+		$catid=$req->get("catid",0);
+		$cate=new Category();
 		$dt=new DataTable();
+		$modelid=$cate->getModelId($catid);
 		$table_define=$dt->tableColumns($modelid);
 		if($id==0){
 			$re['action']='add';
@@ -86,7 +88,9 @@ class ContentController extends AdminController
 		}
 		else{
 			$content=new ContentTable();
-            $result=$content->getDataById($modelid,$id);
+            $re=$content->getContent($table_define,$id);
+            $widgets=new ContentWidget($table_define);
+            $widgets->translateToView($re);
 			$re['action']='edit';
 			$re['_token']=csrf_token();
 			return json_encode($re);
@@ -105,22 +109,20 @@ class ContentController extends AdminController
         $dt->fillDefault($data);
         $data['category']=$catid;
         $result=0;
+        $re=['code'=>0,'msg'=>'未知的操作'];
         switch($act){
         case 'edit':
             $dt->filterForEdit($data);
             $content=new ContentTable();
-            $contentid=$req->get('contentid');
+            $contentid=$req->get('id');
             $result=$content->editContent($table_define,$contentid,$data);
+            $re=['code'=>$result?1:0,'msg'=>$result?"成功修改数据":"修改失败了"];
             break;
         case 'add':
             $content=new ContentTable();
             $result=$content->addContent($table_define,$data);
+            $re=['code'=>$result?1:0,'msg'=>$result?"成功增加数据":"增加失败了"];
             break;
-        }
-        $re=['code'=>0,'msg'=>'新增加数据失败了'];
-        if($result==1){
-			$re['code']='1';
-            $re['msg']='成功添加一条数据';
         }
 		return json_encode($re);
     }
@@ -146,4 +148,19 @@ class ContentController extends AdminController
 	{
 
 	}
+
+    public function getDelete(Request $req)
+    {
+		$cate=new Category();
+		$dt=new DataTable();
+        $catid=$req->get("catid");
+		$modelid=$cate->getModelId($catid);
+		$table_define=$dt->tableColumns($modelid);
+
+        $content=new ContentTable();   
+        $id=$req->get("id");
+        $result=$content->deleteContent($table_define,$id);
+        $re=['code'=>$result?1:0,'msg'=>$result?'success':'failed'];
+        return json_encode($re);
+    }
 }

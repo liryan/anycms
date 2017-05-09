@@ -104,7 +104,27 @@ class ContentWidget extends Widget
 			}
 		}
 	}
-
+    public function translateToView(&$data)
+    {
+        foreach($this->define['columns'] as $rd){
+            switch($rd['type']){
+            case DataTable::DEF_MULTI_LIST:
+                $content=$data[$rd['name']];
+                if(trim($content)){
+                    if(strpos($content,",")!==false){
+                        $data[$rd['name']]=explode(",",$content);
+                    }
+                    else{
+                        $data[$rd['name']]=[$content];
+                    }
+                }
+                else{
+                    $data[$rd['name']]=[];
+                }
+                break;
+            }
+        }
+    }
     public function translateData(&$data)
     {
         $const=new ConstDefine();

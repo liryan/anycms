@@ -43,7 +43,14 @@ class ContentTable extends BaseModel
             return Array('total'=>0,'data'=>[]);
         }
 	}
-
+    public function getContent($define,$id)
+    {
+        $row=DB::table($define['info']['name'])->where('id',$id)->first();
+        if($row){
+            return json_decode(json_encode($row),true);
+        }
+        return $row;  
+    }
     public function editContent($define,$id,$data)
     {
         $id=DB::table($define['info']['name'])->where('id',$id)->update($data);     
@@ -54,5 +61,10 @@ class ContentTable extends BaseModel
     {
         $id=DB::table($define['info']['name'])->insertGetId($data);     
         return $id>0;
+    }
+
+    public function deleteContent($define,$id)
+    {
+        return DB::table($define['info']['name'])->where('id',$id)->delete();
     }
 }

@@ -1,18 +1,22 @@
-@require_once('<link rel="stylesheet" href="/adminlte/plugins/datepicker/datepicker3.css">')
-@require_once('<link rel="stylesheet" href="/adminlte/plugins/daterangepicker/daterangepicker.css">')
 @require_once('<link rel="stylesheet" href="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">')
 @require_once('<link href="/adminlte/plugins/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/fileinput/themes/explorer/theme.css" media="all" rel="stylesheet" type="text/css"/>')
+@require_once('<link href="/adminlte/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" media="all" rel="stylesheet" type="text/css"/>')
+@require_once('<link href="/adminlte/plugins/datepicker/datepicker3.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<script src="/adminlte/plugins/ckeditor/ckeditor.js"></script>')
 @require_once('<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>')
-@require_once('<script src="/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/plugins/sortable.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/fileinput.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/locales/zh.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/themes/explorer/theme.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/datepicker/bootstrap-datepicker.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js" type="text/javascript"></script>')
+@require_once('<script src="/adminlte/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
+
 @import_const(app\Models\DataTable)
 <script type="text/javascript">
     var data={
@@ -27,7 +31,9 @@
         initialPreview: [],
         initialPreviewConfig: []
     };
+
     var images=[];
+
     function init_image(id){
         images.push(id);
         $("#"+id).fileinput(data);
@@ -75,6 +81,8 @@
                             {{$input['place_holder']}}
                         </textarea>
                     @elseif($input['type']==DataTable::DEF_DATE)
+                        <label for="exampleInputEmail1">{{$input['note']}}</label>
+                        <input type="text" name="{{$input['name']}}" class="form-control datetimepicker_{{$input['size']}}"  value="" data-date-format=@if($input['size']==1) "yyyy-mm-dd hh:ii" @else "yyyy-mm-dd" @endif>
                     @elseif($input['type']==DataTable::DEF_LIST)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <select name="{{$input['name']}}" class="form-control">
@@ -106,6 +114,29 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script type="text/javascript">
+
+$('.datetimepicker_1').datetimepicker({
+    language:  'zh-CN',
+    weekStart: 1,
+    todayBtn:  1,
+    autoclose: 1,
+    todayHighlight: 1,
+    startView: 2,
+    forceParse: 0,
+    showMeridian: 1
+});
+
+$('.datetimepicker_2').datepicker({
+    language:  'zh-CN',
+    weekStart: 1,
+    todayBtn:  1,
+    autoclose: 1,
+    todayHighlight: 1,
+    startView: 2,
+    forceParse: 0,
+    showMeridian: 1
+});
+
 beforeFillForm=function(data){
 }
 </script>
