@@ -35,6 +35,8 @@
 <!-- 编辑对话框组件,绑定下面的js代码 -->
 <script type="text/javascript">
 beforeFillForm=function(data){}
+endFillForm=function(){}
+beforeSubmit=function(){}
 </script>
 {!!$new_dialog!!}
 <!-- /编辑对话框组件,绑定下面的js代码 -->
@@ -100,6 +102,7 @@ $(function(){
                 }
     });
 	$('#submitBt').on('click', function (e) {
+        beforeSubmit();
         $("#edit_form").submit();
 	});
 
@@ -108,7 +111,6 @@ $(function(){
             table.ajax.url("{{$url}}&"+keyword).load();
             return false;
     });
-    //CKEDITOR.replace('editor_html');
 });
 
 //显示新数据对话框
@@ -131,6 +133,7 @@ function addData(){
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
         $("#edit_form").autofill(dt);
+        endFillForm();
         $("#model_new").modal();
     },'json');
 }
@@ -165,6 +168,7 @@ function editData(id){
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
         $("#edit_form").autofill(dt);
+        endFillForm();
         $("#model_new").modal();
     },'json');
     $("#model_new").modal();

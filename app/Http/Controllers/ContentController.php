@@ -8,6 +8,8 @@ use App\Models\DataTable;
 use App\Models\Category;
 use App\Models\ContentTable;
 use App\Http\Controllers\Widgets\ContentWidget;
+use EasyThumb\EasyThumb;
+use Exception;
 class ContentController extends AdminController
 {
     public function __construct()
@@ -139,9 +141,77 @@ class ContentController extends AdminController
         return $data;
     }
 
+	public function postUploadImage(Request $req)
+	{
+        try{
+            $fieldname=array_keys($_FILES);
+            if(!$fieldname){
+                return '';
+            }
+            $fieldname=$fieldname[0];
+            $root_path=public_path();
+            $sub_path="/upimages";
+            $path=EasyThumb::upload($fieldname)->where($root_path.$sub_path)->autodir()->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
+            $info=pathinfo($path['origin']);
+            $result=[
+                'success'=>'ok',
+                'url'=>str_replace($root_path,'',$path['origin']),
+                'id'=>$fieldname,
+                'result'=>'SUCCESS'
+            ];
+            return json_encode($result);
+
+        }
+        catch(Exception $e){
+            $result=[
+                'originalName'=>$_FILES[$fieldname]['name'],
+                'name'=>'',
+                'url'=>'',
+                'size'=>0,
+                'type'=>'',
+                'state'=>$e->getMessage(),
+            ];
+            return json_encode($result);
+        }
+	}
+	/**
+	 * postUploadfile 
+     * 百度图片上传接口
+	 * success: {"originalName":"timg.jpeg","name":"1494575499954.jpeg","url":"upload\/20170512\/1494575499954.jpeg","size":121080,"type":".jpeg","state":"SUCCESS"}
+     * failed : {"originalName":"install","name":null,"url":null,"size":15,"type":"","state":"错误消息"}
+	 * @param Request $req 
+	 * @access public
+	 * @return void
+	 */
 	public function postUploadfile(Request $req)
 	{
+        try{
+            $root_path=public_path();
+            $sub_path="/upimages";
+            $path=EasyThumb::upload("upfile")->where($root_path.$sub_path)->autodir(EasyThumb::SHA1_DIR)->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
+            $info=pathinfo($path['origin']);
+            $result=[
+                'originalName'=>$_FILES['upfile']['name'],
+                'name'=>$info['filename'],
+                'url'=>str_replace($root_path,'',$path['origin']),
+                'size'=>filesize($path['origin']),
+                'type'=>$info['extension'],
+                'state'=>'SUCCESS'
+            ];
+            return json_encode($result);
 
+        }
+        catch(Exception $e){
+            $result=[
+                'originalName'=>$_FILES['upfile']['name'],
+                'name'=>'',
+                'url'=>'',
+                'size'=>0,
+                'type'=>'',
+                'state'=>$e->getMessage(),
+            ];
+            return json_encode($result);
+        }
 	}
 
 	public function getDeletefile(Request $req)

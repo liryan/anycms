@@ -133,13 +133,29 @@ class Str
     }
 
     /**
+     * Convert a string to kebab case.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    public static function kebab($value)
+    {
+        return static::snake($value, '-');
+    }
+
+    /**
      * Return the length of the given string.
      *
      * @param  string  $value
+     * @param  string  $encoding
      * @return int
      */
-    public static function length($value)
+    public static function length($value, $encoding = null)
     {
+        if ($encoding) {
+            return mb_strlen($value, $encoding);
+        }
+
         return mb_strlen($value);
     }
 

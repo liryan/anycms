@@ -329,11 +329,11 @@ class Gate implements GateContract
 
         if (isset($this->abilities[$ability])) {
             return $this->abilities[$ability];
-        } else {
-            return function () {
-                return false;
-            };
         }
+
+        return function () {
+            return false;
+        };
     }
 
     /**
@@ -346,6 +346,10 @@ class Gate implements GateContract
     {
         if (is_object($class)) {
             $class = get_class($class);
+        }
+
+        if (! is_string($class)) {
+            return null;
         }
 
         if (isset($this->policies[$class])) {
@@ -464,5 +468,15 @@ class Gate implements GateContract
     protected function resolveUser()
     {
         return call_user_func($this->userResolver);
+    }
+
+    /**
+     * Get all of the defined abilities.
+     *
+     * @return array
+     */
+    public function abilities()
+    {
+        return $this->abilities;
     }
 }

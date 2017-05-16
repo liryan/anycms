@@ -1,12 +1,10 @@
-@require_once('<link rel="stylesheet" href="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">')
 @require_once('<link href="/adminlte/plugins/fileinput/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/fileinput/themes/explorer/theme.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/datepicker/datepicker3.css" media="all" rel="stylesheet" type="text/css"/>')
-@require_once('<script src="/adminlte/plugins/ckeditor/ckeditor.js"></script>')
+@require_once('<link href="/adminlte/plugins/umeditor1.2.3-utf8-php/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">')
 @require_once('<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
-@require_once('<script src="/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/plugins/sortable.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/fileinput.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/locales/zh.js" type="text/javascript"></script>')
@@ -16,16 +14,22 @@
 @require_once('<script src="/adminlte/plugins/datepicker/locales/bootstrap-datepicker.zh-CN.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
+@require_once('<script type="text/javascript" src="/adminlte/plugins/umeditor1.2.3-utf8-php/third-party/template.min.js"></script>')
+@require_once('<script type="text/javascript" charset="utf-8" src="/adminlte/plugins/umeditor1.2.3-utf8-php/umeditor.config.js"></script>')
+@require_once('<script type="text/javascript" charset="utf-8" src="/adminlte/plugins/umeditor1.2.3-utf8-php/umeditor.min.js"></script>')
+@require_once('<script type="text/javascript" src="/adminlte/plugins/umeditor1.2.3-utf8-php/lang/zh-cn/zh-cn.js"></script>')
 
 @import_const(app\Models\DataTable)
 <script type="text/javascript">
-    var data={
+    var Editor=new Array();
+    var option_data={
         'language':'zh',
         'theme': 'explorer',
-        'uploadUrl': '/admin/content/uploadfile',
+        'uploadUrl': '/admin/content/uploadimage',
         'showCancel':false,
         'showClose':false,
         'showCaption':false,
+        'showRemove':false,
         overwriteInitial: false,
         initialPreviewAsData: true,
         initialPreview: [],
@@ -33,23 +37,86 @@
     };
 
     var images=[];
+    var UploadFile=[];
+
+    function changeValue(id,url,isadd)
+    {
+        fileobj=$("#"+id);
+        if(fileobj.attr("single")=="1"){
+            fileobj.val(url); 
+        }
+        else{
+            str=fileobj.val();
+            if(str){
+                obj=JSON.parse(str);
+            }
+            else{
+                obj=[];
+            }
+            if(isadd){
+                obj.push(url);
+            }
+            else{
+                newobj=[];
+                for(i=0;i<obj.length;i++){
+                    if(obj[i]!=url){
+                        newobj.push(obj[i]);
+                    }
+                }
+                obj=newobj;
+            }
+            fileobj.val(JSON.stringify(obj));
+        }
+    }
+
+    function uploaded(event,data,preview_id){
+        url=data.response.url;
+        id=data.response.id.replace("file_","");
+        obj=$("#"+id);
+        fileobj=$("#"+data.response.id);
+        UploadFile.push({id:id,url:url,keyid:preview_id});
+        changeValue(id,url,true);
+    }
+
+    function deletePic(event, key, jqXHR, data)
+    {
+        alert($(this).attr("name")); 
+    }
+
+    function removePic(event, id, index)
+    {
+        for(i=0;i<UploadFile.length;i++){
+            if(UploadFile[i].keyid==id){
+                changeValue(UploadFile[i].id,UploadFile[i].url,false);    
+            }
+        }
+    }
 
     function init_image(id){
         images.push(id);
-        $("#"+id).fileinput(data);
+        $("#"+id).fileinput(option_data).on("fileuploaded",uploaded);
+        $("#"+id).on("filedeleted",deletePic);
+        $("#"+id).on("fileremoved",removePic);
         $("#"+id).css("background","#FFF");
     }
 
     beforeFillForm=function(data){
         for(img in images){
-            var d1=data;
-            for(obj in data.keys){
-                if(img.indexOf(obj)>0){
-                    for(i=0;i<data[obj].length;i++){
-                        d1.initialPreview.push(data[obj][i].url);
-                        d1.initialPreviewConfig.push({caption:data[obj][i].name , size: data[obj][i].size, width: data[obj][i].width, url: '/admin/content/deletefile', key: data[obj][i].id})
+            var d1=option_data;
+            for(obj in data){
+                if(images[img].indexOf(obj)>0){
+                    if(typeof data[obj] =="string"){
+                        d1.initialPreview.push(data[obj]);
+                        d1.initialPreviewConfig.push({caption:'' , size: '', width: '', url: '/admin/content/deletefile', key: ''})
                     }
-                    $("#"+img).fileinput(d1);
+                    else{
+                        for(i=0;i<data[obj].length;i++){
+                            d1.initialPreview.push(data[obj][i].url);
+                            d1.initialPreviewConfig.push({caption:'', size: '', width: '', url: '/admin/content/deletefile', key: ''})
+                        }
+                    }
+
+                    $("#"+images[img]).fileinput(d1);
                 }
             }
         }
@@ -77,9 +144,7 @@
   	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
 					@elseif($input['type']==DataTable::DEF_TEXT)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
-                        <textarea id="editor_html" name="{{$input['name']}}" class="form-control">
-                            {{$input['place_holder']}}
-                        </textarea>
+                        <textarea id="editor_html" name="{{$input['name']}}" class="form-control"></textarea>
                     @elseif($input['type']==DataTable::DEF_DATE)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <input type="text" name="{{$input['name']}}" class="form-control datetimepicker_{{$input['size']}}"  value="" data-date-format=@if($input['size']==1) "yyyy-mm-dd hh:ii" @else "yyyy-mm-dd" @endif>
@@ -97,9 +162,21 @@
                         @endforeach
 					@elseif($input['type']==DataTable::DEF_FLOAT)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
+  	                	<input type="text" name="{{$input['name']}}" name="file_{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
+                        <input type="hidden" id="{{$input['name']}}" value="" single="0" name="{{$input['name']}}">
+                    @elseif($input['type']==DataTable::DEF_IMAGES)
+                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" multiple="true"><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
+                        <input type="hidden" id="{{$input['name']}}" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGE)
-                        <input id="kv-explorer_{{$input['name']}}" type="file" multiple><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
+                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" multiple="true"><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
+                        <input type="hidden" id="{{$input['name']}}" value="" name="{{$input['name']}}">
+                    @elseif($input['type']==DataTable::DEF_EDITOR)
+					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
+                        <script type="text/javascript">Editor.push("{{$input['id']}}");</script>  
+                        <script type="text/plain" id="editor_{{$input['id']}}" style="height:240px;">
+                            <p>这里我可以写一些输入提示</p>
+                        </script>
+  	                	<input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
 					@endif
               </div>
 		    @endforeach
@@ -114,29 +191,54 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 <script type="text/javascript">
+$(function(){
+    editor_config={
+        imageUrl:"/admin/content/uploadfile" 
+        ,imagePath:"" 
+        ,imageFieldName:"upload_file"
+    };
 
-$('.datetimepicker_1').datetimepicker({
-    language:  'zh-CN',
-    weekStart: 1,
-    todayBtn:  1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 2,
-    forceParse: 0,
-    showMeridian: 1
+    for(i=0;i<Editor.length;i++)
+    {
+        UM.getEditor("editor_"+Editor[i],editor_config);
+    }
+
+    $('.datetimepicker_1').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1
+    });
+
+    $('.datetimepicker_2').datepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1
+    });
 });
 
-$('.datetimepicker_2').datepicker({
-    language:  'zh-CN',
-    weekStart: 1,
-    todayBtn:  1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 2,
-    forceParse: 0,
-    showMeridian: 1
-});
+beforeSubmit=function()
+{
+    for(i=0;i<Editor.length;i++)
+    {
+        $("#editor_value_"+Editor[i]).val(UM.getEditor("editor_"+Editor[i]).getContent());
+    }
+}
 
-beforeFillForm=function(data){
+endFillForm=function()
+{
+    for(i=0;i<Editor.length;i++)
+    {
+        UM.getEditor("editor_"+Editor[i]).setContent($("#editor_value_"+Editor[i]).val());
+    }
 }
 </script>

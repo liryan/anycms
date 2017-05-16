@@ -16,6 +16,8 @@ class DataTable extends BaseSetting
     const DEF_MULTI_LIST=6;
     const DEF_IMAGE=7;
     const DEF_FLOAT=8;
+    const DEF_EDITOR=9;
+    const DEF_IMAGES=10;
     //字段的类型映射,
 
     private static $field_type;  //模型表的字段类型
@@ -28,12 +30,15 @@ class DataTable extends BaseSetting
                         return sprintf("integer(%d) default %d",$data['size'],$data['default']);
                     return sprintf("integer(%d)",$data['size']?$data['size']:11);
                 }],
-                ['name'=>'文本','value'=>DataTable::DEF_CHAR,'type'=>'varchar','DBdefine'=>function($data){
+                ['name'=>'字符串','value'=>DataTable::DEF_CHAR,'type'=>'varchar','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
                         return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
                     return sprintf("varchar(%d)",$data['size']?$data['size']:255);
                 }],
-                ['name'=>'编辑器','value'=>DataTable::DEF_TEXT,'type'=>'text','DBdefine'=>function($data){
+                ['name'=>'文本','value'=>DataTable::DEF_TEXT,'type'=>'text','DBdefine'=>function($data){
+                    return "text";
+                }],
+                ['name'=>'编辑器','value'=>DataTable::DEF_EDITOR,'type'=>'text','DBdefine'=>function($data){
                     return "text";
                 }],
                 ['name'=>'日期','value'=>DataTable::DEF_DATE,'type'=>'datetime','DBdefine'=>function($data){
@@ -53,6 +58,9 @@ class DataTable extends BaseSetting
                     if(strlen($data['default'])>0)
                         return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
                     return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                }],
+                ['name'=>'多图片','value'=>DataTable::DEF_IMAGES,'type'=>'text','DBdefine'=>function($data){
+                    return sprintf("text");
                 }],
                 ['name'=>'小数点数字','value'=>DataTable::DEF_FLOAT,'type'=>'number','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
@@ -330,7 +338,11 @@ class DataTable extends BaseSetting
             return false;
         }
         $tbname=$data->name;
-        DB::statement("alter table `$tbname` drop `$fieldname`");
+        try{
+            DB::statement("alter table `$tbname` drop `$fieldname`");
+        }
+        catch(\Illuminate\Database\QueryException $e){
+        }
         $result=$this->deleteData($id);
         return $result>0;
 	}

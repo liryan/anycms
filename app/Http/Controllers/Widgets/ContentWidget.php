@@ -133,12 +133,17 @@ class ContentWidget extends Widget
             case DataTable::DEF_LIST:
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
-                    $row->$rd['name']=$const_data[$row->$rd['name']];
+                    if($row->$rd['name']){
+                        $row->$rd['name']=$const_data[$row->$rd['name']];
+                    }
                 }
                 break;
             case DataTable::DEF_MULTI_LIST:
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
+                    if(!$row->$rd['name']){
+                        continue;
+                    }
                     $ids=explode(",",$row->$rd['name']);
                     $tmp=[];
                     foreach($ids as $id){
@@ -147,7 +152,11 @@ class ContentWidget extends Widget
                     $row->$rd['name']=implode(",",$tmp);
                 }
                 break;
-            case DataTable::DEF_IMAGE:
+            case DataTable::DEF_IMAGES:
+                if($row->$rd['name'])
+                    $row->$rd['name']=json_decode($row->$rd['name']);
+                else
+                    $row->$rd['name']=[];
                 break;
             }
         }
@@ -177,7 +186,6 @@ class ContentWidget extends Widget
 				else{
 					$query->where($input['field'],$input['keyword']);
 				}
-
 			},
 			'order'=>function()use($input){
 				return "id desc";
