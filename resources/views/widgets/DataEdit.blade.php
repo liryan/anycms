@@ -30,8 +30,9 @@
         'showClose':false,
         'showCaption':false,
         'showRemove':false,
-        overwriteInitial: false,
-        initialPreviewAsData: true,
+        initialPreviewFileType:'image',
+        overwriteInitial: true,
+        initialPreviewAsData: false,
         initialPreview: [],
         initialPreviewConfig: []
     };
@@ -43,7 +44,12 @@
     {
         fileobj=$("#"+id);
         if(fileobj.attr("single")=="1"){
-            fileobj.val(url); 
+            if(isadd){
+                fileobj.val(url); 
+            }
+            else{
+                fileobj.val('');
+            }
         }
         else{
             str=fileobj.val();
@@ -80,7 +86,7 @@
 
     function deletePic(event, key, jqXHR, data)
     {
-        alert($(this).attr("name")); 
+        removePic(event,key,0);
     }
 
     function removePic(event, id, index)
@@ -101,22 +107,29 @@
     }
 
     beforeFillForm=function(data){
+        option_data.initialPreview=[];
+        option_data.initialPreviewConfig=[];
         for(img in images){
-            var d1=option_data;
+            var d1={};
+            $.extend(d1,option_data);
+            i=0;
             for(obj in data){
+                i++;
                 if(images[img].indexOf(obj)>0){
                     if(typeof data[obj] =="string"){
-                        d1.initialPreview.push(data[obj]);
-                        d1.initialPreviewConfig.push({caption:'' , size: '', width: '', url: '/admin/content/deletefile', key: ''})
+                        d1.initialPreview.push("<img src='"+data[obj]+"' style='height:60px;width:auto' class='file-preview-image'>");
+                        d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})
+                        UploadFile.push({id:obj,url:data[obj],keyid:i});
                     }
                     else{
                         for(i=0;i<data[obj].length;i++){
-                            d1.initialPreview.push(data[obj][i].url);
-                            d1.initialPreviewConfig.push({caption:'', size: '', width: '', url: '/admin/content/deletefile', key: ''})
+                            d1.initialPreview.push("<img src='"+data[obj][i].url+"' style='height:60px;width:auto' class='file-preview-image'>");
+                            d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})
+                            UploadFile.push({id:obj,url:data[obj][i].url,keyid:i});
                         }
                     }
 
-                    $("#"+images[img]).fileinput(d1);
+                    $("#"+images[img]).fileinput('destroy').fileinput(d1);
                 }
             }
         }
@@ -162,14 +175,13 @@
                         @endforeach
 					@elseif($input['type']==DataTable::DEF_FLOAT)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" name="file_{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
-                        <input type="hidden" id="{{$input['name']}}" value="" single="0" name="{{$input['name']}}">
+  	                	<input type="text" name="{{$input['name']}}" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGES)
                         <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" multiple="true"><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
-                        <input type="hidden" id="{{$input['name']}}" value="" name="{{$input['name']}}">
+                        <input type="hidden" id="{{$input['name']}}" single="0" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGE)
-                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" multiple="true"><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
-                        <input type="hidden" id="{{$input['name']}}" value="" name="{{$input['name']}}">
+                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file"><script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
+                        <input type="hidden" id="{{$input['name']}}" single="1" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_EDITOR)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
                         <script type="text/javascript">Editor.push("{{$input['id']}}");</script>  
