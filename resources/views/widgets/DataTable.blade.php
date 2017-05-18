@@ -134,7 +134,7 @@ function addData(){
         $("#dialogTitle").html("添加")
         $("#edit_form").autofill(dt);
         endFillForm();
-        $("#model_new").modal();
+        $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
 }
 
@@ -169,7 +169,7 @@ function editData(id){
         beforeFillForm(dt);
         $("#edit_form").autofill(dt);
         endFillForm();
-        $("#model_new").modal();
+        $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
     $("#model_new").modal();
 }

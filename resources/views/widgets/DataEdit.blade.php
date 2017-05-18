@@ -3,7 +3,7 @@
 @require_once('<link href="/adminlte/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/datepicker/datepicker3.css" media="all" rel="stylesheet" type="text/css"/>')
 @require_once('<link href="/adminlte/plugins/umeditor1.2.3-utf8-php/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">')
-@require_once('<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>')
+@require_once('<script src="/adminlte/plugins/jQuery/moment.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/plugins/sortable.js" type="text/javascript"></script>')
 @require_once('<script src="/adminlte/plugins/fileinput/js/fileinput.js" type="text/javascript"></script>')
@@ -136,7 +136,7 @@
     }
 </script>
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" role="document" style="width:800px">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -185,7 +185,7 @@
                     @elseif($input['type']==DataTable::DEF_EDITOR)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
                         <script type="text/javascript">Editor.push("{{$input['id']}}");</script>  
-                        <script type="text/plain" id="editor_{{$input['id']}}" style="height:240px;">
+                        <script type="text/plain" id="editor_{{$input['id']}}" style="width:auto;height:240px;">
                             <p>这里我可以写一些输入提示</p>
                         </script>
   	                	<input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
