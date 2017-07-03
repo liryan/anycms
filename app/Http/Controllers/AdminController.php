@@ -72,14 +72,12 @@ class AdminController extends BaseController
     {
         $cate=new Category();
         $data=$cate->getAllCategory();
-        if($data){
-            $data=$data[0];
-        }
-        else{
+        if(!$data){
             $data=Array();
         }
         $re=[];
-        $this->treeToArray($re,$data);
+        foreach($data as $row)
+            $this->treeToArray($re,$row);
         return $re;
     }
 

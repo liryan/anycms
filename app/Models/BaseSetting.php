@@ -79,7 +79,7 @@ class BaseSetting extends BaseModel
                 }
 			}while($deep++<100);
 		}
-		return $data;
+		return $allrow;
 	}
 
     public function getDataById($id)

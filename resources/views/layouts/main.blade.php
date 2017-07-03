@@ -46,7 +46,7 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">ANYWHERE</span>
+      <span class="logo-lg">游漫运营平台</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -227,7 +227,8 @@
             <li><a href="/admin/const"><i class="fa fa-bars"></i>常量管理</a></li>
             <li><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
             <li><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
-            <li><a href="/admin/roles"><i class="fa fa-user-plus"></i>角色管理</a></li>
+            <li><a href="/admin/privilege"><i class="fa fa-user-plus"></i>角色管理</a></li>
+            <li><a href="/admin/account"><i class="fa fa-user-plus"></i>账号管理</a></li>
           </ul>
         </li>
         <li class="active treeview">

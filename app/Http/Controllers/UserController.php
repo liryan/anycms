@@ -6,6 +6,7 @@ use Auth;
 use App;
 use Hash;
 use Session;
+use Redirect;
 use App\Lib\CurlInterface;
 use Illuminate\Http\Request;
 use Illuminate\Auth\SessionGuard;
@@ -41,7 +42,7 @@ class UserController extends Controller
 			die('Password is Error');
 		}
 		else{
-			return redirect($url);
+			return Redirect::to($url);
 		}
 	}
 

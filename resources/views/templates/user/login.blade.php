@@ -28,7 +28,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>内容管理</b>系统</a>
+    <a href="../../index2.html"><b style="width:600px">游戏漫画发行及运营平台</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">

@@ -18,9 +18,9 @@ class Widget extends Controller
 		return '';
 	}
 
-	protected function getDataTableView()
+	protected function getDataTableView($tpl="DataTable")
 	{
-		$view=$this->getView("DataTable");
+		$view=$this->getView($tpl);
 		$view->with('search_widget',$this->getSearchWidget());
 		return $view;
 	}
