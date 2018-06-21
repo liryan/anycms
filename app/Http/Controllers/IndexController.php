@@ -15,6 +15,7 @@ class IndexController extends Controller
 	}
     public function anyIndex(Request $req)
     {
+        /*
 		$tag=$req->get('tag');
 		$type=$req->get('type');
 		$age=$req->get('age');
@@ -36,5 +37,6 @@ class IndexController extends Controller
 		}
 		$data=$query->take(10)->skip(0)->get();
         return $this->View('index')->with('data',$data);
+        */
     }
 }

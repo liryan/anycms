@@ -26,6 +26,7 @@ class ContentWidget extends Widget
 				$fields[]=$row;
 			}
 		}
+        $fields[]=array_pop(DataTable::$fields_it);
 		$view->with("fields",$fields);
 		$view->with("name",$name);
 		$view->with($urlconfig);
@@ -133,8 +134,11 @@ class ContentWidget extends Widget
             case DataTable::DEF_LIST:
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
-                    if($row->$rd['name']){
-                        $row->$rd['name']=$const_data[$row->$rd['name']];
+                    if($row->{$rd['name']}){
+                        $row->{$rd['name']}=$const_data[$row->{$rd['name']}];
+                    }
+                    else{
+                        $row->{$rd['name']}='';
                     }
                 }
                 break;
@@ -144,7 +148,7 @@ class ContentWidget extends Widget
                     if(!$row->$rd['name']){
                         continue;
                     }
-                    $ids=explode(",",$row->$rd['name']);
+                    $ids=explode(",",$row->{$rd['name']});
                     $tmp=[];
                     foreach($ids as $id){
                         $tmp[]=$const_data[$id];

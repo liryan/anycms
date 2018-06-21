@@ -126,8 +126,8 @@ function showContext(id){
 
 function requireConstData(id,constid){
 	$.get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
-		if(req.data.length==1)
-			return;
+		//if(req.data.length==1)
+		//	return;
 		if(id==0){
 			treepath.push({id:0,name:'所有'});
 		}

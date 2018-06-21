@@ -28,11 +28,11 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b style="width:600px">游戏漫画发行及运营平台</b></a>
+    <a href="../../index2.html"><b style="width:600px">后台数据管理系统</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">欢迎登录系统</p>
+    <p class="login-box-msg">欢迎登录</p>
 
     <form action="dologin" method="post">
       {{csrf_field()}}

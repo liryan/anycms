@@ -38,7 +38,7 @@ class UserController extends Controller
         $password=$req->get('password');
 		$user=Auth::attempt(['email'=>$req->get('email'),'password'=>$password]);
 		if(!$user){
-			//$res=DB::table("t_admin")->insert(['email'=>$req->get('email'),'password'=>Hash::make($password)]);
+			$res=DB::table("t_admin")->insert(['email'=>$req->get('email'),'password'=>Hash::make($password)]);
 			die('Password is Error');
 		}
 		else{

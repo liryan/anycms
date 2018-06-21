@@ -122,10 +122,12 @@
                         UploadFile.push({id:obj,url:data[obj],keyid:i});
                     }
                     else{
-                        for(i=0;i<data[obj].length;i++){
-                            d1.initialPreview.push("<img src='"+data[obj][i].url+"' style='height:60px;width:auto' class='file-preview-image'>");
-                            d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})
-                            UploadFile.push({id:obj,url:data[obj][i].url,keyid:i});
+                        if(Object.prototype.toString.call(data[obj])==='[object Array]'){
+                            for(i=0;i<data[obj].length;i++){
+                                d1.initialPreview.push("<img src='"+data[obj][i].url+"' style='height:60px;width:auto' class='file-preview-image'>");
+                                d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})
+                                UploadFile.push({id:obj,url:data[obj][i].url,keyid:i});
+                            }
                         }
                     }
 

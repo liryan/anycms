@@ -116,7 +116,6 @@ class ModelController extends AdminController
             //Redirect::to($this->getUrl());
         }
         if($req->ajax()){
-
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));

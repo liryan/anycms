@@ -99,6 +99,7 @@ class PrivilegeWidget extends Widget
     {
 		$view=$this->getDataTableView('TreeTable');
 		$view->with("name",$name);
+		$view->with("fields",Privileges::$fields);
 		$view->with($urlconfig);
 		$view->with('new_dialog',$html);
 		return $view->render();
