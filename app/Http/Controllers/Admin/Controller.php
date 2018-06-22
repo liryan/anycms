@@ -1,6 +1,6 @@
 <?php
+namespace App\Http\Controllers\Admin;
 
-namespace App\Http\Controllers;
 use Auth;
 use Redirect;
 use Illuminate\Foundation\Bus\DispatchesJobs;

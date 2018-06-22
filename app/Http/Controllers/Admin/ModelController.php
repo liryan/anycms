@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Config;
 use DB;
@@ -8,7 +8,7 @@ use App\Models\Member;
 use App\Models\DataTable;
 use App\Models\ConstDefine;
 use App\Http\Requests\MenuModify;
-use App\Http\Controllers\Widgets\ModelWidget;
+use App\Http\Controllers\Admin\Widgets\ModelWidget;
 
 class ModelController extends AdminController
 {

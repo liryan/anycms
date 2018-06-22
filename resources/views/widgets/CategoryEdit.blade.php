@@ -16,11 +16,11 @@
                       <input type="hidden" name="id" value="{{$id}}"/>
     	              <div class="form-group">
     					  <label for="exampleInputEmail1">栏目名字</label>
-    					  <input type="text" name="note" class="form-control" placeholder="请输入中文" value="">
+    					  <input type="text" name="name" class="form-control" placeholder="请输入中文" value="">
     				  </div>
     				  <div class="form-group">
     					  <label for="exampleInputEmail1">栏目标记</label>
-    					  <input type="text" name="name" class="form-control" placeholder="请输入字符" value="">
+    					  <input type="text" name="note" class="form-control" placeholder="请输入字符" value="">
     				  </div>
 					 <div class="form-group">
 						<label for="exampleInputEmail1">绑定模型</label>

@@ -9,8 +9,8 @@ class Category extends BaseSetting
 	//定义栏目列表字段以及新增栏目的字段
 	public static $cate_fields=[
 		['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
-		['name'=>'note','note'=>'栏目名字','comment'=>'请输入(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
-		['name'=>'name','note'=>'栏目字母','comment'=>'请输入(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'name','note'=>'栏目名字','comment'=>'请输入(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'note','note'=>'栏目字母','comment'=>'请输入(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
 		['name'=>'setting','note'=>'备注','comment'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
 		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
 		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]

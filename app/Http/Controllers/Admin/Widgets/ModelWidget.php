@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Widgets;
+namespace App\Http\Controllers\Admin\Widgets;
 
 use App\Models\DataTable;
 use Illuminate\Support\Facades\View;

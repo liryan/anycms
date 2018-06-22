@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Widgets;
+namespace App\Http\Controllers\Admin\Widgets;
 
 use App\Models\DataTable;
 use App\Models\Category;

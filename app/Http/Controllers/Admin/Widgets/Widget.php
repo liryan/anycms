@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Widgets;
+namespace App\Http\Controllers\Admin\Widgets;
 
 use App\Models\DataTable;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\Controller;
 use Illuminate\Support\Facades\View;
 
 class Widget extends Controller

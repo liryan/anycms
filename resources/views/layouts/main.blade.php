@@ -243,7 +243,7 @@
                 @if($row['subdata']=='>')
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-table"></i> <span>{{$row['note']}}</span>
+                        <i class="fa fa-table"></i> <span>{{$row['name']}}</span>
                         <span class="pull-right-container">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -252,7 +252,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['note']}}</a></li>
+                    <li class="active"><a href="/admin/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['name']}}</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
@@ -272,12 +272,11 @@
     <section class="content-header">
       <h1>
         主导航
-        <small>控制面板</small>
       </h1>
       <ol class="breadcrumb">
-          <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li><a href="/admin/index"><i class="fa fa-dashboard"></i> 主页</a></li>
         @foreach($breadcrumb as $row)
-        <li class="active"><a href="{{$row['url']}}">{{$row['note']}}</a></li>
+        <li><a href="{{$row['url']}}">{{$row['name']}}</a></li>
         @endforeach
       </ol>
     </section>

@@ -2,9 +2,10 @@
 namespace App\Http\Controllers;
 use DB;
 use Log;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
-class IndexController extends Controller
+class IndexController extends BaseController
 {
 	public function isStr($str)
 	{

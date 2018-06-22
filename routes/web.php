@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-function RouteController($prefix,$controller)
+function RouteController($prefix,$controller,$namespace='')
 {
 	$filter=function($type,$method_name,$repl_prefix=[]) use($prefix,$controller){
 		if(strcasecmp($method_name,"index")==0){
@@ -28,7 +28,7 @@ function RouteController($prefix,$controller)
 		}
 	};
 
-	$class = new ReflectionClass("\App\Http\Controllers\\".$controller);
+	$class = new ReflectionClass('\App\Http\Controllers\\'.$controller);
 	$all_methods=$class->getMethods(ReflectionMethod::IS_PUBLIC);
 	foreach($all_methods as $method){
 		$filter("get",$method->name);
@@ -39,15 +39,15 @@ function RouteController($prefix,$controller)
 
 
 Route::group(['prefix' => 'admin'], function () {
-	RouteController("/model","ModelController");
-	RouteController("/category","CategoryController");
-	RouteController("/content","ContentController");
-	RouteController("/const","ConstController");
-	RouteController("/privilege","PrivilegeController");
-	Route::get("/login","UserController@getLogin");
-	Route::post("/dologin","UserController@postDoLogin");
+	RouteController("/model","Admin\\ModelController");
+	RouteController("/category","Admin\\CategoryController");
+	RouteController("/content","Admin\\ContentController");
+	RouteController("/const","Admin\\ConstController");
+	RouteController("/privilege","Admin\\PrivilegeController");
+	Route::get("/login","Admin\\UserController@getLogin");
+	Route::post("/dologin","Admin\\UserController@postDoLogin");
 });
 
 RouteController("/index","IndexController");
-RouteController("/user","UserController");
+RouteController("/user","Admin\\UserController");
 Route::get('/',"IndexController@anyIndex");

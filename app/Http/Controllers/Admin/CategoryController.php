@@ -1,25 +1,27 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Config;
 use DB;
 use Illuminate\Http\Request;
 use App\Models\DataTable;
+use App\Models\Category;
 use App\Models\ConstDefine;
 use App\Http\Requests\MenuModify;
-use App\Http\Controllers\Widgets\ConstWidget;
+use App\Http\Controllers\Admin\Widgets\CategoryWidget;
 
-class ConstController extends AdminController
+class CategoryController extends AdminController
 {
+
     public function index(Request $req)
 	{
 		$id=$req->get("id",0);
-        $cate=new ConstDefine();
+        $cate=new Category();
         if($req->ajax()){
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
-            $result=$cate->consts($start,$length,$id);
+            $result=$cate->categories($start,$length,$id);
 			foreach($result['data'] as &$row){
 				$row['_internal_field']='';
 			}
@@ -33,11 +35,11 @@ class ConstController extends AdminController
         }
         else{
             $models=new DataTable();
-            $this->breadcrumb=$cate->getPath($id?$id:ConstDefine::TREE_CONST_ID);
+            $this->breadcrumb=$cate->getPath($id?$id:Category::CATEGORY_ID);
             foreach($this->breadcrumb as &$row){
                 $row['url']=$this->getUrl()."?id=".$row['id'];
             }
-            $const_widget=new ConstWidget();
+            $cat_widget=new CategoryWidget();
             $urlconfig=[
                 "url"=>$this->getUrl()."?id=$id",
                 "edit_url"=>$this->getUrl("modify"),
@@ -50,8 +52,8 @@ class ConstController extends AdminController
 				"models"=>$models->tables(0,200)['data'],
             ];
 
-            $dialog_html=$const_widget->showEditWidget($urlconfig);
-            $list_html=$const_widget->showListWidget("常量管理",$urlconfig,$dialog_html);
+            $dialog_html=$cat_widget->showEditWidget($urlconfig);
+            $list_html=$cat_widget->showListWidget("栏目管理",$urlconfig,$dialog_html);
             return $this->View("index")->with(
                 [
                     "table_widget"=>$list_html,
@@ -69,9 +71,9 @@ class ConstController extends AdminController
             return json_encode($re);
         }
         else{
-            $cate=new ConstDefine();
+            $cate=new Category();
             $re=$cate->getDataById($id);
-            $widgets=new ConstWidget();
+            $widgets=new CategoryWidget();
             $widgets->tranformSetting($re,false);
             $re['action']='edit';
             $re['_token']=csrf_token();
@@ -85,20 +87,20 @@ class ConstController extends AdminController
         $action=$req->get('action');
         switch($action){
             case "add":
-            $widget=new ConstWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'));
+            $widget=new CategoryWidget();
+            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
             $widget->tranformSetting($data,true);
-            $const=new ConstDefine();
-            $result=$const->addConst($id,$data);
+            $cate=new Category();
+            $result=$cate->addCategory($id,$data);
             return json_encode($result);
             break;
 
             case "edit":
-            $widget=new ConstWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'));
+            $widget=new CategoryWidget();
+            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
             $widget->tranformSetting($data,true);
-            $const=new ConstDefine();
-            $result=$const->editConst($id,$data);
+            $cate=new Category();
+            $result=$cate->editCategory($id,$data);
             return json_encode($result);
             break;
         }
@@ -106,8 +108,8 @@ class ConstController extends AdminController
     public function getDelete(Request $req)
     {
         $id=$req->get('id');
-        $cat=new ConstDefine();
-        $result=$cat->deleteConst($id);
+        $cat=new Category();
+        $result=$cat->deleteCat($id);
         if($result){
             return json_encode(Array('code'=>1));
         }

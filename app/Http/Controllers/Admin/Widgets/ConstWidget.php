@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Widgets;
+namespace App\Http\Controllers\Admin\Widgets;
 
 use App\Models\DataTable;
 use App\Models\Category;
+use App\Models\ConstDefine;
 use Illuminate\Support\Facades\View;
 
-class CategoryWidget extends Widget
+class ConstWidget extends Widget
 {
 	private static $DIALOG_ID=1;
 	public function showListWidget($name,$urlconfig,$new_dialog_html="")
 	{
 		$view=$this->getDataTableView();
 		$fields=[];
-		foreach(Category::$cate_fields as $row){
+		foreach(ConstDefine::$const_fields as $row){
 			if($row['listable']){
 				$fields[]=$row;
 			}
@@ -27,10 +28,10 @@ class CategoryWidget extends Widget
 
 	public function showEditWidget($urlconfig)
 	{
-		$view=$this->getView("CategoryEdit");
+		$view=$this->getView("ConstEdit");
 		$view->with($urlconfig);
 		$fields=[];
-		foreach(Category::$cate_fields as $row){
+		foreach(ConstDefine::$const_fields as $row){
 			if($row['editable']){
 				$fields[]=$row;
 			}
@@ -43,12 +44,6 @@ class CategoryWidget extends Widget
 		$result=[];
 		if($in){
 			$setting=[];
-			foreach(Category::$field_setting as $row){
-				if(!isset($data[$row['name']])){
-					$data[$row['name']]=0;
-				}
-				$setting[$row['name']]=$data[$row['name']];
-			}
 			$result['setting']=json_encode($setting);
 			$data['setting']=$result['setting'];
 		}

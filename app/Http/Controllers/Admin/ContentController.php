@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Config;
 use DB;
@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\DataTable;
 use App\Models\Category;
 use App\Models\ContentTable;
-use App\Http\Controllers\Widgets\ContentWidget;
+use App\Http\Controllers\Admin\Widgets\ContentWidget;
 use EasyThumb\EasyThumb;
 use Exception;
 class ContentController extends AdminController

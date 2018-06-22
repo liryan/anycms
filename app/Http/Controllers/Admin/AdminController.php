@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 use Auth;
 use Config;
 use App;
@@ -21,7 +21,6 @@ class AdminController extends BaseController
 	public function __construct()
 	{
         //修改admin认证的驱动
-        //修改
 		$this->middleware('auth');
 	}
     protected function user()
