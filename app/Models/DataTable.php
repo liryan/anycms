@@ -426,8 +426,7 @@ class DataTable extends BaseSetting
                 $re[]=$row;
             }
         }
-        $modeldata['columns']=$re;
-        $modeldata['info']=$modeldata;
-        return $modeldata;
+
+        return ['info'=>$modeldata,'columns'=>$re];
     }
 }

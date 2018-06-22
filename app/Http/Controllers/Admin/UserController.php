@@ -7,6 +7,7 @@ use App;
 use Hash;
 use Session;
 use Redirect;
+use App\Models\User;
 use App\Lib\CurlInterface;
 use Illuminate\Http\Request;
 use Illuminate\Auth\SessionGuard;
@@ -56,4 +57,5 @@ class UserController extends Controller
 			return redirect("login");
 		}
 	}
+
 }

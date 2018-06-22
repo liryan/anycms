@@ -21,6 +21,7 @@ class Category extends BaseSetting
 	];
 
 	const CATEGORY_ID=1;
+
 	public function categories($start,$length,$id=0)
 	{
 		if($id==0){
