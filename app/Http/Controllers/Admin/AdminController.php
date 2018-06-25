@@ -32,7 +32,9 @@ class AdminController extends BaseController
 
     protected function View($name)
     {
+        $path=explode("/",$_SERVER['REQUEST_URI']);
     	$view=View::make("templates.".$this->getClassName().".".$name);
+        $view->with("path",$path[2]);
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('categories',$this->getCategoryMenu());
         $view->with('username',$this->user()->name);
@@ -95,5 +97,24 @@ class AdminController extends BaseController
             $treedata['subdata']='|';
             $data[]=$treedata;
         }
+    }
+
+    protected function getValuesByPrefix($prefix,$onlyValues=true)
+    {
+        $data=[];
+        foreach($_POST as $k=>$v){
+            if(strpos($k,$prefix)!==false){
+                $key=str_replace($prefix,"",$k);
+                if($onlyValues){
+                    if($v && $key){
+                        $data[]=$key;
+                    }
+                }
+                else{
+                    $data[$key]=$k;
+                }
+            }
+        }
+        return $data;
     }
 }

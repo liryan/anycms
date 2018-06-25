@@ -53,4 +53,72 @@ class AccountController extends AdminController
             );
         }
     }
+
+    public function getView(Request $req)
+    {
+		if(!$req->ajax()){
+			//return;
+		}
+        $id=$req->get('id',0);
+		if($id==0){
+			$re['action']='add';
+			$re['_token']=csrf_token();
+			return json_encode($re);
+		}
+		else{
+            $user=new User();
+            $widgets=new UserWidget();
+            $re=$user->getUserData($id);
+            if(!$re){
+			    $re['action']='add';
+            }
+            else{
+			    $re['action']='edit';
+            }
+            //$widgets->translateToView($re);
+			$re['_token']=csrf_token();
+			return json_encode($re);
+		}
+    }
+
+    public function postModify(Request $req)
+    {
+        $id=$req->get("id",0);
+        $action=$req->get('action');
+        $roleids=$this->getValuesByPrefix("role_");
+        $data=Array('name'=>$req->get('name'),'role'=>implode(",",$roleids),"status"=>$req->get('status'));
+        switch($action){
+            case "add":
+            $user=new User();
+            $data['password']=$req->get('password');
+            $data['email']=$req->get('email');
+            $user=new User();
+            $result=$user->modifyUser(0,$data);
+            return json_encode($result);
+            break;
+
+            case "edit":
+            if($id == 0){
+                $result=['code'=>0,'msg'=>'操作停留超时请重新打开'];
+                return json_encode($result);
+            }
+            if($req->get('password')){
+                $data['password']=$req->get('password');
+            }
+            $user=new User();
+            $result=$user->modifyUser($id,$data);
+            return json_encode($result);
+            break;
+        }
+    }
+    public function getDelete(Request $req)
+    {
+        $id=$req->get('id');
+        $cat=new User();
+        $result=$cat->deleteById($id);
+        if($result){
+            return json_encode(Array('code'=>1));
+        }
+        return json_encode(Array('code'=>0,'msg'=>'删除失败'));
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use DB;
+use Hash;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -69,5 +70,49 @@ class User extends Authenticatable
             echo $e->getMessage();
             return Array('total'=>0,'data'=>[]);
         }
+    }
+
+    public function getUserData($id)
+    {
+        try{
+            $data=DB::table(self::$table_name)->where("id",$id)->first();
+            if($data){
+                $data=json_decode(json_encode($data),true);
+                $data['password']='';
+                return $data;
+            }
+            return null;
+        }
+        catch(\Illuminate\Database\QueryException $e){
+            return Array();
+        }
+    }
+
+    public function modifyUser($id,$data)
+    {
+        if(isset($data['password']) && $data['password']){
+            $data['password']=Hash::make($data['password']);
+        }
+        $data['updated_at']=date('Y-m-d H:i:s');
+        if($id ==0 ){
+            if(DB::table(self::$table_name)->where('email',$data['email'])->count()==0){
+                $data['created_at']=date('Y-m-d H:i:s');
+                DB::table(self::$table_name)->insert($data);
+                return Array('code'=>1,'msg'=>'添加成功');
+            }
+            return Array('code'=>0,'msg'=>'账号已存在');
+        }
+        else if($id >0 ){
+            DB::table(self::$table_name)->where('id',$id)->update($data);
+			return Array('code'=>1,'msg'=>'修改成功');
+        }
+        else{
+			return Array('code'=>0,'msg'=>'没有更改任何数据');
+        }
+    }
+
+    public function deleteById($id)
+    {
+        DB::table(self::$table_name)->where('id',$id)->delete();
     }
 }

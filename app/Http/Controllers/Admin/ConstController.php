@@ -34,7 +34,6 @@ class ConstController extends AdminController
         else{
             $models=new DataTable();
             $this->breadcrumb=$cate->getPath($id?$id:ConstDefine::TREE_CONST_ID);
-            print_r($this->breadcrumb);
             foreach($this->breadcrumb as &$row){
                 $row['url']=$this->getUrl()."?id=".$row['id'];
             }

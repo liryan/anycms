@@ -15,23 +15,31 @@
                       <input type="hidden" name="_token" />
                       <input type="hidden" name="id" value="{{$id}}"/>
     	              <div class="form-group">
-    					  <label for="exampleInputEmail1">名字</label>
+    					  <label for="exampleInputName">名字</label>
     					  <input type="text" name="name" class="form-control" placeholder="请输入昵称" value="">
     				  </div>
     	              <div class="form-group">
     					  <label for="exampleInputEmail1">邮件</label>
-    					  <input type="text" name="name" class="form-control" placeholder="请输入账号" value="">
+    					  <input type="text" name="email" class="form-control" placeholder="请输入账号" value="">
     				  </div>
     				  <div class="form-group">
-    					  <label for="exampleInputEmail1">密码</label>
-    					  <input type="text" name="note" class="form-control" placeholder="请输入字符" value="">
+    					  <label for="exampleInputPassword">密码</label>
+    					  <input type="text" name="password" class="form-control" placeholder="请输入字符" value="">
     				  </div>
 					 <div class="form-group">
-						<label for="exampleInputEmail1">绑定角色</label>
-                        <input type="checkbox" value="0">管理员
+						<label for="exampleRole">冻结?</label>
+                        <select name="status">
+                            <option value="0">冻结</option>
+                            <option value="1">正常</option>
+                        </select>
+					 </div>
+					 <div class="form-group">
+                        <label for="exampleRole">绑定角色</label>
+                        <p>
                         @foreach($roles as $row)
-                        <input type="checkbox" value="{{$row['id']}}">{{$row['note']}}
+                        <input type="checkbox" name="role_{{$row['id']}}" value="{{$row['id']}}">{{$row['name']}}
                         @endforeach
+                        </p>
 					 </div>
                   </form>
               </div>
@@ -50,5 +58,6 @@ $(function(){
 });
 
 beforeFillForm=function(data){
+
 }
 </script>

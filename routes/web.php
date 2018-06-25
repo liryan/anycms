@@ -45,10 +45,10 @@ Route::group(['prefix' => 'admin'], function () {
 	RouteController("/const","Admin\\ConstController");
 	RouteController("/privilege","Admin\\PrivilegeController");
 	RouteController("/account","Admin\\AccountController");
+	RouteController("/personal","Admin\\PersonalController");
 	Route::get("/login","Admin\\UserController@getLogin");
+	Route::get("/logout","Admin\\UserController@getLogin");
 	Route::post("/dologin","Admin\\UserController@postDoLogin");
 });
 
-RouteController("/index","IndexController");
-RouteController("/user","Admin\\UserController");
 Route::get('/',"IndexController@anyIndex");

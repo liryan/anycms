@@ -76,7 +76,7 @@ class Privileges extends BaseSetting{
     public static function loadData($userid)
     {
         $userdata=DB::table('t_admin')->where('id',$userid)->first();
-        $roles=$userdata->roles;
+        $roles=$userdata->role;
         if($roles){
             $roles=explode(",",$roles);
         }

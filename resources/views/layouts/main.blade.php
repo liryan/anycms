@@ -217,18 +217,30 @@
         <li class="header">导航</li>
         <li class="active treeview">
           <a href="#">
+            <i class="fa fa-folder-o"></i> <span>个人面板</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li @if($path=="welcome") class="active" @endif><a href="/admin/personal"><i class="fa fa-coffee"></i>工作台</a></li>
+            <li @if($path=="setting") class="active" @endif><a href="/admin/personal/setting"><i class="fa fa-cog"></i>设置</a></li>
+            <li @if($path=="profile") class="active" @endif><a href="/admin/personal/profile"><i class="fa fa-user"></i>账户</a></li>
+          </ul>
+        </li>
+        <li class="active treeview">
+          <a href="#">
             <i class="fa fa-folder-o"></i> <span>系统面板</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li class="active"><a href="/admin/model"><i class="fa fa-table"></i>模型管理</a></li>
-            <li><a href="/admin/const"><i class="fa fa-bars"></i>常量管理</a></li>
-            <li><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
-            <li><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>权限管理</a></li>
-            <li><a href="/admin/privilege"><i class="fa fa-user-plus"></i>角色管理</a></li>
-            <li><a href="/admin/account"><i class="fa fa-user-plus"></i>账号管理</a></li>
+            <li @if($path=="model") class="active" @endif><a href="/admin/model"><i class="fa fa-table"></i>模型管理</a></li>
+            <li @if($path=="const") class="active" @endif><a href="/admin/const"><i class="fa fa-bars"></i>常量管理</a></li>
+            <li @if($path=="category") class="active" @endif><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
+            <li @if($path=="privilege") class="active" @endif><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>角色管理</a></li>
+            <li @if($path=="account") class="active" @endif><a href="/admin/account"><i class="fa fa-user-plus"></i>账号管理</a></li>
           </ul>
         </li>
         <li class="active treeview">
