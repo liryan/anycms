@@ -20,7 +20,6 @@ class Controller extends BaseController
     	return $view;
     }
 
-
     protected function getClassName()
     {
     	$class_name=get_class($this);
@@ -39,34 +38,28 @@ class Controller extends BaseController
     protected function widget($name){
         return View::make("widgets.".$name);
     }
-    /**
-     * 获取列表后面的权限
-     * @method FilterTablePrivileges
-     * @param  [type]                $data [description]
-     */
-    protected function getCategoryMenu()
+
+    protected function ajax($code,$msg,$data=[])
     {
-        $cate=new Category();
-        $data=$cate->getAllCategory();
-        $re=[];
-        $this->treeToArray($re,$data[0]);
-        return $re;
+        return json_encode(['code'=>$code,'msg'=>$msg,'data'=>$data]);
     }
 
-    protected function treeToArray(&$data,$treedata)
+    protected function getValuesByPrefix($prefix,$onlyValues=true)
     {
-        $subdata=isset($treedata['subdata'])?$treedata['subdata']:[];
-        if(is_array($subdata) && sizeof($subdata)>0){
-            $treedata['subdata']='>';
-            $data[]=$treedata;
-            foreach($subdata as $sub){
-                $this->treeToArray($data,$sub);
+        $data=[];
+        foreach($_POST as $k=>$v){
+            if(strpos($k,$prefix)!==false){
+                $key=str_replace($prefix,"",$k);
+                if($onlyValues){
+                    if($v && $key){
+                        $data[]=$key;
+                    }
+                }
+                else{
+                    $data[$key]=$k;
+                }
             }
-            $data[]=['note'=>'close','subdata'=>'<'];
         }
-        else{
-            $treedata['subdata']='|';
-            $data[]=$treedata;
-        }
+        return $data;
     }
 }

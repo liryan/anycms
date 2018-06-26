@@ -137,7 +137,34 @@ class PrivilegeController extends AdminController
             $this->readNode($row,$re);
         } 
         $view=$this->View("pri");
-        $menu=Array(['name'=>'频道管理','note'=>"/admin/category"]);
-        return $view->with("pricats",$re)->with('primodels',$models['data']);
+        return $view->with("pricats",$re)
+            ->with('primodels',$models['data'])
+            ->with("roleid",$req->get('id'))
+            ->with("rolepri_url",$this->geturl("rolepri"))
+            ->with("modifypri_url",$this->geturl("modifypri"));
+    }
+
+    public function getRolepri(Request $req)
+    {
+        $pridb=new Privileges();
+        $data=$pridb->loadRoleDefine($req->get('id'));
+        $data['id']=$req->get('id');
+        return json_encode($data);
+    }
+
+    public function postModifypri(Request $req)
+    {
+        $roleid=$req->get('id');
+        $pridb=new Privileges();
+        $data=[];
+        foreach($req->all() as $k=>$v){
+            $pridb->transferForm($data,$k,$v,false);
+        }
+        $result=$pridb->updateRolePri($roleid,$data);
+        if($result){
+            return json_encode(Array('code'=>1,'msg'=>"成功修改角色权限"));
+        }
+        return json_encode(Array('code'=>"0",'msg'=>"修改失败，可能您没做任何修改"));
+
     }
 }

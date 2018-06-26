@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin'], function () {
 	RouteController("/privilege","Admin\\PrivilegeController");
 	RouteController("/account","Admin\\AccountController");
 	RouteController("/personal","Admin\\PersonalController");
+	Route::get("/index","Admin\\PersonalController@index");
 	Route::get("/login","Admin\\UserController@getLogin");
 	Route::get("/logout","Admin\\UserController@getLogin");
 	Route::post("/dologin","Admin\\UserController@postDoLogin");

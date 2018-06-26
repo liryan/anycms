@@ -8,6 +8,7 @@ use Hash;
 use Session;
 use Redirect;
 use App\Models\User;
+use App\Models\Privileges;
 use App\Lib\CurlInterface;
 use Illuminate\Http\Request;
 use Illuminate\Auth\SessionGuard;
@@ -39,11 +40,20 @@ class UserController extends Controller
         $password=$req->get('password');
 		$user=Auth::attempt(['email'=>$req->get('email'),'password'=>$password]);
 		if(!$user){
-			$res=DB::table("t_admin")->insert(['email'=>$req->get('email'),'password'=>Hash::make($password)]);
-			die('Password is Error');
+            $obj=$this->ajax(0,'密码或账号错误');
+            return $obj;
 		}
 		else{
-			return Redirect::to($url);
+            $role=Auth::user()->role;
+            $pridb=new Privileges();
+            $data=$pridb->loadUserPri($role,null);
+            session()->put('pridata',$data);
+            if($url){
+                return $this->ajax(1,'',['url'=>$url]);
+            }
+            else{
+                return $this->ajax(1,'',['url'=>"/admin/index"]);
+            }
 		}
 	}
 

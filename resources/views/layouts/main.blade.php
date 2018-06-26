@@ -344,22 +344,6 @@
   <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
-
-
-<!-- Morris.js charts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="/adminlte/plugins/morris/morris.min.js"></script>
-<!-- Sparkline -->
-<script src="/adminlte/plugins/sparkline/jquery.sparkline.min.js"></script>
-<!-- jvectormap -->
-<script src="/adminlte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-<script src="/adminlte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="/adminlte/plugins/knob/jquery.knob.js"></script>
-<!-- Slimscroll -->
-<script src="/adminlte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/adminlte/plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/app.min.js"></script>
 </body>

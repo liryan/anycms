@@ -11,8 +11,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use App\Models\Privileges;
 use App\Models\Category;
-class AdminController extends BaseController
+class AdminController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $breadcrumb; //面包屑导航数组
@@ -33,7 +34,7 @@ class AdminController extends BaseController
     protected function View($name)
     {
         $path=explode("/",$_SERVER['REQUEST_URI']);
-    	$view=View::make("templates.".$this->getClassName().".".$name);
+    	$view=parent::View($name);
         $view->with("path",$path[2]);
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('categories',$this->getCategoryMenu());
@@ -41,44 +42,63 @@ class AdminController extends BaseController
     	return $view;
     }
 
-    protected function getClassName()
-    {
-    	$class_name=get_class($this);
-    	$path=explode("\\",$class_name);
-    	if($path){
-    		$class_name=array_pop($path);
-    	}
-    	return str_replace("controller","",strtolower($class_name));
-    }
-
     protected function getUrl($method='')
     {
         return '/'.$this->prefix."/".$this->getClassName().'/'.strtolower($method);
     }
 
-    protected function widget($name){
+
+    protected function widget($name)
+    {
         return View::make("widgets.".$name);
     }
+
     /**
      * 获取列表后面的权限
      * @method FilterTablePrivileges
-     * @param  [type]                $data [description]
+     * @param  [type] $data [description]
      */
     protected function FilterTablePrivileges()
     {
         return "11111";
     }
 
+    protected function filterCategory(&$row)
+    {
+        $pridb=new Privileges();
+        if(isset($row['subdata']) && is_array($row['subdata'])>0){
+            foreach($row['subdata'] as $k=>&$r){
+                if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
+                    unset($row['subdata'][$k]);
+                }
+                else{
+                    $this->filterCategory($r);
+                }
+            }
+        }
+    }
+
     protected function getCategoryMenu()
     {
+        $pridb=new Privileges();
+        $pridb->loadUserPri("",session()->get('pridata'));
         $cate=new Category();
         $data=$cate->getAllCategory();
         if(!$data){
             $data=Array();
         }
         $re=[];
-        foreach($data as $row)
+        foreach($data as $k=>&$r){
+            if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
+                unset($data[$k]);
+            }
+            else{
+                $this->filterCategory($r);
+            }
+        }
+        foreach($data as $row){
             $this->treeToArray($re,$row);
+        }
         return $re;
     }
 
@@ -98,23 +118,7 @@ class AdminController extends BaseController
             $data[]=$treedata;
         }
     }
-
-    protected function getValuesByPrefix($prefix,$onlyValues=true)
-    {
-        $data=[];
-        foreach($_POST as $k=>$v){
-            if(strpos($k,$prefix)!==false){
-                $key=str_replace($prefix,"",$k);
-                if($onlyValues){
-                    if($v && $key){
-                        $data[]=$key;
-                    }
-                }
-                else{
-                    $data[$key]=$k;
-                }
-            }
-        }
-        return $data;
-    }
+    /**
+     * getValuesByPriefix
+     */
 }

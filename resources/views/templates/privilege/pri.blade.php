@@ -1,7 +1,9 @@
 @extends('layouts.main')
 @section('title', '权限管理')
 @section('content')
-<form>
+@require_once('<script src="/adminlte/plugins/jQuery/jquery.formautofill.min.js"></script>')
+@require_once('<script src="/adminlte/plugins/jQuery/jquery.form.js"></script>')
+<form method="post" id="pri_form">
 <div class="box">
     <!-- category start -->
     <div class="box-header">
@@ -21,7 +23,12 @@
           <td>{{$row['name']}}</td>
           <td>{{$row['note']}}</td>
           <td>
-            <div class="checkbox"><label><input type="checkbox" name="cat_{{$row['id']}}" value="1"/>显示</label></div>
+            <div class="checkbox">
+                <label><input type="checkbox" name="view_{{$row['id']}}" value="1"/>显示</label>
+                <input type="hidden" name="add_{{$row['id']}}" value="0"/>
+                <input type="hidden" name="edit_{{$row['id']}}" value="0"/>
+                <input type="hidden" name="del_{{$row['id']}}" value="0"/>
+            </div>
           </td>
         </tr>
         @endforeach
@@ -47,9 +54,10 @@
           <td>{{$row['name']}}</td>
           <td>{{$row['note']}}</td>
           <td>
+            <span class="checkbox" style="float:left;margin-top:0px"><label><input name="view_{{$row['id']}}" type="checkbox" value=1 />可列表</label></span>
             <span class="checkbox" style="float:left;margin-top:0px"><label><input name="add_{{$row['id']}}" type="checkbox" value=1 />可增加</label></span>
-            <span class="checkbox" style="float:left;margin-top:0px"><label><input name="del_{{$row['id']}}" type="checkbox" value=1 />可删除</label></span>
             <span class="checkbox" style="float:left;margin-top:0px"><label><input name="edit_{{$row['id']}}"type="checkbox" value=1 />可修改</label></span>
+            <span class="checkbox" style="float:left;margin-top:0px"><label><input name="del_{{$row['id']}}" type="checkbox" value=1 />可删除</label></span>
           </td>
         </tr>
         @endforeach
@@ -58,5 +66,29 @@
     </div>
     <!-- model end -->
 </div>
+<button type="submit" class="btn btn-primary">提交修改</button>
+<input type="hidden" name="id" value="{{$roleid}}" />
+<input type="hidden" name="_token" value="{{csrf_token()}}" />
 </form>
+
+<script type="text/javascript">
+$(function(){
+    $.get("{{$rolepri_url}}?id={{$roleid}}",function(rep){
+        dt=rep;
+        $("#pri_form").autofill(dt);
+    },'json');
+
+    $('#pri_form').ajaxForm({
+        url:'{{$modifypri_url}}',
+        dataType:'json',
+        success:function(rep){
+             alert(rep.msg);
+        }
+    });
+
+});
+
+
+
+</script>
 @endsection

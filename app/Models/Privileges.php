@@ -13,7 +13,7 @@ class Privileges extends BaseSetting{
 
     const ROLE_ID=5;
     const MENU_ID=2;
-
+    private $table_name="t_acl";
     private $priData;
     public static $fields=[
 		['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
@@ -21,81 +21,95 @@ class Privileges extends BaseSetting{
 		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
 		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11110','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
     ];
-    /**
-     * priData=>Array('pri'=>1111,tablename=>'table',fields=>['fieldname1'=>1111,'fieldname2=>1111])
-     */
+
     private static $all_privileges=[];
 
-    public function init($data)
+    public function checkPri($itemid,$value)
     {
-        $this->priData=json_decode($data,true);
+        if(!isset(self::$all_privileges[$itemid])){
+            return false;
+        }
+        $data=self::$all_privileges[$itemid];
+
+        if($value>=self::MAX_PRI || $value<0){
+            return false;
+        }
+        return $data[$value]==1;
+    }
+    /**
+     * function transferForm
+     * role define transfrom from DB to form or form to DB
+     * @fromDB true:data is from DB,show in form,false:data from from and save to DB
+     * @data will fill this object ,that equals return
+     */
+    public function transferForm(&$data,$key,$value,$fromDB)
+    {
+        $config=Array(
+            "view"=>self::VIEW,
+            "add"=>self::ADD,
+            "edit"=>self::EDIT,
+            "del"=>self::DELETE
+        );
+
+        if($fromDB){
+            foreach($config as $label=>$bit){
+                if(strlen($value) > $bit){
+                    $data[$label."_".$key]=$value[$bit];
+                }
+            }
+        }
+        else{
+            $keys=explode("_",$key);
+            if(sizeof($keys)!=2){
+                return;
+            }
+            if(!isset($config[$keys[0]])){
+                return;
+            }
+            $label=$keys[0];
+            $bit=$config[$label];
+            $id=$keys[1];
+            if(!isset($data[$id])){
+                $data[$id]="00000";
+            }
+            $data[$id][$bit]=$value;
+        }
+    }
+    /**
+     * load a role's define
+     */
+    public function loadRoleDefine($roleid)
+    {
+        $data=[];
+        $rows=DB::table($this->table_name)->where("roleid",$roleid)->get();
+        if($rows){
+            foreach($rows as $role){
+                $this->transferForm($data,$role->priitem,$role->value,true);
+            }
+        }
+        return $data;
     }
 
     /**
-     * filterField 
-     * remove the rows that no privlege to operate 
-     * @param mixed $oppri 
-     * @param mixed $data 
-     * @access public
-     * @return void
+     * load one's privileges,this is administrator,not a role
      */
-    public function filterField($oppri,$data)
+    public function loadUserPri($roles,$cacheData=[])
     {
-        if($this->priData && isset($this->priData['fields']) && $this->priData['fields']){
-            $result=[];
-            foreach($data as $k=>$v){
-                if(isset($this->priData['fields'][$k])){
-                    $pri=$this->priData['fields'][$k];   
-                    if($this->checkPri($oppri,$pri)){
-                        $result[$k]=$v;
-                    }
-                }
-            }
-            return $result;
+        if($cacheData){
+            static::$all_privileges=$cacheData;
         }
-        return $data;
-    } 
-
-    private function checkPri($pri,$data)
-    {
-        if($pri>=self::$MAX_PRI || $pri<0){
-            return false;
-        }
-
-        if($data){
-            return $data[$pri]==1;
-        }
-        return false;
-    }
-
-    public function checkMenuPri($pri)
-    {
-        return $this->checkPri($pri,$this->priData['pri']);
-    }
-
-    public static function loadData($userid)
-    {
-        $userdata=DB::table('t_admin')->where('id',$userid)->first();
-        $roles=$userdata->role;
         if($roles){
             $roles=explode(",",$roles);
         }
         else{
             $roles=[];
         }
-        foreach($roles as $role){
-            $roledata=DB::table('t_acl')->whereIn('id',$role)->get();
-            $pri_ids=[];
-            foreach($roledata as $r){
-                $pri_ids[]=$r->priid;
-            }
-            $pri=DB::table('setting')->whereIn('id',$pri_ids)->get();
-            foreach($pri as $p){
-                $setting=json_decode($p->setting,true);
-                //$setting=Array('menuid'=>1,'pridata'=>Array('pri'=>1111,fields=>['fieldname'=>11111,....]));
-                static::$all_privileges[$setting['menuid']]=$setting['pridata'];
-            }
+
+        $roledata=DB::table($this->table_name)->whereIn('roleid',$roles)->get();
+        foreach($roledata as $r){
+            static::$all_privileges[$r->priitem]=$r->value;
         }
+        return static::$all_privileges;
     }
 
     public function getRoles($start,$length,$id=0)
@@ -142,7 +156,7 @@ class Privileges extends BaseSetting{
 
     public function deleteRole($id)
     {
-        DB::table('t_acl')->where('roleid',$id)->delete(); 
+        DB::table($this->table_name)->where('roleid',$id)->delete(); 
         $result=$this->deleteData($id);
         return $result;
     }
@@ -161,33 +175,19 @@ class Privileges extends BaseSetting{
 		$data=$this->getDataPageByParentId($id,$start,$length);
 		return Array('total'=>$total,'data'=>$data);
     }
-
-    public function addMenu($parentid,$data)
+    /**
+     * @data Array('itemid'=>'value');
+     */
+    public function updateRolePri($roleid,$data)
     {
-          
-    }
-
-    public function editMenu($id,$data)
-    {
-
-    }
-
-    public function deleteMenu($id)
-    {
-
-    }
-
-    public function addPri()
-    {
-
+        if($roleid <=0 )
+            return false;
+        $rows=[];
+        foreach($data as $k=>$v){
+            $rows[]=['roleid'=>$roleid,'priitem'=>$k,'value'=>$v,'updated_at'=>date('Y-m-d H:i:s'),'created_at'=>date('Y-m-d H:i:s')];
+        }
+        DB::table($this->table_name)->where('roleid',$roleid)->delete();
+        $result=DB::table($this->table_name)->insert($rows);
+        return $result;
     }    
-
-    public function editPri()
-    {
-    }    
-
-    public function deletePri()
-    {
-    }    
-
 }
