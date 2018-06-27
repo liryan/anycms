@@ -226,11 +226,11 @@ class DataTable extends BaseSetting
             }
             else{
                 DB::statement("drop table `$tbname`");
-                $result=$this->deleteData($tableid);
+                $result=$this->deleteData($tableid,true);
             }
         }
         else{
-            $result=$this->deleteData($tableid);
+            $result=$this->deleteData($tableid,true);
         }
         return true;
 	}

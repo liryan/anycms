@@ -13,6 +13,11 @@ class Privileges extends BaseSetting{
 
     const ROLE_ID=5;
     const MENU_ID=2;
+
+    const MENU_USR_ID=10;
+    const MENU_SYS_ID=11;
+
+    const ADMIN_ROLE=20;
     private $table_name="t_acl";
     private $priData;
     public static $fields=[
@@ -172,7 +177,7 @@ class Privileges extends BaseSetting{
 			$length=20;
 		}
 		$total=$this->getCount($id);
-		$data=$this->getDataPageByParentId($id,$start,$length);
+		$data=$this->getDataPageByParentId(11,$start,$length);
 		return Array('total'=>$total,'data'=>$data);
     }
     /**

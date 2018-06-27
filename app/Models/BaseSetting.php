@@ -4,8 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * BaseSetting 
+ * 
+ * @uses BaseModel
+ * @package admlite
+ * @version beta-0.0.1
+ * @copyright free copyright
+ * @author RYan <canbetter@outlook.com> 
+ * @license MIT
+ */
 class BaseSetting extends BaseModel
 {
+    public const SYS_ID_LIMIT=100;
     protected $table = 't_setting';
 	/**
 	 * [getDataPageByParentId 获取某个ID下面的所有的子节点]
@@ -108,8 +119,22 @@ class BaseSetting extends BaseModel
         return $this->where("id",$id)->update($data);
 	}
 
-	protected function deleteData($id)
+	/**
+	 * deleteData forbid delete system var
+	 * 
+	 * @param mixed $id 
+	 * @param mixed $includeChild 
+	 * @access protected
+	 * @return void
+	 */
+	protected function deleteData($id,$includeChild=false)
 	{
+        if($id < self::SYS_ID_LIMIT){
+            return false;
+        }
+        if($includeChild){
+            $this->where("parentid",$id)->delete();
+        }
         return $this->where("id",$id)->delete();
 	}
     /**

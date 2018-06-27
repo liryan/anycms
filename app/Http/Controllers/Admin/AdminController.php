@@ -24,6 +24,7 @@ class AdminController extends Controller
         //修改admin认证的驱动
 		$this->middleware('auth');
 	}
+
     protected function user()
     {
         if(!$this->user)
@@ -31,12 +32,36 @@ class AdminController extends Controller
         return $this->user;
     }
 
+    protected function requireAuth($menu,$model)
+    {
+
+    }
+    protected function getShortPath()
+    {
+        $path=explode("?",$_SERVER['REQUEST_URI']);
+        $path=explode("/",$path[0]);
+        $curpath="";
+        $counter=0;
+        foreach($path as $p){
+            if(!$p){
+                continue;
+            }
+            $counter++;
+            $curpath.="/".$p;
+            if($counter >= 2){
+                break;
+            }
+        }
+        return $curpath;
+    }
+
     protected function View($name)
     {
-        $path=explode("/",$_SERVER['REQUEST_URI']);
     	$view=parent::View($name);
-        $view->with("path",$path[2]);
+        $view->with("path",$this->getShortPath());
+        $view->with("admin",session()->get('admin'));
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
+        $view->with('sys_menus',$this->getMenu(true));
         $view->with('categories',$this->getCategoryMenu());
         $view->with('username',$this->user()->name);
     	return $view;
@@ -78,22 +103,31 @@ class AdminController extends Controller
         }
     }
 
-    protected function getCategoryMenu()
+    protected function getMenu($isSystem)
     {
         $pridb=new Privileges();
-        $pridb->loadUserPri("",session()->get('pridata'));
+        $menus=$pridb->getMenus($isSystem?Privileges::MENU_SYS_ID:Privileges::MENU_USR_ID,0,100);
+        return $menus['data'];
+    }
+
+    protected function getCategoryMenu()
+    {
         $cate=new Category();
         $data=$cate->getAllCategory();
         if(!$data){
             $data=Array();
         }
         $re=[];
-        foreach($data as $k=>&$r){
-            if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
-                unset($data[$k]);
-            }
-            else{
-                $this->filterCategory($r);
+        if(session()->get('admin')==0){
+            $pridb=new Privileges();
+            $pridb->loadUserPri("",session()->get('pridata'));
+            foreach($data as $k=>&$r){
+                if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
+                    unset($data[$k]);
+                }
+                else{
+                    $this->filterCategory($r);
+                }
             }
         }
         foreach($data as $row){
@@ -121,4 +155,13 @@ class AdminController extends Controller
     /**
      * getValuesByPriefix
      */
+    protected function error(Request $req,$msg)
+    {
+        if($req->ajax()){
+            return $this->ajax(0,$msg);
+        }
+        else{
+            return $this->View('/common.error')->with('msg',$msg);
+        }
+    }
 }

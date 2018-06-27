@@ -228,6 +228,7 @@
             <li @if($path=="profile") class="active" @endif><a href="/admin/personal/profile"><i class="fa fa-user"></i>账户</a></li>
           </ul>
         </li>
+        @if($admin==1)
         <li class="active treeview">
           <a href="#">
             <i class="fa fa-folder-o"></i> <span>系统面板</span>
@@ -236,13 +237,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li @if($path=="model") class="active" @endif><a href="/admin/model"><i class="fa fa-table"></i>模型管理</a></li>
-            <li @if($path=="const") class="active" @endif><a href="/admin/const"><i class="fa fa-bars"></i>常量管理</a></li>
-            <li @if($path=="category") class="active" @endif><a href="/admin/category"><i class="fa fa-sitemap"></i>频道管理</a></li>
-            <li @if($path=="privilege") class="active" @endif><a href="/admin/privilege"><i class="fa fa-graduation-cap"></i>角色管理</a></li>
-            <li @if($path=="account") class="active" @endif><a href="/admin/account"><i class="fa fa-user-plus"></i>账号管理</a></li>
+            @foreach($sys_menus as $menu)
+            <li @if($path==$menu['note']) class="active" @endif><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>{{$menu['name']}}</a></li>
+            @endforeach
           </ul>
         </li>
+        @endif
         <li class="active treeview">
           <a href="#">
             <i class="fa fa-folder-o"></i> <span>内容管理</span>

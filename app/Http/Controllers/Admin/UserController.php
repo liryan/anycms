@@ -46,8 +46,14 @@ class UserController extends Controller
 		else{
             $role=Auth::user()->role;
             $pridb=new Privileges();
-            $data=$pridb->loadUserPri($role,null);
-            session()->put('pridata',$data);
+            if($role==Privileges::ADMIN_ROLE){
+                session()->put('admin',1);
+            }
+            else{
+                $data=$pridb->loadUserPri($role,null);
+                session()->put('pridata',$data);
+                session()->put('admin',0);
+            }
             if($url){
                 return $this->ajax(1,'',['url'=>$url]);
             }

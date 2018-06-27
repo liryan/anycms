@@ -111,6 +111,7 @@ class AccountController extends AdminController
             break;
         }
     }
+
     public function getDelete(Request $req)
     {
         $id=$req->get('id');

@@ -2,28 +2,18 @@
 ##运行
 git clone https://gitee.com/canbetter/anycms
 
-#初始化安装
-
-mysql -u root -p <./database/admlite.sql
-
-修改.env数据库配置
-
-执行composer dump
-=======
 
 ### 通用CMS管理系统，基于Laravel框架+PHP+MySQL开发
 
- _运行_ 
+#下载
 
 `git clone https://gitee.com/canbetter/anycms`
 
- _初始化安装_ 
+#初始化安装
 
-`mysql -u root -p <./database/admlite.sql`
+1.运行　composer dump
 
- _修改.env数据库配置_ 
+2.修改.env文件中的DB_HOST,DB_USER,DB_PASSWORD配置数据库
 
- _执行_ 
-
-`composer dump`
+3.运行　./artisan install ./database/admlite.sql 倒入数据表,此处的dbname和.env中要保持一直
 

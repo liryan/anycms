@@ -6,16 +6,20 @@ use DB;
 use Illuminate\Http\Request;
 use App\Models\DataTable;
 use App\Models\Category;
+use App\Models\Privileges;
 use App\Models\ContentTable;
 use App\Http\Controllers\Admin\Widgets\ContentWidget;
 use EasyThumb\EasyThumb;
 use Exception;
 class ContentController extends AdminController
 {
+    private $pridb;
     public function __construct()
     {
         parent::__construct();
+        $pridb=new Privileges();
     }
+
 	public function index(Request $req)
 	{
 		$id=$req->get("id",0);
@@ -23,7 +27,9 @@ class ContentController extends AdminController
 		$dt=new DataTable();
 		$modelid=$cate->getModelId($id);
 		$table_define=$dt->tableColumns($modelid);
-
+        if(!$this->pridb->checkPri($id,Privileges::VIEW)){
+            return $this->error($req,'权限不足');
+        }
         if($req->ajax()){
             $start=$req->get('start');
             $length=$req->get('length');
@@ -79,6 +85,11 @@ class ContentController extends AdminController
 		}
         $id=$req->get('id',0);
 		$catid=$req->get("catid",0);
+
+        if(!$this->pridb->checkPri($catid,Privileges::VIEW)){
+            return $this->error($req,'权限不足');
+        }
+
 		$cate=new Category();
 		$dt=new DataTable();
 		$modelid=$cate->getModelId($catid);
@@ -102,6 +113,9 @@ class ContentController extends AdminController
     public function postModify(Request $req)
     {
 		$catid=$req->get("catid",0);
+        if(!$this->pridb->checkPri($catid,Privileges::VIEW)){
+            return $this->error($req,'权限不足');
+        }
 		$cate=new Category();
 		$dt=new DataTable();
 		$modelid=$cate->getModelId($catid);
@@ -112,8 +126,12 @@ class ContentController extends AdminController
         $data['category']=$catid;
         $result=0;
         $re=['code'=>0,'msg'=>'未知的操作'];
+        $pridb=new Privileges();
         switch($act){
         case 'edit':
+            if(!$this->pridb->checkPri($modelid,Privileges::EDIT)){
+                return $this->error($req,'权限不足');
+            }
             $dt->filterForEdit($data);
             $content=new ContentTable();
             $contentid=$req->get('id');
@@ -121,6 +139,9 @@ class ContentController extends AdminController
             $re=['code'=>$result?1:0,'msg'=>$result?"成功修改数据":"修改失败了"];
             break;
         case 'add':
+            if(!$this->pridb->checkPri($modelid,Privileges::ADD)){
+                return $this->error($req,'权限不足');
+            }
             $content=new ContentTable();
             $result=$content->addContent($table_define,$data);
             $re=['code'=>$result?1:0,'msg'=>$result?"成功增加数据":"增加失败了"];
@@ -226,6 +247,10 @@ class ContentController extends AdminController
         $catid=$req->get("catid");
 		$modelid=$cate->getModelId($catid);
 		$table_define=$dt->tableColumns($modelid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::DELETE)){
+            return $this->error($req,'权限不足');
+        }
 
         $content=new ContentTable();   
         $id=$req->get("id");

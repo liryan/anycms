@@ -16,7 +16,14 @@ class Controller extends BaseController
 
     protected function View($name)
     {
-    	$view=View::make("templates.".$this->getClassName().".".$name);
+        $view='';
+        if($name[0]=='/'){
+            $name=trim($name,"/");
+    	    $view=View::make("templates.".$name);
+        }
+        else{
+    	    $view=View::make("templates.".$this->getClassName().".".$name);
+        }
     	return $view;
     }
 
