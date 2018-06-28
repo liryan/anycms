@@ -16,11 +16,19 @@
                       <input type="hidden" name="id" value="{{$id}}"/>
     	              <div class="form-group">
     					  <label for="exampleInputEmail1">菜单名字</label>
-    					  <input type="text" name="note" class="form-control" placeholder="请输入中文" value="">
+    					  <input type="text" name="name" class="form-control" placeholder="请输入中文" value="">
     				  </div>
     				  <div class="form-group">
-    					  <label for="exampleInputEmail1">菜单路径</label>
-    					  <input type="text" name="name" class="form-control" placeholder="请输入字符" value="">
+    					  <label for="exampleInputEmail1">URL(会自动增加前缀<span style="color:red">/admin/ext</span>)</label>
+    					  <input type="text" name="note" class="form-control" placeholder="URL" value="">
+    				  </div>
+    				  <div class="form-group">
+    					  <label for="exampleInputEmail1">菜单样式<查看实例></label>
+    					  <input type="text" name="setting" class="form-control" placeholder="样式" value="fa fa-list">
+    				  </div>
+    				  <div class="form-group">
+                        <h5>添加完菜单，需要在app/Http/Controllers/Admin/ExtController中添加对应的方法<h5>
+                        <h6>例如: 添加菜单url为Order/Stat，在ExtController中添加getOrderStat(Request $req)<h6>
     				  </div>
                   </form>
               </div>

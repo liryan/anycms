@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Http\Request;
+use app\Models\Privileges;
 
 class Kernel extends HttpKernel
 {
@@ -56,5 +58,41 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'AdminAuth'=>\App\Http\Middleware\AdminMiddleware::class,
     ];
+    
+    /**
+     * dispatchToRouter 
+     * @ryan
+     * override system method to process Custom Menu URL
+     * @access protected
+     * @return void
+     */
+    protected function dispatchToRouter()
+    {
+        $kernal=$this;
+        return function ($request) use($kernal){
+            $request = $kernal->urlFilter($request);
+            $this->app->instance('request', $request);
+            return $this->router->dispatch($request);
+        };
+    }
+    protected function urlFilter($request)
+    {
+        if($request->is("admin/ext/*")){
+            $path=explode("?",$_SERVER['REQUEST_URI']);
+            $parts=explode("/ext/",$path[0]);
+            if(sizeof($parts)!=2){
+                return $request;
+            }
+            else{
+                $parts[1]=str_replace("/","-",$parts[1]);
+            }
+            $newpath=sprintf("%s/ext/%s%s",$parts[0],$parts[1],sizeof($path)==2?"?".$path[1]:"");
+            $_SERVER['REQUEST_ORIGIN_URI']=$_SERVER['REQUEST_URI'];
+            $_SERVER['REQUEST_URI']=$newpath;
+            $request=Request::capture();
+        }
+        return $request;
+    }
 }

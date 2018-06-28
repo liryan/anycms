@@ -32,10 +32,6 @@ class AdminController extends Controller
         return $this->user;
     }
 
-    protected function requireAuth($menu,$model)
-    {
-
-    }
     protected function getShortPath()
     {
         $path=explode("?",$_SERVER['REQUEST_URI']);
@@ -63,6 +59,7 @@ class AdminController extends Controller
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('sys_menus',$this->getMenu(true));
         $view->with('categories',$this->getCategoryMenu());
+        $view->with('user_menus',$this->getCustomMenu());
         $view->with('username',$this->user()->name);
     	return $view;
     }
@@ -110,6 +107,29 @@ class AdminController extends Controller
         return $menus['data'];
     }
 
+    protected function getCustomMenu()
+    {
+        $pridb=new Privileges();
+        $data=$pridb->getAllMenus();
+        if(!$data){
+            $data=Array();
+        }
+        $re=[];
+        if(session()->get('admin')==0){
+            foreach($data as $k=>&$r){
+                if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
+                    unset($data[$k]);
+                }
+                else{
+                    $this->filterCategory($r);
+                }
+            }
+        }
+        foreach($data as $row){
+            $this->treeToArray($re,$row);
+        }
+        return $re;
+    }
     protected function getCategoryMenu()
     {
         $cate=new Category();
@@ -120,7 +140,6 @@ class AdminController extends Controller
         $re=[];
         if(session()->get('admin')==0){
             $pridb=new Privileges();
-            $pridb->loadUserPri("",session()->get('pridata'));
             foreach($data as $k=>&$r){
                 if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
                     unset($data[$k]);
@@ -152,9 +171,11 @@ class AdminController extends Controller
             $data[]=$treedata;
         }
     }
-    /**
-     * getValuesByPriefix
-     */
+
+    public function authFailed(Request $req){
+        return $this->error($req,"访问出错了，请确定有权限访问当前URL");
+    }
+
     protected function error(Request $req,$msg)
     {
         if($req->ajax()){

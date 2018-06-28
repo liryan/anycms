@@ -11,7 +11,7 @@
     </div>
     <div class="box-body">
       <table class="table table-bordered">
-        <tbody><tr>
+        <tbody><tr style="background-color:#e4e4e4">
           <th style="width: 10px">#</th>
           <th style="width: 30%">栏目名</th>
           <th>备注</th>
@@ -20,7 +20,7 @@
         @foreach($pricats as $k=>$row)
         <tr>
           <td>{{$k+1}}.</td>
-          <td>{{$row['name']}}</td>
+          <td><span style="width:{{$row['deep']*15}}px;display:inline-block"></span>{{$row['name']}}</td>
           <td>{{$row['note']}}</td>
           <td>
             <div class="checkbox">
@@ -36,13 +36,44 @@
     </table>
     </div>
     <!-- category end -->
+    <!-- menu start -->
+    <div class="box-header">
+      <h3 class="box-title">栏目权限</h3>
+    </div>
+    <div class="box-body">
+      <table class="table table-bordered">
+        <tbody><tr  style="background-color:#e4e4e4">
+          <th style="width: 10px">#</th>
+          <th style="width: 30%">菜单名</th>
+          <th>备注</th>
+          <th style="width: 300px">权限</th>
+        </tr>
+        @foreach($menus as $k=>$row)
+        <tr>
+          <td>{{$k+1}}.</td>
+          <td><span style="width:{{$row['deep']*15}}px;display:inline-block"></span>{{$row['name']}}</td>
+          <td>{{$row['note']}}</td>
+          <td>
+            <div class="checkbox"  style="margin-top:0px;margin-bottom:0px">
+                <label><input type="checkbox" name="view_{{$row['id']}}" value="1"/>显示</label>
+                <input type="hidden" name="add_{{$row['id']}}" value="0"/>
+                <input type="hidden" name="edit_{{$row['id']}}" value="0"/>
+                <input type="hidden" name="del_{{$row['id']}}" value="0"/>
+            </div>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+    </div>
+    <!-- menu end -->
     <!-- model start -->
     <div class="box-header">
       <h3 class="box-title">数据表(模型)权限</h3>
     </div>
     <div class="box-body">
       <table class="table table-bordered">
-        <tbody><tr>
+        <tbody><tr  style="background-color:#e4e4e4">
           <th style="width: 10px">#</th>
           <th style="width: 30%">数据表(模型)</th>
           <th>备注</th>

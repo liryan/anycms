@@ -134,7 +134,7 @@
                 </ul>
               </li>
               <li class="footer">
-                <a href="#">View all tasks</a>
+                <a href="#">查看所有任务</a>
               </li>
             </ul>
           </li>
@@ -150,7 +150,7 @@
                 <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                 <p>
                   {{$username}}
-                  <small>Member since Nov. 2012</small>
+                  <small>管理员</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -171,10 +171,10 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  <a href="#" class="btn btn-default btn-flat">账户</a>
                 </div>
                 <div class="pull-right">
-                  <a href="/user/logout" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="/admin/logout" class="btn btn-default btn-flat">退出</a>
                 </div>
               </li>
             </ul>
@@ -198,7 +198,7 @@
         </div>
         <div class="pull-left info">
           <p>{{$username}}</p>
-          <a href="/user/logout"><i class="fa fa-circle text-success"></i> Online</a>
+          <a href="/admin/logout"><i class="fa fa-circle text-success"></i>退出</a>
         </div>
       </div>
       <!-- search form -->
@@ -273,6 +273,37 @@
               @endforeach
           </ul>
         </li>
+        <!-- 内容管理结束-->
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-folder-o"></i> <span>扩展功能</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+              @foreach($user_menus as $row)
+                @if($row['subdata']=='>')
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>{{$row['name']}}</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                @elseif($row['subdata']=='|')
+                    @if(!isset($row['id']))
+                    @else
+                    <li class="active"><a href="/admin/ext/{{$row['note']}}"><i class="{{$row['setting']}}"></i>{{$row['name']}}</a></li>
+                    @endif
+                @elseif($row['subdata']=='<')
+                    </ul>
+                </li>
+                @endif
+              @endforeach
+          </ul>
+        </li>
       </ul>
     </section>
     <!-- /.sidebar -->
@@ -302,9 +333,9 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="pull-right hidden-xs">
-      <b>Version</b> 2.3.8
+      <b>Version</b> 0.0.1beta
     </div>
-    <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">Almsaeed Studio</a>.</strong> All rights
+    <strong>Copyright &copy; 2014-2016 <a href="http://almsaeedstudio.com">admlite</a>.</strong> All rights
     reserved.
   </footer>
 

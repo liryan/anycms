@@ -26,7 +26,13 @@ class Privileges extends BaseSetting{
 		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
 		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11110','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
     ];
-
+    public static $menu_fields=[
+		['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
+		['name'=>'name','note'=>'菜单','comment'=>'菜单名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'note','note'=>'URL','comment'=>'请输入URL','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
+		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
+		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11110','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
+    ];
     private static $all_privileges=[];
 
     public function checkPri($itemid,$value)
@@ -166,10 +172,15 @@ class Privileges extends BaseSetting{
         return $result;
     }
 
+    public function getAllMenus()
+    {
+		return $this->getDataByParentId(self::MENU_USR_ID,true);
+    }
+
     public function getMenus($id,$start,$length)
     {
 		if($id==0){
-			$id=self::MENU_ID;
+			$id=self::MENU_USR_ID;
 		}
 		if($start<0)
 			$start=0;
@@ -177,8 +188,80 @@ class Privileges extends BaseSetting{
 			$length=20;
 		}
 		$total=$this->getCount($id);
-		$data=$this->getDataPageByParentId(11,$start,$length);
+		$data=$this->getDataPageByParentId($id,$start,$length);
 		return Array('total'=>$total,'data'=>$data);
+    }
+
+    public function addMenu($id,$data)
+    {
+		if($id<=0){
+			$id=self::MENU_USR_ID;
+		}
+
+		$newdata=[
+			'parentid'=>$id,
+			'note'=>$data['note'],
+			'name'=>$data['name'],
+            'setting'=>$data['setting'],
+			'order'=>0,
+			'type'=>0,
+            'updated_at'=>date('Y-m-d H:i:s'),
+            'created_at'=>date('Y-m-d H:i:s')
+		];
+
+		$count=$this->where('parentid',$id)->where("note",$data['note'])->count();
+		if($count>0){
+			return Array('code'=>0,'msg'=>'菜单URL已经存在了');
+		}
+
+		$this->newData($id,$newdata);
+		return Array('code'=>1,'msg'=>'成功添加了'.$newdata['name']);
+    }
+
+    public function getIdByUrl($url)
+    {
+        $data=$this->getDataByParentId(Privileges::MENU_USR_ID,true,function($row) use($url) {
+            if($row['note']==$url){
+                return true;
+            }
+        });
+        if($data){
+            return $data['id'];
+        }
+        return 0;
+    }
+
+    public function editMenu($id,$data)
+    {
+		if($id<=0){
+			return Array('code'=>0,'msg'=>'非法修改');
+		}
+
+		$newdata=[
+			'name'=>$data['name'],
+			'note'=>$data['note'],
+            'setting'=>$data['setting'],
+            'updated_at'=>date('Y-m-d H:i:s')
+		];
+
+		$olddata=$this->where("id",$id)->first();
+		$count=$this->where('parentid',$olddata->parentid)->where("note",$data['note'])->count();
+		if($count>0){
+			return Array('code'=>0,'msg'=>'菜单已经存在了');
+		}
+
+		$this->editData($id,$newdata);
+		return Array('code'=>1,'msg'=>'成功修改'.$newdata['name']);
+    }
+
+    public function deleteMenu($id,$data)
+    {
+		$count=$this->where("parentid",$id)->count();
+		if($count>0){
+			return false;
+		}
+		$result=$this->deleteData($id);
+		return $result>0;
     }
     /**
      * @data Array('itemid'=>'value');

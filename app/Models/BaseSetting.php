@@ -58,9 +58,10 @@ class BaseSetting extends BaseModel
      * @method getDataByParentId
      * @param  [type]            $id      [父节点]
      * @param  boolean           $inclsub [是否包含子节点]
+     * @param  clourse           $handleClourse [节点处理闭包，该闭包返回为true的时候，会导致此函数返回对应数据]
      * @return [type]                     [description]
      */
-	protected function getDataByParentId($id,$inclsub=false)
+	protected function getDataByParentId($id,$inclsub=false,$dataClourse=null)
 	{
 		$allrow=[];
 		$parentids=[];
@@ -78,6 +79,11 @@ class BaseSetting extends BaseModel
                     $children=$subdata->toArray();
                     $parentids=[];
     				foreach($children as $cld){
+                        if($dataClourse!=null){
+                            if($dataClourse($cld)==true){
+                                return $cld;
+                            }
+                        }
     					$parentids[]=$cld['id'];
     					if(!isset($allrow[$cld['parentid']]['subdata'])){
     						$allrow[$cld['parentid']]['subdata']=[];
@@ -90,6 +96,9 @@ class BaseSetting extends BaseModel
                 }
 			}while($deep++<100);
 		}
+        if($dataClourse!=null){
+            return false;
+        }
 		return $allrow;
 	}
 

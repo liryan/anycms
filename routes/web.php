@@ -17,12 +17,23 @@ function RouteController($prefix,$controller,$namespace='')
 			Route::get($prefix,$controller."@".$method_name);
 		}
 		else if(strpos($method_name,$type)===0 && strripos($method_name,"Middleware")===false){
+            $path=str_replace($type,"",$method_name);
+            $pos=strpos($controller,"\\ExtController");
+            if($pos!==false){
+                $path=preg_replace_callback("/([A-Z]+[a-z]+)/",function($match){
+                   return "-".strtolower($match[0]); 
+                },$path);
+                $path=trim($path,"-");
+            }
+            else{
+                $path=strtolower($path);
+            }
 			if(!$repl_prefix){
-				Route::$type($prefix."/".strtolower(str_replace($type,"",$method_name)),$controller."@".$method_name);
+				Route::$type($prefix."/".$path,$controller."@".$method_name);
 			}
 			else{
 				foreach($repl_prefix as $pre){
-					Route::$pre($prefix."/".strtolower(str_replace($type,"",$method_name)),$controller."@".$method_name);
+					Route::$pre($prefix."/".$path,$controller."@".$method_name);
 				}
 			}
 		}
@@ -38,7 +49,7 @@ function RouteController($prefix,$controller,$namespace='')
 }
 
 
-Route::group(['prefix' => 'admin'], function () {
+Route::group(['prefix' => 'admin','middleware'=>['AdminAuth']], function () {
 	RouteController("/model","Admin\\ModelController");
 	RouteController("/category","Admin\\CategoryController");
 	RouteController("/content","Admin\\ContentController");
@@ -46,10 +57,12 @@ Route::group(['prefix' => 'admin'], function () {
 	RouteController("/privilege","Admin\\PrivilegeController");
 	RouteController("/account","Admin\\AccountController");
 	RouteController("/personal","Admin\\PersonalController");
+	RouteController("/menu","Admin\\MenuController");
+	RouteController("/ext","Admin\\ExtController");
 	Route::get("/index","Admin\\PersonalController@index");
 	Route::get("/login","Admin\\UserController@getLogin");
 	Route::get("/logout","Admin\\UserController@getLogin");
 	Route::post("/dologin","Admin\\UserController@postDoLogin");
+    Route::get("/error","Admin\\AdminController@authFailed");
 });
-
 Route::get('/',"IndexController@anyIndex");

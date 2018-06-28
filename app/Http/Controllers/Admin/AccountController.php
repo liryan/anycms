@@ -35,11 +35,11 @@ class AccountController extends AdminController
         }
         else{
             $urlconfig=[
-                "url"=>$this->getUrl()."?id=$id",
-                "edit_url"=>$this->getUrl("modify")."?id=$id",
-                "view_url"=>$this->getUrl("view")."?id=$id",
-                "open_url"=>$this->geturl("")."?id=$id",
-                "delete_url"=>$this->getUrl("delete")."?id=$id",
+                "url"=>$this->getUrl(),
+                "edit_url"=>$this->getUrl("modify"),
+                "view_url"=>$this->getUrl("view"),
+                "open_url"=>$this->geturl(""),
+                "delete_url"=>$this->getUrl("delete"),
                 "field_url"=>'',
                 "pri"=>'11110',
 				"id"=>$id,

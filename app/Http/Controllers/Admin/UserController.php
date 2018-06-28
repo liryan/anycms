@@ -44,6 +44,10 @@ class UserController extends Controller
             return $obj;
 		}
 		else{
+            $user=Auth::user();
+            if($user->status == 0){
+                return $this->ajax(0,'账号已经冻结');
+            }
             $role=Auth::user()->role;
             $pridb=new Privileges();
             if($role==Privileges::ADMIN_ROLE){
@@ -73,5 +77,6 @@ class UserController extends Controller
 			return redirect("login");
 		}
 	}
+
 
 }

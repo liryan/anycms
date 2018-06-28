@@ -114,14 +114,14 @@ class PrivilegeController extends AdminController
         return json_encode(Array('code'=>0,'msg'=>'删除失败'));
     }
 
-    private function readNode($row,&$re)
+    private function readNode($row,&$re,$deep)
     {
-        $re[]=Array('name'=>$row['name'],'note'=>$row['note'],'id'=>$row['id']);
+        $re[]=Array('name'=>$row['name'],'note'=>$row['note'],'id'=>$row['id'],'deep'=>$deep);
         if(!isset($row['subdata'])){
             return;
         }
         foreach($row['subdata'] as $node){
-            $this->readNode($node,$re);
+            $this->readNode($node,$re,$deep+1);
         }
     }
 
@@ -130,14 +130,22 @@ class PrivilegeController extends AdminController
     {
         $cate=new Category();
         $tab=new DataTable();
+        $pridb=new Privileges();
         $models=$tab->tables(0,1000);
         $priCats=$cate->getAllCategory();
+        $menus=$pridb->getAllMenus();
+        $menu_data=[];
+        foreach($menus as $row){
+            $this->readNode($row,$menu_data,0);
+        }
         $re=[];
         foreach($priCats as $row){
-            $this->readNode($row,$re);
+            $this->readNode($row,$re,0);
         } 
+        
         $view=$this->View("pri");
         return $view->with("pricats",$re)
+            ->with('menus',$menu_data)
             ->with('primodels',$models['data'])
             ->with("roleid",$req->get('id'))
             ->with("rolepri_url",$this->geturl("rolepri"))

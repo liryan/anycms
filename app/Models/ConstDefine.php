@@ -10,7 +10,7 @@ class ConstDefine extends BaseSetting
 		['name'=>'name','note'=>'常量名字','comment'=>'命名 ','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
 		['name'=>'note','note'=>'备注','comment'=>'请输入','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
 		['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
-		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
+		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11110','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER]
 	];
 
     public static $setting_field=[
@@ -51,6 +51,8 @@ class ConstDefine extends BaseSetting
 			'note'=>$data['note'],
 			'name'=>$data['name'],
 			'setting'=>$data['setting'],
+            'updated_at'=>date('Y-m-d H:i:s'),
+            'created_at'=>date('Y-m-d H:i:s'),
 			'order'=>0,
 			'type'=>0,
 		];
@@ -61,7 +63,7 @@ class ConstDefine extends BaseSetting
 		}
 
 		$this->newData($id,$newdata);
-		return Array('code'=>1,'msg'=>'成功修改'.$data['name']);
+		return Array('code'=>1,'msg'=>'成功添加了'.$data['name']);
     }
 
     public function editConst($id,$data)
@@ -73,6 +75,7 @@ class ConstDefine extends BaseSetting
 		$newdata=[
 			'name'=>$data['name'],
 			'note'=>$data['note'],
+            'updated_at'=>date('Y-m-d H:i:s')
 		];
 
 		$olddata=$this->where("id",$id)->first();
