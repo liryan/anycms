@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BaseSetting extends BaseModel
 {
-    public const SYS_ID_LIMIT=100;
+    const SYS_ID_LIMIT=100;
     protected $table = 't_setting';
 	/**
 	 * [getDataPageByParentId 获取某个ID下面的所有的子节点]
