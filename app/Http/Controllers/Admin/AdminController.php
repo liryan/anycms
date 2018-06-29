@@ -15,7 +15,6 @@ use App\Models\Privileges;
 use App\Models\Category;
 class AdminController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
     protected $breadcrumb; //面包屑导航数组
     protected $user;
     protected $prefix='admin';
