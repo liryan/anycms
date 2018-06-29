@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use DB;
+use App\Models\User;
 
 class install extends Command
 {
@@ -63,10 +64,18 @@ class install extends Command
         $dbname=$this->waitInput("Please input your [Database Name]");
         DB::unprepared("set names utf8");
         try{
-            $res=DB::unprepared("create database $dbname");
             DB::unprepared("use $dbname");
             DB::unprepared(file_get_contents($file));
-            echo "Congradulation,install successfully\n";
+            $email=$this->waitInput('输入管理员邮箱:'); 
+            $password=$this->waitInput('输入管理员密码,至少6个字符:'); 
+            $user=new User();
+            $data=$user->modifyUser(0,Array('role'=>20,'name'=>'admin','password'=>$password,'email'=>$email));
+            if($data['code']==1){
+                echo "Congradulation,install successfully\n";
+            }
+            else{
+                echo "install failed\n";
+            }
         }
         catch(\PDOException $e){
             echo $e->getMessage()."\n";
