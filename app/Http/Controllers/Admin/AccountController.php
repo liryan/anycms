@@ -76,6 +76,10 @@ class AccountController extends AdminController
 			    $re['action']='edit';
             }
             //$widgets->translateToView($re);
+            $roles=explode(",",$re['role']);
+            foreach($roles as $r){
+                $re["role_".$r]=$r;
+            }
 			$re['_token']=csrf_token();
 			return json_encode($re);
 		}
