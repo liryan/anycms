@@ -118,8 +118,5 @@ $(function(){
     });
 
 });
-
-
-
 </script>
 @endsection

@@ -23,7 +23,7 @@ class ContentTable extends BaseModel
 		foreach($table_define['columns'] as $row){
 			if($row['listable']){
 				if(!$query){
-					$query=DB::table($table_define['name'])->select($row['name']);
+					$query=DB::table($table_define['info']['name'])->select($row['name']);
 				}
 				else {
 					$query->addSelect($row['name']);
@@ -31,7 +31,7 @@ class ContentTable extends BaseModel
 			}
 		}
         try{
-            $count=DB::table($table_define['name'])->where($search['condition'])->count();
+            $count=DB::table($table_define['info']['name'])->where($search['condition'])->count();
             $data=$query->where($search['condition'])->orderByRaw($search['order'])->skip($start)->take($length)->get();
             if($data){
                 $data=$data->toArray();

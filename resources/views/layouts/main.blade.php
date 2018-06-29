@@ -71,7 +71,7 @@
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img src="{{$avatar}}" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Support Team
@@ -154,24 +154,10 @@
                 </p>
               </li>
               <!-- Menu Body -->
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-                <!-- /.row -->
-              </li>
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">账户</a>
+                  <a href="/admin/personal/profile" class="btn btn-default btn-flat">个人信息</a>
                 </div>
                 <div class="pull-right">
                   <a href="/admin/logout" class="btn btn-default btn-flat">退出</a>
@@ -194,7 +180,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="/adminlte/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="{{$avatar}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{$username}}</p>
@@ -264,7 +250,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/content?id={{$row['id']}}"><i class="fa fa-table"></i>{{$row['name']}}</a></li>
+                    <li class="active"><a href="/admin/content?catid={{$row['id']}}"><i class="fa fa-table"></i>{{$row['name']}}</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>

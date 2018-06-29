@@ -44,7 +44,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if($exception instanceof Symfony\Component\HttpKernel\Exception\NotFoundHttpException){
+            if($exception->getStatusCode()==404){
+                return redirect('/admin/error404?url='.$request->fullUrl());
+            }
+        }
+        else{
+            return parent::render($request, $exception);
+        }
     }
 
     /**
@@ -59,7 +66,7 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-
+        //针对后台的认证跳转
         if($request->is("admin/*")){
             return redirect()->guest('admin/login?return_url='.urlencode($request->fullurl()));
         }

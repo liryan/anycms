@@ -17,27 +17,24 @@ class ContentController extends AdminController
     public function __construct()
     {
         parent::__construct();
-        $pridb=new Privileges();
+        $this->pridb=new Privileges();
     }
 
 	public function index(Request $req)
 	{
-		$id=$req->get("id",0);
+		$catid=$req->get("catid",0);
 		$cate=new Category();
 		$dt=new DataTable();
-		$modelid=$cate->getModelId($id);
+		$modelid=$cate->getModelId($catid);
 		$table_define=$dt->tableColumns($modelid);
-        if(!$this->pridb->checkPri($id,Privileges::VIEW)){
-            return $this->error($req,'权限不足');
-        }
         if($req->ajax()){
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
 			$widget=new ContentWidget($table_define);
-			$search_clouser=$widget->generateSearchClouser($id,$req->all());
+			$search_clouser=$widget->generateSearchClouser($catid,$req->all());
 			$content=new ContentTable();
-            $result=$content->getList($start,$length,$table_define,$id,$search_clouser);
+            $result=$content->getList($start,$length,$table_define,$catid,$search_clouser);
 			foreach($result['data'] as &$row){
 				$row->_internal_field='';
 			}
@@ -52,21 +49,21 @@ class ContentController extends AdminController
         }
         else{
             $models=new DataTable();
-            $this->breadcrumb=$cate->getPath($id?$id:Category::CATEGORY_ID);
+            $this->breadcrumb=$cate->getPath($catid?$catid:Category::CATEGORY_ID);
             foreach($this->breadcrumb as &$row){
                 $row['url']=$this->getUrl()."?id=".$row['id'];
             }
             $widget=new ContentWidget($table_define);
-			$search_clouser=$widget->generateSearchClouser($id,$req->all());
+			$search_clouser=$widget->generateSearchClouser($catid,$req->all());
             $urlconfig=[
-                "url"=>$this->getUrl()."?id=$id",
-                "edit_url"=>$this->getUrl("modify")."?catid=$id",
-                "view_url"=>$this->getUrl("view")."?catid=$id",
-                "open_url"=>$this->geturl("")."?catid=$id",
-                "delete_url"=>$this->getUrl("delete")."?catid=$id",
+                "url"=>$this->getUrl()."?catid=$catid",
+                "edit_url"=>$this->getUrl("modify")."?catid=$catid",
+                "view_url"=>$this->getUrl("view")."?catid=$catid",
+                "open_url"=>$this->geturl("")."?catid=$catid",
+                "delete_url"=>$this->getUrl("delete")."?catid=$catid",
                 "field_url"=>'',
                 "pri"=>'11110',
-				"id"=>$id,
+				"catid"=>$catid,
             ];
             $dialog_html=$widget->showEditWidget($urlconfig);
             $list_html=$widget->showListWidget($table_define['info']['note'],$urlconfig,$dialog_html);
@@ -83,16 +80,17 @@ class ContentController extends AdminController
 		if(!$req->ajax()){
 			return;
 		}
+
         $id=$req->get('id',0);
 		$catid=$req->get("catid",0);
-
-        if(!$this->pridb->checkPri($catid,Privileges::VIEW)){
-            return $this->error($req,'权限不足');
-        }
-
 		$cate=new Category();
 		$dt=new DataTable();
 		$modelid=$cate->getModelId($catid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::VIEW,$req->session()->get('admin'))){
+            return $this->error($req,'权限不足');
+        }
+
 		$table_define=$dt->tableColumns($modelid);
 		if($id==0){
 			$re['action']='add';
@@ -113,9 +111,6 @@ class ContentController extends AdminController
     public function postModify(Request $req)
     {
 		$catid=$req->get("catid",0);
-        if(!$this->pridb->checkPri($catid,Privileges::VIEW)){
-            return $this->error($req,'权限不足');
-        }
 		$cate=new Category();
 		$dt=new DataTable();
 		$modelid=$cate->getModelId($catid);
@@ -129,7 +124,7 @@ class ContentController extends AdminController
         $pridb=new Privileges();
         switch($act){
         case 'edit':
-            if(!$this->pridb->checkPri($modelid,Privileges::EDIT)){
+            if(!$this->pridb->checkPri($modelid,Privileges::EDIT,$req->session()->get('admin'))){
                 return $this->error($req,'权限不足');
             }
             $dt->filterForEdit($data);
@@ -139,7 +134,7 @@ class ContentController extends AdminController
             $re=['code'=>$result?1:0,'msg'=>$result?"成功修改数据":"修改失败了"];
             break;
         case 'add':
-            if(!$this->pridb->checkPri($modelid,Privileges::ADD)){
+            if(!$this->pridb->checkPri($modelid,Privileges::ADD,$req->session()->get('admin'))){
                 return $this->error($req,'权限不足');
             }
             $content=new ContentTable();
@@ -209,7 +204,7 @@ class ContentController extends AdminController
         try{
             $root_path=public_path();
             $sub_path="/upimages";
-            $path=EasyThumb::upload("upfile")->where($root_path.$sub_path)->autodir(EasyThumb::SHA1_DIR)->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
+            $path=EasyThumb::upload("upfile")->where($root_path.$sub_path)->autodir()->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
             $info=pathinfo($path['origin']);
             $result=[
                 'originalName'=>$_FILES['upfile']['name'],
@@ -248,7 +243,7 @@ class ContentController extends AdminController
 		$modelid=$cate->getModelId($catid);
 		$table_define=$dt->tableColumns($modelid);
 
-        if(!$this->pridb->checkPri($modelid,Privileges::DELETE)){
+        if(!$this->pridb->checkPri($modelid,Privileges::DELETE,$req->session()->get('admin'))){
             return $this->error($req,'权限不足');
         }
 

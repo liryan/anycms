@@ -16,8 +16,8 @@ class AdminMiddleware
     public function handle($request, Closure $next)
     {
         $data=$request->session()->get('pridata');
+        $pridb=new Privileges();
         if($data){
-            $pridb=new Privileges();
             $pridb->loadUserPri('',$data);
         }
         if(isset($_SERVER['REQUEST_ORIGIN_URI'])){
@@ -26,14 +26,17 @@ class AdminMiddleware
             if(sizeof($parts)==2){
                 $id=$pridb->getIdByUrl($parts[1]);
                 if($id==0){
-                    return redirect("/admin/error");
+                    return redirect("/admin/error?url=".$request->fullUrl());
                 }
-                if(!$pridb->checkPri($id,Privileges::VIEW)){
-                    return redirect("/admin/error");
+                if(!$pridb->checkPri($id,Privileges::VIEW,$request->get('admin'))){
+                    return redirect("/admin/error?url=".$request->fullUrl());
                 }
             }
-            else{
-                print_r($parts);
+        }
+        if($request->is("admin/content*")){
+            $catid=$request->get('catid');
+            if(!$pridb->checkPri($catid,Privileges::VIEW,$request->session()->get('admin'))){
+                return redirect("/admin/error?url=".$request->fullUrl());
             }
         }
         return $next($request);

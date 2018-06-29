@@ -29,7 +29,7 @@ class UserController extends Controller
 			    return redirect($url);
             }
             else{
-			    return redirect("model");
+			    return redirect("/admin/personal");
             }
         }
     }
@@ -52,10 +52,12 @@ class UserController extends Controller
             $pridb=new Privileges();
             if($role==Privileges::ADMIN_ROLE){
                 session()->put('admin',1);
+                session()->put('adminid',Auth::user()->id);
             }
             else{
                 $data=$pridb->loadUserPri($role,null);
                 session()->put('pridata',$data);
+                session()->put('adminid',Auth::user()->id);
                 session()->put('admin',0);
             }
             if($url){
@@ -77,6 +79,4 @@ class UserController extends Controller
 			return redirect("login");
 		}
 	}
-
-
 }

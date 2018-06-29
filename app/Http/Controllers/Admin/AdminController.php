@@ -54,6 +54,10 @@ class AdminController extends Controller
     protected function View($name)
     {
     	$view=parent::View($name);
+        $avatar=$this->user()->avatar;
+        if(!$avatar){
+            $avatar="/avatar/avatar.jpg";
+        }
         $view->with("path",$this->getShortPath());
         $view->with("admin",session()->get('admin'));
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
@@ -61,6 +65,7 @@ class AdminController extends Controller
         $view->with('categories',$this->getCategoryMenu());
         $view->with('user_menus',$this->getCustomMenu());
         $view->with('username',$this->user()->name);
+        $view->with('avatar',$avatar);
     	return $view;
     }
 
@@ -173,16 +178,24 @@ class AdminController extends Controller
     }
 
     public function authFailed(Request $req){
-        return $this->error($req,"访问出错了，请确定有权限访问当前URL");
+        return $this->error($req,"访问出错了，请确定有权限访问",$req->get('url'));
     }
 
-    protected function error(Request $req,$msg)
+    protected function error(Request $req,$msg,$url='')
     {
+        if(!$url){
+            $url=$req->fullUrl();
+        }
         if($req->ajax()){
             return $this->ajax(0,$msg);
         }
         else{
-            return $this->View('/common.error')->with('msg',$msg);
+            return $this->View('/common.error')->with('msg',$msg."\n[URL:$url]");
         }
+    }
+
+    public function notFoundError(Request $req)
+    {
+        return $this->View('/common.error404')->with('url',$req->get('url'));
     }
 }

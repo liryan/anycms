@@ -33,6 +33,7 @@ class User extends Authenticatable
         ['name'=>'email','note'=>'账号','type'=>DataTable::DEF_CHAR,'def'=>'varchar(64)','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'name','note'=>'名字','type'=>DataTable::DEF_CHAR,'def'=>'varchar(32)','listable'=>true,'editable'=>true,'searchable'=>true],
         ['name'=>'role','note'=>'角色','type'=>DataTable::DEF_LIST,'def'=>'varchar(256)','listable'=>true,'editable'=>true,'searchable'=>false],
+        ['name'=>'avatar','note'=>'头像','type'=>DataTable::DEF_CHAR,'def'=>'varchar(256)','listable'=>true,'editable'=>true,'searchable'=>false],
         ['name'=>'password','note'=>'密码','type'=>DataTable::DEF_CHAR,'def'=>'varchar(64)','listable'=>false,'editable'=>true,'searchable'=>false],
         ['name'=>'status','note'=>'状态','type'=>DataTable::DEF_LIST,'def'=>'tinyint(4) default 1','listable'=>true,'editable'=>true,'searchable'=>false],
 		['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>false,'type'=>DataTable::DEF_INTEGER]
@@ -72,13 +73,15 @@ class User extends Authenticatable
         }
     }
 
-    public function getUserData($id)
+    public function getUserData($id,$withpassword=false)
     {
         try{
             $data=DB::table(self::$table_name)->where("id",$id)->first();
             if($data){
                 $data=json_decode(json_encode($data),true);
-                $data['password']='';
+                if(!$withpassword){
+                    $data['password']='';
+                }
                 return $data;
             }
             return null;

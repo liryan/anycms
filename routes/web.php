@@ -64,5 +64,7 @@ Route::group(['prefix' => 'admin','middleware'=>['AdminAuth']], function () {
 	Route::get("/logout","Admin\\UserController@getLogin");
 	Route::post("/dologin","Admin\\UserController@postDoLogin");
     Route::get("/error","Admin\\AdminController@authFailed");
+    Route::get("/error404","Admin\\AdminController@notFoundError");
+    Route::get("/","Admin\\UserController@checkLogin");
 });
 Route::get('/',"IndexController@anyIndex");

@@ -57,7 +57,7 @@ class AccountController extends AdminController
     public function getView(Request $req)
     {
 		if(!$req->ajax()){
-			//return;
+			return;
 		}
         $id=$req->get('id',0);
 		if($id==0){

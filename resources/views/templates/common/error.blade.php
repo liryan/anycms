@@ -1,26 +1,18 @@
 @extends('layouts.main')
 @section('title', '出错了')
 @section('content')
-<div class="row" style="margin-top:100px">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-      <div class="box box-default">
-        <div class="box-header with-border">
-          <i class="fa fa-bullhorn"></i>
-          <h3 class="box-title"><strong>错误</strong></h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body" style="margin:50px">
-            <p style="color:red">{{$msg}}</p>
-            <p>&nbsp;</p>
+      <div class="error-page" style="margin-top:200px">
+        <h2 class="headline text-red">500</h2>
+
+        <div class="error-content">
+          <h3><i class="fa fa-warning text-red"></i> Oops! 访问页面出错了.</h3>
+
+          <p>
+            <span style="color:red">{{$msg}}</span>
             <p>请联系管理员或者技术人员确定问题!</p>
-            <p><button class="btn btn-block btn-success" onclick="javascript:history.go(-1);">返回</button></p>
+            <a href="/admin/index">回到首页</a>
+          </p>
         </div>
-        <!-- /.box-body -->
       </div>
-      <!-- /.box -->
-    </div>
-    <div class="col-md-3"></div>
-    <!-- /.col -->
-</div>
+      <!-- /.error-page -->
 @endsection
