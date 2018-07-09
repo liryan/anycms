@@ -15,6 +15,7 @@
             <table id="datagrid" class="table table-bordered table-hover">
               <thead>
               <tr>
+                  <th>选择</th>
 				  @foreach($fields as $field)
                 	<th>{{$field['note']}}</th>
 				  @endforeach
@@ -22,8 +23,22 @@
               </thead>
               <tbody>
               </tbody>
-
             </table>
+            <div>全选
+             <input type="checkbox" class="control-label" id="selectAll">
+             <span>修改</span>
+             <select id="edit_field" value="0">
+                <option value="0">选择要修改的字段</option>
+                @foreach($fields as $field)
+                @if(@$field['batchable']==1)
+                <option id="{{$field['name']}}" value="{{$field['name']}}_{{$field['type']}}" data="@if($field['type']==5){{$field['const']}}@elseif($field['type']==4){{$field['size']}}@endif">{{$field['note']}}</option>
+                @endif
+                @endforeach
+            </select>
+            <span id="edit_panel">
+            </span>
+            <button style='margin-bottom:5px' type="button" class="btn btn-danger">删除所有选择</button>
+            </div>
           </div>
           <!-- /.box-body -->
         </div>
@@ -65,14 +80,17 @@ beforeSubmit=function(){}
         "processing":true,
         "serverSide":true,
         "paging": true,
+        "striped":true,
         "searching":false,
         "ajax":"{{$url}}",
         "columns":[
+             {"data":"id"},
 			@foreach($fields as $field)
             {"data":"{{$field['name']}}"},
 			@endforeach
         ],
         "rowCallback": function( row, data ,index) {//添加单击事件，改变行的样式
+            $(row.cells[0]).html('<input type="checkbox" class="control-label"value="'+data.id+'">');
             @if($pri[3]==1)
                 $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+')" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
             @endif
@@ -93,12 +111,19 @@ beforeSubmit=function(){}
 
 
 $(function(){
+    $('#edit_field').change(function(){
+        changeSelectField();
+    });
+
     $('#edit_form').ajaxForm({
         url:'{{$edit_url}}',
         dataType:'json',
         success:function(rep){
                     alert(rep.msg);
-                    table.ajax.reload();
+                    if(rep.code==1){
+                        $("#model_new").modal('hide');
+                        table.ajax.reload();
+                    }
                 }
     });
 	$('#submitBt').on('click', function (e) {
@@ -111,8 +136,41 @@ $(function(){
             table.ajax.url("{{$url}}&"+keyword).load();
             return false;
     });
+    changeSelectField();
 });
-
+function changeSelectField()
+{
+    v=$("#edit_field").val();
+    $("#edit_panel").html(" ");
+    if(v!=0){
+        option=v.split("_");
+        if(option[1]==1 || option[1]== 2 || option[1]==8){　//整数，字符串，浮点
+            $("#edit_panel").html("=<input type='text' name='"+option[1]+"'>");
+        }
+        else if(option[1]==5){  //常量列表
+            data=$("#"+option[0]).attr('data');
+            $("#edit_panel").html("=<select id='const_value' name='"+option[1]+"'></select>");
+            $.get("/admin/const/?id="+data+"&draw=1",function(msg){
+                if(msg.recordsTotal>0){
+                    for(i=0;i<msg.data.length;i++){
+                        node = msg.data[i];
+                        $("#const_value").append("<option value='"+node.id+"'>"+node.name+"</opton>");
+                    }
+                }
+            },"json");
+        }
+        else if(option[1]==4){  //日期
+            data=$("#"+option[0]).attr('data');
+            if(option[2]==1){
+                $("#edit_panel").html('=<input type="datetime" name="'+option[0]+'" class="">');
+            }
+            else{
+                $("#edit_panel").html('=<input type="date" name="'+option[0]+'" class="">');
+            }
+        }
+        $("#edit_panel").html($("#edit_panel").html()+"<button style='margin-bottom:5px' type='button' class='btn btn-warning'>修改</button>");
+    }
+}
 //显示新数据对话框
 function formatUrl(url,paramstring)
 {

@@ -115,6 +115,10 @@ class ModelWidget extends Widget
 			}
 		}
 		else{
+            $source=DataTable::$field_setting;
+            foreach($source as $srow){
+                $data[$srow['name']]=$srow['default'];
+            }
 			$obj=json_decode($data['setting'],true);
 			if(is_array($obj)){
 				foreach($obj as $k=>$v){

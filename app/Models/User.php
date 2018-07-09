@@ -106,7 +106,7 @@ class User extends Authenticatable
             return Array('code'=>0,'msg'=>'账号已存在');
         }
         else if($id >0 ){
-            DB::table(self::$table_name)->where('id',$id)->update($data);
+            $re=DB::table(self::$table_name)->where('id',$id)->update($data);
 			return Array('code'=>1,'msg'=>'修改成功');
         }
         else{

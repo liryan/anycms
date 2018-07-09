@@ -32,6 +32,9 @@ class UserController extends Controller
 			    return redirect("/admin/personal");
             }
         }
+        else{
+			return redirect("/admin/login");
+        }
     }
 
 	public function postDoLogin(Request $req)

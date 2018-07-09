@@ -73,7 +73,7 @@ class PersonalController extends AdminController
             $sub_path="/avatar";
             $path=EasyThumb::upload('avatar')
                 ->where($root_path.$sub_path)
-                ->autodir()
+                ->autodir(EasyThumb::TIME_DIR)
                 ->limit(500*500,EasyThumb::PNG|EasyThumb::JPG)
                 ->size(100,100,EasyThumb::SCALE_FREE)
                 ->done();

