@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "6dbec3f4c66dd86a5bda8255bd8e1cd3",
@@ -521,12 +521,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liryan/easythumb.git",
-                "reference": "58c28ff62ab4475a9697d2ee46c0d0c5ef9d107b"
+                "reference": "156e867ec45ec7a28b04d482f0db32e6d2d97410"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://files.phpcomposer.com/files/liryan/easythumb/58c28ff62ab4475a9697d2ee46c0d0c5ef9d107b.zip",
-                "reference": "58c28ff62ab4475a9697d2ee46c0d0c5ef9d107b",
+                "url": "https://files.phpcomposer.com/files/liryan/easythumb/156e867ec45ec7a28b04d482f0db32e6d2d97410.zip",
+                "reference": "156e867ec45ec7a28b04d482f0db32e6d2d97410",
                 "shasum": ""
             },
             "require": {
@@ -549,7 +549,7 @@
                 }
             ],
             "description": "project for laravel,make thumb simpler and easier",
-            "time": "2017-05-12T07:45:03+00:00"
+            "time": "2018-06-30T10:31:10+00:00"
         },
         {
             "name": "monolog/monolog",

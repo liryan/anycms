@@ -167,7 +167,7 @@ class ContentController extends AdminController
             $fieldname=$fieldname[0];
             $root_path=public_path();
             $sub_path="/upimages";
-            $path=EasyThumb::upload($fieldname)->where($root_path.$sub_path)->autodir()->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
+            $path=EasyThumb::upload($fieldname)->where($root_path.$sub_path)->autodir(EasyThumb::SHA1_DIR)->limit(1000*1000,EasyThumb::PNG|EasyThumb::GIF|EasyThumb::JPG)->size(100,100,EasyThumb::SCALE_FREE)->done();
             $info=pathinfo($path['origin']);
             $result=[
                 'success'=>'ok',
