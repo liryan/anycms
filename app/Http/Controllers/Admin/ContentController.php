@@ -130,7 +130,7 @@ class ContentController extends AdminController
             $dt->filterForEdit($data);
             $content=new ContentTable();
             $contentid=$req->get('id');
-            $result=$content->editContent($table_define,$contentid,$data);
+            $result=$content->editContent($table_define,$contentid,$data,$catid);
             $re=['code'=>$result?1:0,'msg'=>$result?"成功修改数据":"修改失败了"];
             break;
         case 'add':
@@ -249,8 +249,48 @@ class ContentController extends AdminController
 
         $content=new ContentTable();   
         $id=$req->get("id");
-        $result=$content->deleteContent($table_define,$id);
+        $result=$content->deleteContent($table_define,$id,$catid);
         $re=['code'=>$result?1:0,'msg'=>$result?'success':'failed'];
         return json_encode($re);
+    }
+
+    public function postBatchdel(Request $req)
+    {
+		$cate=new Category();
+		$dt=new DataTable();
+        $catid=$req->get("catid");
+		$modelid=$cate->getModelId($catid);
+		$table_define=$dt->tableColumns($modelid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::DELETE,$req->session()->get('admin'))){
+            return $this->error($req,'权限不足');
+        }
+        $cond=explode("-",$req->get("ids")); 
+        $content=new ContentTable();   
+        $result=$content->deleteContentBatch($table_define,$cond,$catid);
+        return $this->ajax($result?1:0,'');
+    }
+
+    public function postBatchedit(Request $req)
+    {
+        $catid=$req->get("catid");
+        $cond=explode("-",$req->get("ids")); 
+        $name=explode("_",$req->get('name'));
+        $value=$req->get('value');
+
+		$cate=new Category();
+		$dt=new DataTable();
+        $catid=$req->get("catid");
+		$modelid=$cate->getModelId($catid);
+		$table_define=$dt->tableColumns($modelid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::EDIT,$req->session()->get('admin'))){
+            return $this->error($req,'权限不足');
+        }
+
+        $data=Array($name[0]=>$value);
+        $content=new ContentTable();
+        $result=$content->editContentBatch($table_define,$cond,$data,$catid);
+        return $this->ajax($result?1:0,'');
     }
 }

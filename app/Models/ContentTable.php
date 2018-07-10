@@ -51,9 +51,18 @@ class ContentTable extends BaseModel
         }
         return $row;  
     }
-    public function editContent($define,$id,$data)
+
+    public function editContent($define,$id,$data,$catid)
     {
-        $id=DB::table($define['info']['name'])->where('id',$id)->update($data);     
+        $data['updated_at']=date('Y-m-d H:i:s');
+        $id=DB::table($define['info']['name'])->where('category',$catid)->where('id',$id)->update($data);     
+        return $id;
+    }
+
+    public function editContentBatch($define,$ids,$data,$catid)
+    {
+        $data['updated_at']=date('Y-m-d H:i:s');
+        $id=DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->update($data);     
         return $id;
     }
 
@@ -63,8 +72,13 @@ class ContentTable extends BaseModel
         return $id>0;
     }
 
-    public function deleteContent($define,$id)
+    public function deleteContent($define,$id,$catid)
     {
-        return DB::table($define['info']['name'])->where('id',$id)->delete();
+        return DB::table($define['info']['name'])->where('id',$id)->where('category',$catid)->delete();
+    }
+
+    public function deleteContentBatch($define,$ids,$catid)
+    {
+        return DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->delete();
     }
 }

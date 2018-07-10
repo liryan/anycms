@@ -24,21 +24,29 @@
               <tbody>
               </tbody>
             </table>
-            <div>全选
-             <input type="checkbox" class="control-label" id="selectAll">
-             <span>修改</span>
-             <select id="edit_field" value="0">
-                <option value="0">选择要修改的字段</option>
-                @foreach($fields as $field)
-                @if(@$field['batchable']==1)
-                <option id="{{$field['name']}}" value="{{$field['name']}}_{{$field['type']}}" data="@if($field['type']==5){{$field['const']}}@elseif($field['type']==4){{$field['size']}}@endif">{{$field['note']}}</option>
-                @endif
-                @endforeach
-            </select>
-            <span id="edit_panel">
+            @if(isset($catid) && $catid)
+            <div style="width:100%">
+             <span style="float:left;display:inline-block">
+                全选  
+                <input type="checkbox" class="control-label" style="margin-top:5px" id="selectAll" "checked"=false onclick="checkAll()">
+                把 
+                <select id="edit_field" value="0">
+                    <option value="0">选择要修改的字段</option>
+                    @foreach($fields as $field)
+                    @if(@$field['batchable']==1)
+                    <option id="{{$field['name']}}" value="{{$field['name']}}_{{$field['type']}}" data="@if($field['type']==5){{$field['const']}}@elseif($field['type']==4){{$field['size']}}@endif">{{$field['note']}}</option>
+                    @endif
+                    @endforeach
+                </select>
+                <span id="label_panel">修改成</span>
+                <span id="edit_panel">
+                </span>
             </span>
-            <button style='margin-bottom:5px' type="button" class="btn btn-danger">删除所有选择</button>
+            <span style="float:right;display:inline-block">
+            <button style='margin-bottom:5px;' type="button" class="btn btn-danger" onclick="submitDelete()">删除所有选择</button>
+            </span>
             </div>
+            @endif
           </div>
           <!-- /.box-body -->
         </div>
@@ -138,23 +146,74 @@ $(function(){
     });
     changeSelectField();
 });
+
+function checkAll()
+{
+    $("#datagrid :checkbox").prop("checked",$("#selectAll").prop("checked"));
+}
+
+function submitEdit()
+{
+    if(confirm('确定要修改所选的条目吗?')){
+        chks=$("#datagrid :checkbox");
+        ids='0';
+        for(i=0;i<chks.length;i++){
+            if($(chks[i]).prop("checked")){
+                ids+="-"+$(chks[i]).val();
+            }
+        }
+        data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
+        $.post("/admin/content/batchedit",data,function(msg){
+            alert('已成功修改');
+            window.location.reload();
+        },"json");
+    }
+}
+
+function submitDelete()
+{
+    if(confirm('这个操作很危险，你确定要删除所选的所有数据吗?')){
+        if(confirm('危险！你正在删除多个数据')){
+            chks=$("#datagrid :checkbox");
+            ids='0';
+            for(i=0;i<chks.length;i++){
+                if($(chks[i]).prop("checked")){
+                    ids+="-"+$(chks[i]).val();
+                }
+            }
+            data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,'_token':'{{csrf_token()}}'};
+            $.post("/admin/content/batchdel",data,function(msg){
+                if(msg.code==1){
+                    alert('已成功删除');
+                    window.location.reload();
+                }
+                else{
+                    alert('删除失败');
+                }
+            },"json");
+        }
+    }
+}
+
 function changeSelectField()
 {
     v=$("#edit_field").val();
-    $("#edit_panel").html(" ");
+    $("#edit_panel").html("");
+    $("#label_panel").html("");
     if(v!=0){
+        $("#label_panel").html("修改成");
         option=v.split("_");
         if(option[1]==1 || option[1]== 2 || option[1]==8){　//整数，字符串，浮点
-            $("#edit_panel").html("=<input type='text' name='"+option[1]+"'>");
+            $("#edit_panel").html("<input type='text' name='field_value'>");
         }
         else if(option[1]==5){  //常量列表
             data=$("#"+option[0]).attr('data');
-            $("#edit_panel").html("=<select id='const_value' name='"+option[1]+"'></select>");
+            $("#edit_panel").html("<select id='field_value'></select>");
             $.get("/admin/const/?id="+data+"&draw=1",function(msg){
                 if(msg.recordsTotal>0){
                     for(i=0;i<msg.data.length;i++){
                         node = msg.data[i];
-                        $("#const_value").append("<option value='"+node.id+"'>"+node.name+"</opton>");
+                        $("#field_value").append("<option value='"+node.id+"'>"+node.name+"</opton>");
                     }
                 }
             },"json");
@@ -162,13 +221,13 @@ function changeSelectField()
         else if(option[1]==4){  //日期
             data=$("#"+option[0]).attr('data');
             if(option[2]==1){
-                $("#edit_panel").html('=<input type="datetime" name="'+option[0]+'" class="">');
+                $("#edit_panel").html('<input type="datetime" id="field_value" name="field_value" class="">');
             }
             else{
-                $("#edit_panel").html('=<input type="date" name="'+option[0]+'" class="">');
+                $("#edit_panel").html('<input type="date" id="field_value" name="field_value" class="">');
             }
         }
-        $("#edit_panel").html($("#edit_panel").html()+"<button style='margin-bottom:5px' type='button' class='btn btn-warning'>修改</button>");
+        $("#edit_panel").html($("#edit_panel").html()+"<button style='margin-bottom:5px' type='button' class='btn btn-warning' onclick='submitEdit()'>确认提交</button>");
     }
 }
 //显示新数据对话框
