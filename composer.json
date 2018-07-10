@@ -1,0 +1,21 @@
+{
+    "name": "liryan/easythumb",
+    "description": "project for laravel,make thumb simpler and easier",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "liruiyan",
+            "email": "canbetter@163.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "psr-4":{
+            "EasyThumb\\":"src/"
+        }
+    }
+}
