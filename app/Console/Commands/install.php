@@ -31,7 +31,6 @@ class install extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->stdin=fopen("/dev/stdin",'r');
     }
 
     /**
@@ -54,9 +53,7 @@ class install extends Command
 
     public function handle()
     {
-        $user=new User();
-        $data=$user->modifyUser(3,Array('role'=>20,'name'=>'admin1','password'=>'admin'));
-        return;
+        $this->stdin=fopen("php://stdin",'r');
 
         $file=$this->argument('sqlf');
         if(!file_exists($file)){
