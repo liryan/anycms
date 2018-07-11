@@ -49,7 +49,7 @@ class tools extends Command
      *
      * @return mixed
      */
-    private function case($cmd,$clourse){
+    private function when($cmd,$clourse){
         $this->handlers[$cmd]=$clourse;
         return $this;
     }
@@ -66,14 +66,14 @@ class tools extends Command
         $cmd=$this->argument('cmd');
         $cls=$this;
         $this
-        ->case('reset',function() use($cls){
+        ->when('reset',function() use($cls){
             $passwd=$cls->waitInput("Please input your new password");
             $user=new User();
             $data=$user->modifyUser(3,Array('role'=>20,'name'=>'admin1','password'=>$passwd));
             echo "Modify password successfully";
         })
-        ->case('',function(){
-            echo "only test";
+        ->when('echo',function(){
+            echo "only test\n";
         })
         ->done($cmd);
     }
