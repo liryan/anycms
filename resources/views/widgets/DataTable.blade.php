@@ -213,7 +213,7 @@ function changeSelectField()
                 if(msg.recordsTotal>0){
                     for(i=0;i<msg.data.length;i++){
                         node = msg.data[i];
-                        $("#field_value").append("<option value='"+node.id+"'>"+node.name+"</opton>");
+                        $("#field_value").append("<option value='"+node.value+"'>"+node.name+"</opton>");
                     }
                 }
             },"json");
