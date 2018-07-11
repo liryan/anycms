@@ -86,7 +86,7 @@ class ConstController extends AdminController
         switch($action){
             case "add":
             $widget=new ConstWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'));
+            $data=Array('value'=>$req->get('value'),'name'=>$req->get('name'),'note'=>$req->get('note'));
             $widget->tranformSetting($data,true);
             $const=new ConstDefine();
             $result=$const->addConst($id,$data);
@@ -95,7 +95,7 @@ class ConstController extends AdminController
 
             case "edit":
             $widget=new ConstWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'));
+            $data=Array('value'=>$req->get('value'),'name'=>$req->get('name'),'note'=>$req->get('note'));
             $widget->tranformSetting($data,true);
             $const=new ConstDefine();
             $result=$const->editConst($id,$data);

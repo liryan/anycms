@@ -135,7 +135,11 @@ class ContentWidget extends Widget
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
                     if(property_exists($row,$rd['name']) && $row->{$rd['name']}){
-                        $row->{$rd['name']}=$const_data[$row->{$rd['name']}];
+                        if(isset($const_data[$row->{$rd['name']}])){
+                            $row->{$rd['name']}=$const_data[$row->{$rd['name']}];
+                        }
+                        else
+                            $row->{$rd['name']}='';
                     }
                     else{
                         $row->{$rd['name']}='';

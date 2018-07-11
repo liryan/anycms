@@ -19,6 +19,10 @@
     					  <input type="text" name="name" class="form-control" placeholder="请输入中文" value="">
     				  </div>
     				  <div class="form-group">
+    					  <label for="exampleInputEmail1">自定义数值</label>
+    					  <input type="text" name="value" class="form-control" placeholder="数字" value="">
+    				  </div>
+    				  <div class="form-group">
     					  <label for="exampleInputEmail1">备注 </label>
     					  <input type="text" name="note" class="form-control" placeholder="请输入字符" value="">
     				  </div>

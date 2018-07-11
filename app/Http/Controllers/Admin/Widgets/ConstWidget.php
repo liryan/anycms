@@ -43,7 +43,7 @@ class ConstWidget extends Widget
 	{
 		$result=[];
 		if($in){
-			$setting=[];
+			$setting=['value'=>$data['value']];
 			$result['setting']=json_encode($setting);
 			$data['setting']=$result['setting'];
 		}
@@ -53,6 +53,9 @@ class ConstWidget extends Widget
 				foreach($obj as $k=>$v){
 					$data[$k]=$v;
 				}
+                if(!isset($data['value'])){//默认用ID作为这儿的值
+                    $data['value']=$data['id'];
+                }
 			}
 		}
 		return $result;
