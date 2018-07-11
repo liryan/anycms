@@ -134,7 +134,7 @@ class ContentWidget extends Widget
             case DataTable::DEF_LIST:
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
-                    if(property_exists($row,$rd['name']) && $row->{$rd['name']}){
+                    if(property_exists($row,$rd['name'])>0){
                         if(isset($const_data[$row->{$rd['name']}])){
                             $row->{$rd['name']}=$const_data[$row->{$rd['name']}];
                         }

@@ -11,7 +11,6 @@
 
 namespace EasyThumb;
 use EasyThumb\Genimg\Thumb;
-use EasyThumb;
 use Exception;
 class EasyFile
 {
