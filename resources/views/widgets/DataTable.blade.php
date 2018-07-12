@@ -62,6 +62,7 @@ endFillForm=function(){}
 beforeSubmit=function(){}
 </script>
 {!!$new_dialog!!}
+<div class="modal fade" tabindex="-1" role="dialog" id="model_view"></div>
 <!-- /编辑对话框组件,绑定下面的js代码 -->
 <script src="/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
@@ -100,7 +101,7 @@ beforeSubmit=function(){}
         "rowCallback": function( row, data ,index) {//添加单击事件，改变行的样式
             $(row.cells[0]).html('<input type="checkbox" class="control-label"value="'+data.id+'">');
             @if($pri[3]==1)
-                $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+')" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
+                $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+',{{isset($catid)?1:0}})" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
             @endif
             @if($pri[2]==1)
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="editData('+data.id+')" class="btn btn-warning  btn-sm">修改</a> ');
@@ -256,8 +257,19 @@ function addData(){
 }
 
 //显示查看对话框
-function viewData(id){
-    window.location.href=formatUrl("{{$open_url}}","id="+id);
+function viewData(id,priview){
+    if(priview){
+        @if(isset($preview_url))
+        $.get("{{$preview_url}}&id="+id,function(html){
+            $("#model_view").html(html);
+            $("#model_view").modal({backdrop: 'static', keyboard: false});
+        });
+        @else
+            alert('没提供查看功能');
+        @endif
+    }
+    else
+        window.location.href=formatUrl("{{$open_url}}","id="+id);
 }
 
 //删除数据

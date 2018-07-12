@@ -59,6 +59,7 @@ class ContentController extends AdminController
                 "url"=>$this->getUrl()."?catid=$catid",
                 "edit_url"=>$this->getUrl("modify")."?catid=$catid",
                 "view_url"=>$this->getUrl("view")."?catid=$catid",
+                "preview_url"=>$this->getUrl("preview")."?catid=$catid",
                 "open_url"=>$this->geturl("")."?catid=$catid",
                 "delete_url"=>$this->getUrl("delete")."?catid=$catid",
                 "field_url"=>'',
@@ -74,6 +75,36 @@ class ContentController extends AdminController
             );
         }
 	}
+
+    public function getPreview(Request $req)
+    {
+        /*
+		if(!$req->ajax()){
+			return;
+		}
+         */
+
+        $id=$req->get('id',0);
+		$catid=$req->get("catid",0);
+		$cate=new Category();
+		$dt=new DataTable();
+		$modelid=$cate->getModelId($catid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::VIEW,$req->session()->get('admin'))){
+            return $this->error($req,'权限不足');
+        }
+
+		$table_define=$dt->tableColumns($modelid);
+		if($id==0){
+            return '';
+		}
+		else{
+			$content=new ContentTable();
+            $re=$content->getContent($table_define,$id);
+            $widgets=new ContentWidget($table_define);
+            return $widgets->showViewWidget($re);
+		}
+    }
 
 	public function getView(Request $req)
 	{
@@ -101,10 +132,11 @@ class ContentController extends AdminController
 			$content=new ContentTable();
             $re=$content->getContent($table_define,$id);
             $widgets=new ContentWidget($table_define);
-            $widgets->translateToView($re);
 			$re['action']='edit';
 			$re['_token']=csrf_token();
-			return json_encode($re);
+            $data=[json_decode(json_encode($re))];
+            $widgets->translateData($data,true);
+			return json_encode($data[0],true);
 		}
 	}
 
@@ -173,7 +205,8 @@ class ContentController extends AdminController
                 'success'=>'ok',
                 'url'=>str_replace($root_path,'',$path['origin']),
                 'id'=>$fieldname,
-                'result'=>'SUCCESS'
+                'result'=>'SUCCESS',
+                '_token'=>csrf_token()
             ];
             return json_encode($result);
 
@@ -185,6 +218,7 @@ class ContentController extends AdminController
                 'url'=>'',
                 'size'=>0,
                 'type'=>'',
+                '_token'=>csrf_token(),
                 'state'=>$e->getMessage(),
             ];
             return json_encode($result);
@@ -212,7 +246,8 @@ class ContentController extends AdminController
                 'url'=>str_replace($root_path,'',$path['origin']),
                 'size'=>filesize($path['origin']),
                 'type'=>$info['extension'],
-                'state'=>'SUCCESS'
+                'state'=>'SUCCESS',
+                '_token'=>csrf_token(),
             ];
             return json_encode($result);
 
@@ -224,6 +259,7 @@ class ContentController extends AdminController
                 'url'=>'',
                 'size'=>0,
                 'type'=>'',
+                '_token'=>csrf_token(),
                 'state'=>$e->getMessage(),
             ];
             return json_encode($result);

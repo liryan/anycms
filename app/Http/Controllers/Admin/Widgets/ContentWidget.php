@@ -34,6 +34,13 @@ class ContentWidget extends Widget
 		return $view->render();
 	}
 
+    public function showViewWidget($data)
+    {
+		$view=$this->getView("DataView");
+        $fields=$this->translateToView($data);
+        return $view->with("fields",$fields);
+    }
+
 	public function showEditWidget($urlconfig)
 	{
 		$view=$this->getView("DataEdit");
@@ -105,33 +112,48 @@ class ContentWidget extends Widget
 			}
 		}
 	}
+
     public function translateToView(&$data)
     {
-        foreach($this->define['columns'] as $rd){
-            switch($rd['type']){
-            case DataTable::DEF_MULTI_LIST:
-                $content=$data[$rd['name']];
-                if(trim($content)){
-                    if(strpos($content,",")!==false){
-                        $data[$rd['name']]=explode(",",$content);
+        $tmp=[json_decode(json_encode($data))];
+        $this->translateData($tmp);
+        $re=[];
+        foreach($data as $k=>$v){
+            foreach($this->define['columns'] as $rd){
+                if($k!=$rd['name']){
+                    continue;
+                }
+                if($rd['type']==DataTable::DEF_IMAGE){
+                    if($v){
+                        $re[]=['name'=>$k,'note'=>$rd['note'],'value'=>"<img style='max-width:100px' src='".$v."'>"];
                     }
-                    else{
-                        $data[$rd['name']]=[$content];
+                }
+                else if($rd['type']==DataTable::DEF_IMAGES){
+                    $value='';
+                    if($v){
+                        foreach(json_decode($v,true) as $img){
+                            $value.="<img style='max-width:100px' src='".$img."'>";
+                        }
                     }
+                    $re[]=['name'=>$k,'note'=>$rd['note'],'value'=>$value];
                 }
                 else{
-                    $data[$rd['name']]=[];
+                   $re[]=['name'=>$k,'note'=>$rd['note'],'value'=>$v];
                 }
-                break;
             }
-        }
+        } 
+        return $re;
     }
-    public function translateData(&$data)
+
+    public function translateData(&$data,$skipList=false)
     {
         $const=new ConstDefine();
         foreach($this->define['columns'] as $rd){
             switch($rd['type']){
             case DataTable::DEF_LIST:
+                if($skipList){
+                    break;
+                }
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
                     if(property_exists($row,$rd['name'])>0){
@@ -147,9 +169,15 @@ class ContentWidget extends Widget
                 }
                 break;
             case DataTable::DEF_MULTI_LIST:
+                if($skipList){
+                    break;
+                }
                 $const_data=$const->getConstArray($rd['const']);
                 foreach($data as &$row){
-                    if(!$row->$rd['name']){
+                    if(!property_exists($row,$rd['name'])){
+                        continue;
+                    }
+                    if(!strlen($rd['name'])==0){
                         continue;
                     }
                     $ids=explode(",",$row->{$rd['name']});
@@ -161,10 +189,12 @@ class ContentWidget extends Widget
                 }
                 break;
             case DataTable::DEF_IMAGES:
-                if($row->$rd['name'])
-                    $row->$rd['name']=json_decode($row->$rd['name']);
-                else
-                    $row->$rd['name']=[];
+                foreach($data as &$row){
+                    if(property_exists($row,$rd['name']) && $row->{$rd['name']})
+                        $row->{$rd['name']}=json_decode($row->{$rd['name']});
+                    else
+                        $row->{$rd['name']}=[];
+                }
                 break;
             }
         }

@@ -11,8 +11,10 @@
  */
 
 namespace EasyThumb\Genimg;
+use EasyThumb\Genimg\PNGThumb as PNGThumb;
+use EasyThumb\Genimg\GIFThumb as GIFThumb;
+use EasyThumb\Genimg\JPGThumb as JPGThumb;
 use EasyThumb\EasyThumb;
-
 abstract class Thumb{
     private $width;
     private $height;
