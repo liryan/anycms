@@ -31,7 +31,7 @@
         'showCaption':false,
         'showRemove':false,
         initialPreviewFileType:'image',
-        overwriteInitial: true,
+        overwriteInitial: false,
         initialPreviewAsData: false,
         initialPreview: [],
         initialPreviewConfig: []
@@ -90,7 +90,7 @@
         removePic(event,key,0);
     }
 
-    function removePic(event, id, index)
+    function removePic(event, data, id, index)
     {
         for(i=0;i<UploadFile.length;i++){
             if(UploadFile[i].keyid==id){
@@ -102,8 +102,8 @@
     function init_image(id){
         images.push(id);
         $("#"+id).fileinput(option_data).on("fileuploaded",uploaded);
-        $("#"+id).on("filedeleted",deletePic);
-        $("#"+id).on("fileremoved",removePic);
+        $("#"+id).on("filepredelete",deletePrePic);
+        $("#"+id).on("filesuccessremove",removePic);
         $("#"+id).css("background","#FFF");
     }
 
