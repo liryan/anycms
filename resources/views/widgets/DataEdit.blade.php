@@ -104,6 +104,10 @@
     }
 
     beforeFillForm=function(data){
+        for(i=0;i<Editor.length;i++)//清理编辑器
+        {
+            $("#editor_value_"+Editor[i]).val('');
+        }
         UploadFile=[];
         option_data.initialPreview=[];
         option_data.initialPreviewConfig=[];
@@ -135,6 +139,20 @@
                 }
             }
         }
+        if(UploadFile.length==0){
+            for(img in images){
+                file=$("#"+images[img]);
+                var d1=$.extend(true,{},option_data);
+                if(file.attr('single')==1){
+                    d1.overwriteInitial=true;
+                }
+                else{
+                    d1.overwriteInitial=false;
+                }
+                $("#"+images[img]).fileinput('destroy').fileinput(d1);
+            }
+        }
+        changeValue();
     }
 </script>
 <div class="modal fade" tabindex="-1" role="dialog" id="model_new">
@@ -172,20 +190,20 @@
                         </select>
                     @elseif($input['type']==DataTable::DEF_MULTI_LIST)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
-                        @foreach($input['const_list'] as $item)
-                        <label><input type="checkbox" name="{{$input['name']}}[]" value="{{$item['value']}}">{{$item['name']}}</label>
+                        @foreach($input['const_list'] as $it)
+                        <label><input type="checkbox" name="{{$input['name']}}_{{$it['value']}}" value="1">{{$it['name']}}</label>
                         @endforeach
 					@elseif($input['type']==DataTable::DEF_FLOAT)
 					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
   	                	<input type="text" name="{{$input['name']}}" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGES)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
-                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" multiple="true">
+                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" single="0" multiple="true">
                         <script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
                         <input type="hidden" id="{{$input['name']}}" single="0" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGE)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
-                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file">
+                        <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" single="1" type="file">
                         <script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
                         <input type="hidden" id="{{$input['name']}}" single="1" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_EDITOR)

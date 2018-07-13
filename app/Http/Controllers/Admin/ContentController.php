@@ -136,6 +136,7 @@ class ContentController extends AdminController
 			$re['_token']=csrf_token();
             $data=[json_decode(json_encode($re))];
             $widgets->translateData($data,true);
+            $widgets->translateField($data[0]);
 			return json_encode($data[0],true);
 		}
 	}
@@ -177,13 +178,29 @@ class ContentController extends AdminController
 		return json_encode($re);
     }
 
+    /**
+     * fillRowWithPost 
+     * 处理提交的数据
+     * @param mixed $define 
+     * @param Request $req 
+     * @access private
+     * @return void
+     */
     private function fillRowWithPost($define,Request $req)
     {
         $data=[];
         foreach($define as $row){
             $data[$row['name']]=$req->get($row['name']);
+            if($data[$row['name']] && $data[$row['name']][0]=='['){
+                $data[$row['name']]=json_decode($data[$row['name']],true);
+            }
             if(is_array($data[$row['name']])){
                 $data[$row['name']]=trim(implode(",",$data[$row['name']]));
+            }
+            if($row['type'] == DataTable::DEF_MULTI_LIST){
+                $values=$this->getValuesByPrefix($row['name']."_",true);
+                $data[$row['name']]=implode(",",$values);
+                $this->removeValueByPrefix($data,$row['name']."_");
             }
         }
         return $data;

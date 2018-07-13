@@ -53,6 +53,14 @@ class Controller extends BaseController
         return json_encode(['code'=>$code,'msg'=>$msg,'data'=>$data]);
     }
 
+    /**
+     * getValuesByPrefix 
+     * 通过前缀获取值 [pre_id => value] => 获取所有的id
+     * @param mixed $prefix 
+     * @param mixed $onlyValues true 只返回所有前缀的id数字，false 返回 id=>value
+     * @access protected
+     * @return void
+     */
     protected function getValuesByPrefix($prefix,$onlyValues=true)
     {
         $data=[];
@@ -60,15 +68,24 @@ class Controller extends BaseController
             if(strpos($k,$prefix)!==false){
                 $key=str_replace($prefix,"",$k);
                 if($onlyValues){
-                    if($v && $key){
+                    if(strlen($v)>0 && strlen($key)>0){
                         $data[]=$key;
                     }
                 }
                 else{
-                    $data[$key]=$k;
+                    $data[$key]=$v;
                 }
             }
         }
         return $data;
+    }
+
+    protected function removeValueByPrefix(&$data,$prefix)
+    {
+        foreach($data as $k=>$v){
+            if(strpos($k,$prefix)!==false){
+                unset($data[$k]);
+            }
+        }
     }
 }

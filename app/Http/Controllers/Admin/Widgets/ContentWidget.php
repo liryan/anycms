@@ -145,6 +145,34 @@ class ContentWidget extends Widget
         return $re;
     }
 
+    /**
+     * translateData 
+     * 把数据库转换成易读的数据
+     * @param mixed $data 
+     * @param mixed $skipList 
+     * @access public
+     * @return void
+     */
+    public function translateField(&$row)
+    {
+        $const=new ConstDefine();
+        foreach($this->define['columns'] as $rd){
+            switch($rd['type']){
+            case DataTable::DEF_MULTI_LIST:
+                if(!property_exists($row,$rd['name'])){
+                    continue;
+                }
+                if(!strlen($rd['name'])==0){
+                    continue;
+                }
+                $ids=explode(",",$row->{$rd['name']});
+                foreach($ids as $id){
+                    $row[$rd['name']."_".$id]=1;
+                }
+                break;
+            }
+        }
+    }
     public function translateData(&$data,$skipList=false)
     {
         $const=new ConstDefine();
@@ -191,7 +219,7 @@ class ContentWidget extends Widget
             case DataTable::DEF_IMAGES:
                 foreach($data as &$row){
                     if(property_exists($row,$rd['name']) && $row->{$rd['name']})
-                        $row->{$rd['name']}=json_decode($row->{$rd['name']});
+                        $row->{$rd['name']}=explode(",",$row->{$rd['name']});
                     else
                         $row->{$rd['name']}=[];
                 }
