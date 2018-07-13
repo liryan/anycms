@@ -40,38 +40,33 @@
     var images=[];
     var UploadFile=[];
 
-    function changeValue(id,url,isadd)
+    function changeValue()
     {
-        fileobj=$("#"+id);
-        if(fileobj.attr("single")=="1"){
-            if(isadd){
-                fileobj.val(url); 
+        ids=[]; 
+        for(i=0;i<UploadFile.length;i++){
+            id=UploadFile[i].id;
+            if(ids.indexOf(id)!=-1){
+                continue;
             }
-            else{
-                fileobj.val('');
-            }
+            ids.push(id);
         }
-        else{
-            str=fileobj.val();
-            if(str){
-                obj=JSON.parse(str);
-            }
-            else{
-                obj=[];
-            }
-            if(isadd){
-                obj.push(url);
-            }
-            else{
-                newobj=[];
-                for(i=0;i<obj.length;i++){
-                    if(obj[i]!=url){
-                        newobj.push(obj[i]);
+        for(idi=0;idi<ids.length;idi++){
+            id=ids[idi];
+            fileobj=$("#"+id);
+            vals=[];
+            for(i=0;i<UploadFile.length;i++){
+                if(id==UploadFile[i].id){
+                    if(fileobj.attr("single")=="1"){
+                        fileobj.val(UploadFile[i].url); 
+                    }
+                    else{
+                        vals.push(UploadFile[i].url);
                     }
                 }
-                obj=newobj;
             }
-            fileobj.val(JSON.stringify(obj));
+            if(vals.length>0){
+                fileobj.val(JSON.stringify(vals));
+            }
         }
     }
 
@@ -81,33 +76,35 @@
         obj=$("#"+id);
         fileobj=$("#"+data.response.id);
         UploadFile.push({id:id,url:url,keyid:preview_id});
-        changeValue(id,url,true);
+        changeValue();
         $("#token").val(data.response._token);
     }
 
-    function deletePic(event, key, jqXHR, data)
-    {
-        removePic(event,key,0);
-    }
 
-    function removePic(event, data, id, index)
+    function removePic(event, key , jqXHR, data)
     {
         for(i=0;i<UploadFile.length;i++){
-            if(UploadFile[i].keyid==id){
-                changeValue(UploadFile[i].id,UploadFile[i].url,false);    
+            if(UploadFile[i].keyid==key){
+                UploadFile.splice(i,1);
+                break;
             }
         }
+        changeValue();
     }
 
     function init_image(id){
         images.push(id);
         $("#"+id).fileinput(option_data).on("fileuploaded",uploaded);
-        $("#"+id).on("filepredelete",deletePrePic);
-        $("#"+id).on("filesuccessremove",removePic);
+        $("#"+id).on("filedeleted",removePic);
+        $("#"+id).on("fileselect",function(e,f,lable){
+            alert("成功选择新文件等待上传,请点击[上传]按钮,然后点击[提交修改]才可以生效");
+        });
+
         $("#"+id).css("background","#FFF");
     }
 
     beforeFillForm=function(data){
+        UploadFile=[];
         option_data.initialPreview=[];
         option_data.initialPreviewConfig=[];
         for(img in images){
@@ -117,6 +114,7 @@
                 if(images[img].indexOf(obj)>0){
                     if(typeof data[obj] =="string"){
                         var d1=$.extend(true,{},option_data);
+                        d1.overwriteInitial=true;
                         d1.initialPreview.push("<img src='"+data[obj]+"' style='height:60px;width:auto' class='file-preview-image'>");
                         d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})
                         UploadFile.push({id:obj,url:data[obj],keyid:i});
@@ -125,6 +123,7 @@
                     else{
                         if(Object.prototype.toString.call(data[obj])==='[object Array]'){
                             var d1=$.extend(true,{},option_data);
+                            d1.overwriteInitial=false;
                             for(i=0;i<data[obj].length;i++){
                                 d1.initialPreview.push("<img src='"+data[obj][i]+"' style='height:60px;width:auto' class='file-preview-image'>");
                                 d1.initialPreviewConfig.push({width:80,url: '/admin/content/deletefile',key:i,caption:"image_"+i,size:100})

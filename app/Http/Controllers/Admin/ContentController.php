@@ -268,7 +268,7 @@ class ContentController extends AdminController
 
 	public function postDeletefile(Request $req)
 	{
-        return json_encode(Array('result'=>'success'));
+        return json_encode(Array('error'=>'','result'=>'success'));
 	}
 
     public function getDelete(Request $req)
