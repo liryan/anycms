@@ -118,7 +118,7 @@ class ContentWidget extends Widget
         $tmp=[json_decode(json_encode($data))];
         $this->translateData($tmp);
         $re=[];
-        foreach($data as $k=>$v){
+        foreach($tmp[0] as $k=>$v){
             foreach($this->define['columns'] as $rd){
                 if($k!=$rd['name']){
                     continue;
@@ -130,9 +130,9 @@ class ContentWidget extends Widget
                 }
                 else if($rd['type']==DataTable::DEF_IMAGES){
                     $value='';
-                    if($v){
-                        foreach(json_decode($v,true) as $img){
-                            $value.="<img style='max-width:100px' src='".$img."'>";
+                    if($v && is_array($v)){
+                        foreach($v as $img){
+                            $value.="<img style='max-width:100px;margin:3px' src='".$img."'>";
                         }
                     }
                     $re[]=['name'=>$k,'note'=>$rd['note'],'value'=>$value];
