@@ -19,7 +19,7 @@
     					  <input type="text" name="name" class="form-control" placeholder="请输入中文" value="">
     				  </div>
     				  <div class="form-group">
-    					  <label for="exampleInputEmail1">URL(会自动增加前缀<span style="color:red">/admin/ext</span>)</label>
+    					  <label for="exampleInputEmail1">URL(非<span style='color:red'>[外链]http</span>开头的链接自动增加前缀<span style="color:red">/admin/ext</span>)</label>
     					  <input type="text" name="note" class="form-control" placeholder="URL" value="">
     				  </div>
     				  <div class="form-group">

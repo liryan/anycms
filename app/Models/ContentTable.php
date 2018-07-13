@@ -43,6 +43,30 @@ class ContentTable extends BaseModel
             return Array('total'=>0,'data'=>[]);
         }
 	}
+
+    public function getNewCount($modelid,$catid)
+    {
+        $base=new BaseSetting();
+        $info=$base->getDataById($modelid);
+        $tableName=$info['name'];
+        $yd_min=Date('Y-m-d 0:0:0',strtotime('-1 day'));
+        $yd_max=Date('Y-m-d 24:0:0',strtotime('-1 day'));
+
+        $td_min=Date('Y-m-d 0:0:0');
+        $td_max=Date('Y-m-d 24:0:0');
+        $yd_count=DB::table($tableName)
+            ->where('category',$catid)
+            ->where('created_at','>=',$yd_min)
+            ->where('created_at','<',$yd_max)
+            ->count();
+        $td_count=DB::table($tableName)
+            ->where('category',$catid)
+            ->where('created_at','>=',$td_min)
+            ->where('created_at','<',$td_max)
+            ->count();
+        return Array('id'=>$catid,'yestoday'=>$yd_count,'today'=>$td_count);
+    }
+
     public function getContent($define,$id)
     {
         $row=DB::table($define['info']['name'])->where('id',$id)->first();

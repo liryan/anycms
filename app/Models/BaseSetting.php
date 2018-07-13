@@ -171,4 +171,16 @@ class BaseSetting extends BaseModel
         while(true);
         return $re;
     }
+
+    public function getDataByIds($ids)
+    {
+        if(!$ids){
+            return [];
+        }
+        $data=$this->whereIn("id",$ids)->get();
+        if($data){
+            return $data;
+        }
+        return false;
+    }
 }

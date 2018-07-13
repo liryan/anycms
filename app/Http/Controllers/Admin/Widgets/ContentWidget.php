@@ -205,7 +205,7 @@ class ContentWidget extends Widget
                     if(!property_exists($row,$rd['name'])){
                         continue;
                     }
-                    if(!strlen($rd['name'])==0){
+                    if(strlen($rd['name'])==0){
                         continue;
                     }
                     $ids=explode(",",$row->{$rd['name']});
@@ -213,7 +213,7 @@ class ContentWidget extends Widget
                     foreach($ids as $id){
                         $tmp[]=$const_data[$id];
                     }
-                    $row->$rd['name']=implode(",",$tmp);
+                    $row->{$rd['name']}=implode(",",$tmp);
                 }
                 break;
             case DataTable::DEF_IMAGES:

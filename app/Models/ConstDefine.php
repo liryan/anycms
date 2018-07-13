@@ -4,6 +4,7 @@ namespace App\Models;
 
 class ConstDefine extends BaseSetting
 {
+	const TREE_CONST_ID=3;
 	//定义栏目列表字段以及新增栏目的字段
 	public static $const_fields=[
 		['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
@@ -16,7 +17,6 @@ class ConstDefine extends BaseSetting
 
     public static $setting_field=[
     ];
-	const TREE_CONST_ID=3;
 
     public function getConstArray($id){
 		$data=$this->getDataPageByParentId($id);

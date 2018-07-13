@@ -281,7 +281,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/ext/{{$row['note']}}"><i class="{{$row['setting']}}"></i>{{$row['name']}}</a></li>
+                    <li class="active"><a href="@if(strpos(strtolower($row['note']),'http')!==false){{$row['note']}}@else/admin/ext/{{$row['note']}}@endif"><i class="{{$row['setting']}}"></i>{{$row['name']}}</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>

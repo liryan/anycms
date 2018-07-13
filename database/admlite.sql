@@ -59,6 +59,7 @@ CREATE TABLE `t_admin` (
   `name` varchar(32) DEFAULT NULL,
   `role` varchar(256) DEFAULT NULL,
   `avatar` varchar(256) DEFAULT NULL,
+  `setting` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

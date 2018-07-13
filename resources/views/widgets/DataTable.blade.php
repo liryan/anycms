@@ -201,6 +201,9 @@ function changeSelectField()
     v=$("#edit_field").val();
     $("#edit_panel").html("");
     $("#label_panel").html("");
+    if(v === undefined){
+        return;
+    }
     if(v!=0){
         $("#label_panel").html("修改成");
         option=v.split("_");

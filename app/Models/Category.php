@@ -103,6 +103,15 @@ class Category extends BaseSetting
 		return $this->getDataByParentId(self::CATEGORY_ID,true);
 	}
 
+	public function getModelInfo($id)
+	{
+		$data=$this->getDataById($id);
+		if($data){
+			$obj=json_decode($data['setting'],true);
+			return ['modelid'=>$obj['modelid'],'name'=>$data['name']];
+		}
+		return 0;
+	}
 	public function getModelId($id)
 	{
 		$data=$this->getDataById($id);
