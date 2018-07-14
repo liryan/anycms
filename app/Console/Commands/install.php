@@ -13,7 +13,7 @@ class install extends Command
      *
      * @var string
      */
-    protected $signature = 'install {sqlf=./database/admlite.sql}';
+    protected $signature = 'install';
 
     /**
      * The console command description.
@@ -55,7 +55,7 @@ class install extends Command
     {
         $this->stdin=fopen("php://stdin",'r');
 
-        $file=$this->argument('sqlf');
+        $file="./database/install.sql";
         if(!file_exists($file)){
             echo "[$file] doesn't exist\n";
             echo "Install Exit\n";

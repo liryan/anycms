@@ -44,13 +44,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+		if(env('APP_DEBUG')==true){
+            return parent::render($request, $exception);
+		}
         if($exception instanceof Symfony\Component\HttpKernel\Exception\NotFoundHttpException){
             if($exception->getStatusCode()==404){
                 return redirect('/admin/error404?url='.$request->fullUrl());
             }
         }
         else{
-            return parent::render($request, $exception);
+            error_log($exception->getMessage()."\n","3","/tmp/log.log");
+            if($request->ajax()){
+                return response(json_encode(['code'=>0,'msg'=>$exception->getMessage()]),200);
+            }
+            else{
+                return redirect("/admin/error?msg=".$exception->getMessage()."&url=".$request->fullUrl());
+            }
         }
     }
 

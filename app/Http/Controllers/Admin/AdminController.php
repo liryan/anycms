@@ -70,7 +70,7 @@ class AdminController extends Controller
 
     protected function getUrl($method='')
     {
-        return '/'.$this->prefix."/".$this->getClassName().'/'.strtolower($method);
+        return '/'.$this->prefix."/".$this->getClassName().($method?('/'.strtolower($method)):'');
     }
 
 
@@ -177,7 +177,11 @@ class AdminController extends Controller
     }
 
     public function authFailed(Request $req){
-        return $this->error($req,"访问出错了，请确定有权限访问",$req->get('url'));
+		$msg="访问出错了，请确定有权限访问";
+		if($req->get('msg')){
+			$msg=$req->get('msg');
+		}
+        return $this->error($req,$msg,$req->get('url'));
     }
 
     protected function error(Request $req,$msg,$url='')

@@ -51,7 +51,7 @@ class ContentController extends AdminController
             $models=new DataTable();
             $this->breadcrumb=$cate->getPath($catid?$catid:Category::CATEGORY_ID);
             foreach($this->breadcrumb as &$row){
-                $row['url']=$this->getUrl()."?id=".$row['id'];
+                $row['url']=$this->getUrl()."?catid=".$row['id'];
             }
             $widget=new ContentWidget($table_define);
 			$search_clouser=$widget->generateSearchClouser($catid,$req->all());
@@ -63,7 +63,7 @@ class ContentController extends AdminController
                 "open_url"=>$this->geturl("")."?catid=$catid",
                 "delete_url"=>$this->getUrl("delete")."?catid=$catid",
                 "field_url"=>'',
-                "pri"=>'11110',
+                "pri"=>$this->pridb->getContentPri($modelid,$req->session()->get('admin')),
 				"catid"=>$catid,
             ];
             $dialog_html=$widget->showEditWidget($urlconfig);

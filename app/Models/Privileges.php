@@ -35,6 +35,15 @@ class Privileges extends BaseSetting{
     ];
     private static $all_privileges=[];
 
+    public function getContentPri($itemid,$admin){
+        if(!isset(self::$all_privileges[$itemid])){
+            return "00000";
+        }
+        if($admin==1){
+            return "11110";
+        }
+        return self::$all_privileges[$itemid];
+    }
     public function checkPri($itemid,$value,$isAdmin=false)
     {
         if($isAdmin==1){

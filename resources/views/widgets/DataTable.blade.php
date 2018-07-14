@@ -3,7 +3,7 @@
         <div class="box box-info">
           <div class="box-header">
             <h3 class="box-title">{{$name}}</h3>
-            @if($pri[0]==1)
+            @if($pri[1]==1)
    			  <div class="pull-right"><button class="btn bg-orange margin" onclick="addData()">[+]新增</button></div>
             @endif
           </div>
@@ -100,13 +100,13 @@ beforeSubmit=function(){}
         ],
         "rowCallback": function( row, data ,index) {//添加单击事件，改变行的样式
             $(row.cells[0]).html('<input type="checkbox" class="control-label"value="'+data.id+'">');
-            @if($pri[3]==1)
+            @if($pri[0]==1)
                 $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+',{{isset($catid)?1:0}})" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
             @endif
             @if($pri[2]==1)
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="editData('+data.id+')" class="btn btn-warning  btn-sm">修改</a> ');
             @endif
-            @if($pri[1]==1) //delete
+            @if($pri[3]==1) //delete
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="deleteData('+data.id+')" class="btn  btn-danger btn-sm">[-]删除</a> ');
             @endif
             @if($pri[4]==1) //
@@ -166,7 +166,7 @@ function submitEdit()
         data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
         $.post("/admin/content/batchedit",data,function(msg){
             alert('已成功修改');
-            window.location.reload();
+            table.ajax.reload();
         },"json");
     }
 }
@@ -186,7 +186,7 @@ function submitDelete()
             $.post("/admin/content/batchdel",data,function(msg){
                 if(msg.code==1){
                     alert('已成功删除');
-                    window.location.reload();
+                    table.ajax.reload();
                 }
                 else{
                     alert('删除失败');
