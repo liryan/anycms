@@ -328,7 +328,7 @@ class ContentController extends AdminController
     {
         $catid=$req->get("catid");
         $cond=explode("-",$req->get("ids")); 
-        $name=explode("_",$req->get('name'));
+        $name=explode("|",$req->get('name'));
         $value=$req->get('value');
 
 		$cate=new Category();

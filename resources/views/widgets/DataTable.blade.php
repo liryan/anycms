@@ -34,7 +34,7 @@
                     <option value="0">选择要修改的字段</option>
                     @foreach($fields as $field)
                     @if(@$field['batchable']==1)
-                    <option id="{{$field['name']}}" value="{{$field['name']}}_{{$field['type']}}" data="@if($field['type']==5){{$field['const']}}@elseif($field['type']==4){{$field['size']}}@endif">{{$field['note']}}</option>
+                    <option id="{{$field['name']}}" value="{{$field['name']}}|{{$field['type']}}" data="@if($field['type']==5){{$field['const']}}@elseif($field['type']==4){{$field['size']}}@endif">{{$field['note']}}</option>
                     @endif
                     @endforeach
                 </select>
@@ -206,7 +206,7 @@ function changeSelectField()
     }
     if(v!=0){
         $("#label_panel").html("修改成");
-        option=v.split("_");
+        option=v.split("|");
         if(option[1]==1 || option[1]== 2 || option[1]==8){　//整数，字符串，浮点
             $("#edit_panel").html("<input type='text' name='field_value'>");
         }

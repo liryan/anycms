@@ -36,11 +36,11 @@ class Privileges extends BaseSetting{
     private static $all_privileges=[];
 
     public function getContentPri($itemid,$admin){
-        if(!isset(self::$all_privileges[$itemid])){
-            return "00000";
-        }
         if($admin==1){
             return "11110";
+        }
+        if(!isset(self::$all_privileges[$itemid])){
+            return "00000";
         }
         return self::$all_privileges[$itemid];
     }
