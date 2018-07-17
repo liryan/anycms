@@ -190,6 +190,9 @@ class ContentController extends AdminController
     {
         $data=[];
         foreach($define as $row){
+            if(!$row['editable']){
+                continue;
+            }
             $data[$row['name']]=$req->get($row['name']);
             if($data[$row['name']] && $data[$row['name']][0]=='['){
                 $data[$row['name']]=json_decode($data[$row['name']],true);
