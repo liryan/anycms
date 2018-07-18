@@ -14,8 +14,8 @@
         <tbody><tr style="background-color:#e4e4e4">
           <th style="width: 10px">#</th>
           <th style="width: 30%">栏目名</th>
-          <th style="width: 150px">订阅</th>
-          <th style="width: 150px">添加到工作台</th>
+          <th style="width: 150px">订阅数据统计</th>
+          <th style="width: 150px">增加快捷方式</th>
         </tr>
         @foreach($cats as $k=>$row)
         <tr>
@@ -25,12 +25,12 @@
           </td>
           <td>
             <div>
-                <label><input type="checkbox" name="catsub_{{$row['id']}}" value="1"/>订阅</label>
+                <label><input type="checkbox" name="catsub_{{$row['id']}}" value="1"/>订阅数据变化</label>
             </div>
           </td>
           <td>
             <div>
-                <label><input type="checkbox" name="catview_{{$row['id']}}" value="1"/>添加</label>
+                <label><input type="checkbox" name="catview_{{$row['id']}}" value="1"/>添加快捷方式</label>
             </div>
           </td>
         </tr>

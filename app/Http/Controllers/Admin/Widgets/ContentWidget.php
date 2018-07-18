@@ -80,6 +80,7 @@ class ContentWidget extends Widget
 	}
 
 	/**
+     * 见本类的函数search_0的例子
 	 * [generateSearchClouser 获取对应ID的搜索闭包]
 	 * @method generateSearchClouser
 	 * @param  [type]                $categoryid [description]
@@ -230,7 +231,7 @@ class ContentWidget extends Widget
 	/************************************************
 	* 注册搜索框，prototype:  search_categoryid ,0缺省的搜索
 	* 1.首先在templates/widgets/search/目录下创建search_xxx.blade.php
-	* ,这是模板要包含搜索表单
+	* ,这是模板要包含搜索表单,xxx为频道的id编号
 	* 2.在这儿定义一个新的搜索方法 search_xxx
 	* 3.xxx为要定制搜索表单的内容频道ID号码，展现这个频道内容列表的时候
 	* 就会用对应的搜索框
@@ -246,12 +247,27 @@ class ContentWidget extends Widget
 	{
 		return [
 			'condition'=>function($query)use($input){
-				if(!trim(@$input['keyword'])){
-					$query->where('id','>',0);
-				}
-				else{
-					$query->where($input['field'],$input['keyword']);
-				}
+                if(!trim(@$input['keyword'])){
+                    $query->where('id','>',0);
+                    return;
+                }
+                $compare=$input['math'];
+                if($compare=='between'){
+                    $fields=explode(",",trim(@$input['keyword']));
+                    if(count($fields)<2){
+                        $query->where($input['field'],"=",$fields[0]);
+                    }
+                    else{
+                        $query->where($input['field'],"<=",max($fields[0],$fields[1]));
+                        $query->where($input['field'],">=",min($fields[0],$fields[1]));
+                    }
+                }
+                else if($compare=='like'){
+                    $query->where($input['field'],$compare,"%".$input['keyword']."%");
+                }
+                else{
+                    $query->where($input['field'],$compare,$input['keyword']);
+                }
 			},
 			'order'=>function()use($input){
 				return "id desc";

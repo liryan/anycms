@@ -163,19 +163,20 @@
         <h4 class="modal-title" id="dialogTitle"></h4>
       </div>
       <div class="modal-body">
+          @if(count($inputs)>0)
           <form role="form" method="post" id="edit_form" action="{{$edit_url}}"  enctype="multipart/form-data">
               <input type="hidden" name="action" />
               <input type="hidden" id="token" name="_token" />
               <input type="hidden" name="id" />
-			  @foreach($inputs as $k=>$input)
-    	      <div class="form-group">
-					@if($input['type']==DataTable::DEF_INTEGER)
-					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
-					@elseif($input['type']==DataTable::DEF_CHAR)
-						<label  for="exampleInputEmail1">{{$input['note']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
-					@elseif($input['type']==DataTable::DEF_TEXT)
+              @foreach($inputs as $k=>$input)
+              <div class="form-group">
+                    @if($input['type']==DataTable::DEF_INTEGER)
+                          <label for="exampleInputEmail1">{{$input['note']}}</label>
+                          <input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
+                    @elseif($input['type']==DataTable::DEF_CHAR)
+                        <label  for="exampleInputEmail1">{{$input['note']}}</label>
+                          <input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
+                    @elseif($input['type']==DataTable::DEF_TEXT)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <textarea id="editor_html" name="{{$input['name']}}" class="form-control"></textarea>
                     @elseif($input['type']==DataTable::DEF_DATE)
@@ -193,9 +194,9 @@
                         @foreach($input['const_list'] as $it)
                         <label><input type="checkbox" name="{{$input['name']}}_{{$it['value']}}" value="1">{{$it['name']}}</label>
                         @endforeach
-					@elseif($input['type']==DataTable::DEF_FLOAT)
-					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
-  	                	<input type="text" name="{{$input['name']}}" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
+                    @elseif($input['type']==DataTable::DEF_FLOAT)
+                          <label for="exampleInputEmail1">{{$input['note']}}</label>
+                          <input type="text" name="{{$input['name']}}" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
                     @elseif($input['type']==DataTable::DEF_IMAGES)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <input id="kv-explorer_{{$input['name']}}" name="file_{{$input['name']}}" type="file" single="0" multiple="true">
@@ -207,17 +208,20 @@
                         <script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
                         <input type="hidden" id="{{$input['name']}}" single="1" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_EDITOR)
-					  	<label for="exampleInputEmail1">{{$input['note']}}</label>
+                          <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <script type="text/javascript">Editor.push("{{$input['id']}}");</script>  
                         <script type="text/plain" id="editor_{{$input['id']}}" style="width:auto;height:240px;">
                             <p>这里我可以写一些输入提示</p>
                         </script>
-  	                	<input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
-					@endif
+                          <input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
+                    @endif
               </div>
-		    @endforeach
+            @endforeach
               <!-- /.box-body -->
           </form>
+          @else
+            <h5>无任何可以编辑的字段</h5>
+          @endif
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>

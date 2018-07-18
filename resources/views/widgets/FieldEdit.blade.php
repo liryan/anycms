@@ -36,6 +36,7 @@
     					   <label><input type="checkbox" class="control-label" name="listable" value="1" checked="false">可列表</label>
                            <label><input type="checkbox" class="control-label" name="editable" value="1" checked="false">可编辑</label>
                            <label><input type="checkbox" class="control-label" name="batchable" value="1" checked="false">可批量修改</label>
+                           <label><input type="checkbox" class="control-label" name="searchable" value="1" checked="false">可搜索</label>
     	              </div>
     				  <div class="form-group">
         				<label>关联外表字段</label><br/>

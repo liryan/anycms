@@ -101,10 +101,10 @@ class DataTable extends BaseSetting
         ["name"=>"editable",'note'=>'可编辑','default'=>'1'],
         ["name"=>"listable",'note'=>'可列表','default'=>'0'],
         ["name"=>"batchable",'note'=>'可批量修改','default'=>'0'],
+        ["name"=>"searchable",'note'=>'可搜索','default'=>'0'],
         ["name"=>"default",'note'=>'缺省值','default'=>''],
         ['name'=>'const','note'=>'选择的常量ID','default'=>''],
         ['name'=>'size','note'=>'字段大小','default'=>''],
-        ['name'=>'searchable','note'=>'是否可搜索','default'=>''],
         ['name'=>'comment','note'=>'字段提示','default'=>''],
         ['name'=>'format','note'=>'格式说明','default'=>''],
     ];
