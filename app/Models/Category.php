@@ -80,8 +80,8 @@ class Category extends BaseSetting
 		$olddata=$this->where("id",$id)->first();
 
 		$count=$this->where('parentid',$olddata->parentid)->where("name",$data['name'])->count();
-		if($count>0){
-			return Array('code'=>0,'msg'=>'栏目已经存在了');
+		if($count==0){
+			return Array('code'=>0,'msg'=>'栏目不存在');
 		}
 
 		$this->editData($id,$newdata);
