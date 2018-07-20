@@ -73,6 +73,7 @@ class install extends Command
             $data=$user->modifyUser(0,Array('role'=>20,'name'=>'admin','password'=>$password,'email'=>$email));
             if($data['code']==1){
                 echo "Congradulation,install successfully\n";
+                echo "Please visit http://yourhost/admin/\n";
             }
             else{
                 echo "install failed\n";
