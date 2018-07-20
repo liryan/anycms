@@ -39,6 +39,13 @@ class AdminMiddleware
                 return redirect("/admin/error?url=".$request->fullUrl());
             }
         }
+
+        if($request->is("admin/stat/*")){
+            $catid=$request->get('statid');
+            if(!$pridb->checkPri($catid,Privileges::VIEW,$request->session()->get('admin'))){
+                return redirect("/admin/error?url=".$request->fullUrl());
+            }
+        }
         return $next($request);
     }
 }

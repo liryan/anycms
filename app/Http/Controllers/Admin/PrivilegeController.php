@@ -8,6 +8,7 @@ use App\Models\DataTable;
 use App\Models\Category;
 use App\Models\Privileges;
 use App\Models\ConstDefine;
+use App\Models\StatDefine;
 use App\Http\Requests\MenuModify;
 use App\Http\Controllers\Admin\Widgets\PrivilegeWidget;
 use App\Http\Controllers\Admin\Widgets\CategoryWidget;
@@ -131,13 +132,22 @@ class PrivilegeController extends AdminController
         $cate=new Category();
         $tab=new DataTable();
         $pridb=new Privileges();
+        $stat=new StatDefine();
         $models=$tab->tables(0,1000);
         $priCats=$cate->getAllCategory();
         $menus=$pridb->getAllMenus();
+        $stats=$stat->getAllStatMenu();
+
         $menu_data=[];
         foreach($menus as $row){
             $this->readNode($row,$menu_data,0);
         }
+
+        $stat_data=[];
+        foreach($stats as $row){
+            $this->readNode($row,$stat_data,0);
+        }
+
         $re=[];
         foreach($priCats as $row){
             $this->readNode($row,$re,0);
@@ -146,6 +156,7 @@ class PrivilegeController extends AdminController
         $view=$this->View("pri");
         return $view->with("pricats",$re)
             ->with('menus',$menu_data)
+            ->with('stats',$stat_data)
             ->with('primodels',$models['data'])
             ->with("roleid",$req->get('id'))
             ->with("rolepri_url",$this->geturl("rolepri"))
