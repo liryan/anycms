@@ -124,11 +124,12 @@ class ContentTable extends BaseModel
         }
         $tabs=explode(" ",$table);
         $tb=$tabs[0];
-        $extra=$month?("$tb.stat_month=$month"):'1';
+        $month=$month?$month:date('Ym');
+        $extra="$tb.stat_month=$month";
         $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
         $days=DB::select($sql);
         $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
         $months=DB::select($sql);
-        return Array('header'=>$header,'days'=>$days,'months'=>$months);
+        return Array('header'=>$header,'days'=>$days,'months'=>$months,'month'=>$month);
     }
 }

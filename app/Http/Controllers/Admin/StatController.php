@@ -129,6 +129,10 @@ class StatController extends AdminController
         $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$month);
         $max_day[]=0;
         $max_month[]=0;
+        $emptyObj=new \StdClass();
+        foreach($rows['header'] as $k=>$v){
+            $emptyObj->{$k}=0; 
+        }
         foreach($rows['header'] as $k=>$v){
             if(!isset($max_day[$k])){
                 $max_day[$k]=0;
@@ -148,11 +152,24 @@ class StatController extends AdminController
                 }
             }
         }
+
+        $start=date('Ym')."01";
+        $days=[];
+        for($s=0;$s<31;$s++){
+            $tmp= clone $emptyObj;
+            $tmp->stat_day=$start+$s;
+            $days[$tmp->stat_day]=$tmp;
+        }
+
+        foreach($rows['days'] as $r){
+            $days[$r->stat_day]=$r;
+        }
+
         return $this->View("detail")
             ->with('max_day',$max_day)
             ->with('max_month',$max_month)
             ->with('header',$rows['header'])
-            ->with('days',$rows['days'])
+            ->with('days',array_values($days))
             ->with('stat_name',$data['name'])
             ->with('curl',$req->url()."?statid=$statid")
             ->with('months',$rows['months']);
