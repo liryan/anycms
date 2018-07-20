@@ -260,6 +260,38 @@
           </ul>
         </li>
         <!-- 内容管理结束-->
+        <!-- 统计管理开始-->
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-folder-o"></i> <span>数据统计</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+              @foreach($statmenus as $row)
+                @if($row['subdata']=='>')
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-table"></i> <span>{{$row['name']}}</span>
+                        <span class="pull-right-container">
+                          <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                @elseif($row['subdata']=='|')
+                    @if(!isset($row['id']))
+                    @else
+                    <li class="active"><a href="/admin/stat/detail?statid={{$row['id']}}"><i class="fa fa-pie-chart"></i>{{$row['name']}}</a></li>
+                    @endif
+                @elseif($row['subdata']=='<')
+                    </ul>
+                </li>
+                @endif
+              @endforeach
+          </ul>
+        </li>
+        <!-- 统计管理结束-->
         <li class="active treeview">
           <a href="#">
             <i class="fa fa-folder-o"></i> <span>扩展功能</span>

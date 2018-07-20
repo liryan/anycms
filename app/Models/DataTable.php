@@ -115,17 +115,24 @@ class DataTable extends BaseSetting
         ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false,'searchable'=>true],
         ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
+        ['name'=>'stat_year','note'=>'年统计','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
+        ['name'=>'stat_month','note'=>'月统计','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
+        ['name'=>'stat_day','note'=>'日统计','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
     ];
 
-    public function fillDefault(&$row)
+    public function fillDefault(&$row,$includeCreate=false)
     {
         $row['updated_at']=date('Y-m-d H:i:s');
-        $row['created_at']=date('Y-m-d H:i:s');
+        if($includeCreate){
+            $row['created_at']=date('Y-m-d H:i:s');
+            $row['stat_year']=date('Y');
+            $row['stat_month']=date('Ym');
+            $row['stat_day']=date('Ymd');
+        }
     }
 
     public function filterForEdit(&$row){
         unset($row['id']);
-        unset($row['created_at']);
     }
 
 	/**

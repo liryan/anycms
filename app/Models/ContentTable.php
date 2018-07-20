@@ -78,7 +78,6 @@ class ContentTable extends BaseModel
 
     public function editContent($define,$id,$data,$catid)
     {
-        $data['updated_at']=date('Y-m-d H:i:s');
         $id=DB::table($define['info']['name'])->where('category',$catid)->where('id',$id)->update($data);     
         return $id;
     }
@@ -104,5 +103,32 @@ class ContentTable extends BaseModel
     public function deleteContentBatch($define,$ids,$catid)
     {
         return DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->delete();
+    }
+
+    public function getStatData($condition,$items,$table,$month='')
+    {
+        $part1=[];
+        $cols=explode(",",$items);
+        $counter=0;
+        $header=[];
+        foreach($cols as $col){
+            $c=explode("as",$col);
+            $col_name="item_".$counter++;
+            if(count($c)>=2){
+                $header[$col_name]=trim($c[1]);
+            }
+            else{
+                $header[$col_name]=$col_name;
+            }
+            $part1[]=trim($c[0])." as $col_name";
+        }
+        $tabs=explode(" ",$table);
+        $tb=$tabs[0];
+        $extra=$month?("$tb.stat_month=$month"):'1';
+        $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
+        $days=DB::select($sql);
+        $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
+        $months=DB::select($sql);
+        return Array('header'=>$header,'days'=>$days,'months'=>$months);
     }
 }

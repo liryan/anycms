@@ -58,6 +58,7 @@ Route::group(['prefix' => 'admin','middleware'=>['AdminAuth']], function () {
 	RouteController("/account","Admin\\AccountController");
 	RouteController("/personal","Admin\\PersonalController");
 	RouteController("/menu","Admin\\MenuController");
+	RouteController("/stat","Admin\\StatController");
 	RouteController("/ext","Admin\\ExtController");
 	Route::get("/index","Admin\\PersonalController@index");
 	Route::get("/login","Admin\\UserController@getLogin");

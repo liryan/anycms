@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use App\Models\Privileges;
+use App\Models\StatDefine;
 use App\Models\Category;
 class AdminController extends Controller
 {
@@ -62,6 +63,7 @@ class AdminController extends Controller
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('sys_menus',$this->getMenu(true));
         $view->with('categories',$this->getCategoryMenu());
+        $view->with('statmenus',$this->getStatMenu());
         $view->with('user_menus',$this->getCustomMenu());
         $view->with('username',$this->user()->name);
         $view->with('avatar',$avatar);
@@ -120,6 +122,31 @@ class AdminController extends Controller
         }
         $re=[];
         if(session()->get('admin')==0){
+            foreach($data as $k=>&$r){
+                if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
+                    unset($data[$k]);
+                }
+                else{
+                    $this->filterCategory($r);
+                }
+            }
+        }
+        foreach($data as $row){
+            $this->treeToArray($re,$row);
+        }
+        return $re;
+    }
+
+    protected function getStatMenu()
+    {
+        $stat=new StatDefine();
+        $data=$stat->getAllStatMenu();
+        if(!$data){
+            $data=Array();
+        }
+        $re=[];
+        if(session()->get('admin')==0){
+            $pridb=new Privileges();
             foreach($data as $k=>&$r){
                 if(false==$pridb->checkPri($r['id'],Privileges::VIEW)){
                     unset($data[$k]);

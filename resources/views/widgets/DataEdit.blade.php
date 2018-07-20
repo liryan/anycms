@@ -163,11 +163,11 @@
         <h4 class="modal-title" id="dialogTitle"></h4>
       </div>
       <div class="modal-body">
-          @if(count($inputs)>0)
           <form role="form" method="post" id="edit_form" action="{{$edit_url}}"  enctype="multipart/form-data">
               <input type="hidden" name="action" />
               <input type="hidden" id="token" name="_token" />
               <input type="hidden" name="id" />
+          @if(count($inputs)>0)
               @foreach($inputs as $k=>$input)
               <div class="form-group">
                     @if($input['type']==DataTable::DEF_INTEGER)
@@ -218,10 +218,10 @@
               </div>
             @endforeach
               <!-- /.box-body -->
-          </form>
           @else
             <h5>无任何可以编辑的字段</h5>
           @endif
+          </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>

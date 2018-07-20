@@ -258,8 +258,8 @@ class Privileges extends BaseSetting{
 
 		$olddata=$this->where("id",$id)->first();
 		$count=$this->where('parentid',$olddata->parentid)->where("note",$data['note'])->count();
-		if($count>0){
-			return Array('code'=>0,'msg'=>'菜单已经存在了');
+		if($count==0){
+			return Array('code'=>0,'msg'=>'菜单不存在');
 		}
 
 		$this->editData($id,$newdata);

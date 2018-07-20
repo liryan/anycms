@@ -150,13 +150,16 @@ class ContentController extends AdminController
 		$table_define=$dt->tableColumns($modelid);
         $act=$req->get('action');
         $data=$this->fillRowWithPost($table_define['columns'],$req);
-        $dt->fillDefault($data);
+        $re=['code'=>0,'msg'=>'没有数据可以修改'];
+        if(!$data){
+		    return json_encode($re);
+        }
         $data['category']=$catid;
         $result=0;
-        $re=['code'=>0,'msg'=>'未知的操作'];
         $pridb=new Privileges();
         switch($act){
         case 'edit':
+            $dt->fillDefault($data,false);
             if(!$this->pridb->checkPri($modelid,Privileges::EDIT,$req->session()->get('admin'))){
                 return $this->error($req,'权限不足');
             }
@@ -167,6 +170,7 @@ class ContentController extends AdminController
             $re=['code'=>$result?1:0,'msg'=>$result?"成功修改数据":"修改失败了"];
             break;
         case 'add':
+            $dt->fillDefault($data,true);
             if(!$this->pridb->checkPri($modelid,Privileges::ADD,$req->session()->get('admin'))){
                 return $this->error($req,'权限不足');
             }
