@@ -53,12 +53,11 @@ class Handler extends ExceptionHandler
             }
         }
         else{
-            error_log($exception->getMessage()."\n","3","/tmp/log.log");
             if($request->ajax()){
                 return response(json_encode(['code'=>0,'msg'=>$exception->getMessage()]),200);
             }
             else{
-                return redirect("/admin/error?msg=".$exception->getMessage()."&url=".$request->fullUrl());
+                return redirect("/admin/login");
             }
         }
     }
