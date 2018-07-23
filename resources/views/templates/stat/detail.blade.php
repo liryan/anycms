@@ -16,7 +16,7 @@
           <th style="width: 10px">#</th>
           <th style="width: 60px">日期</th>
           @foreach($header as $item=>$name)
-          <th>{{$name}}</th>
+          <th>{{$name}}(共计:{{$month_total[$item]}})</th>
           @endforeach
         </tr>
         @foreach($months as $k=>$row)
@@ -47,7 +47,7 @@
           <th style="width: 10px">#</th>
           <th style="width: 60px">日期</th>
           @foreach($header as $item=>$name)
-          <th>{{$name}}</th>
+          <th>{{$name}}(共计:{{$day_total[$item]}})</th>
           @endforeach
         </tr>
         @foreach($days as $k=>$row)

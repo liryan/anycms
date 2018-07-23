@@ -133,6 +133,8 @@ class StatController extends AdminController
         foreach($rows['header'] as $k=>$v){
             $emptyObj->{$k}=0; 
         }
+        $day_total=[];
+        $month_total=[];
         foreach($rows['header'] as $k=>$v){
             if(!isset($max_day[$k])){
                 $max_day[$k]=0;
@@ -141,6 +143,7 @@ class StatController extends AdminController
                 if($row->{$k} > $max_day[$k]){
                     $max_day[$k]=$row->{$k};
                 }
+                $day_total[$k]=(isset($day_total[$k])?$day_total[$k]:0)+$row->{$k};
             }
 
             if(!isset($max_month[$k])){
@@ -150,6 +153,7 @@ class StatController extends AdminController
                 if($row->{$k} > $max_month[$k]){
                     $max_month[$k]=$row->{$k};
                 }
+                $month_total[$k]=(isset($month_total[$k])?$month_total[$k]:0)+$row->{$k};
             }
         }
 
@@ -167,6 +171,8 @@ class StatController extends AdminController
 
         return $this->View("detail")
             ->with('max_day',$max_day)
+            ->with('day_total',$day_total)
+            ->with('month_total',$month_total)
             ->with('max_month',$max_month)
             ->with('header',$rows['header'])
             ->with('days',array_values($days))
