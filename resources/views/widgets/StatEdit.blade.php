@@ -41,8 +41,8 @@
                           <label>分组按日期（月，日）<input id="gsecond" checked="true" type="checkbox" value="1" name="group_date"></label>
     				  </div>
     				  <div class="form-group">
-    					  <label for="exampleInputEmail1">备注 </label>
-    					  <input type="text" name="note" class="form-control" placeholder="请输入字符" value="">
+    					  <h6>1.大分组 由三部分组成 统计目录+条件+数据源，其中统计目录的第一个字段会追加到第二个分组的条件中</h6>
+                <h6>2.按日期统计由三部分组成 统计项+条件(统计目录的增加到这儿）+数据源</h6>
     				  </div>
                   </form>
               </div>

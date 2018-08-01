@@ -247,10 +247,12 @@ function formatUrl(url,paramstring)
 }
 
 function addData(){
+    var origin_id=@if(isset($id)){{$id}}@else 0 @endif;
     $("#edit_form")[0].reset();
 
     $.get(formatUrl("{{$view_url}}","id=0"),function(rep){
         dt=rep;
+        dt.id=origin_id;
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
         $("#edit_form").autofill(dt);
