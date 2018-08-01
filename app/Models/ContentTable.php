@@ -128,7 +128,7 @@ class ContentTable extends BaseModel
             $page=1;
         $part1=[];
         $pagesize=30;
-        $cols=explode(",",$items);
+        $cols=explode(";",$items);
         $counter=0;
         $header=[];
         foreach($cols as $col){
@@ -144,6 +144,9 @@ class ContentTable extends BaseModel
         }
         $addon_where="1";
         $index_data=[];
+        $months=[];
+        $days=[];
+        $others=[];
         if($index){
             $ar=explode("as",$index);
             $sql="select $ar[0] as `key`,$ar[1] as `name` from $table group by $ar[0] limit ".($page-1)*$pagesize.",".$pagesize;
@@ -152,18 +155,22 @@ class ContentTable extends BaseModel
                 $addon_where="$ar[0]=".$item;
             }
         }
+        if($group_date){
+            $tabs=explode(" ",$table);
+            $tb=$tabs[0];
+            $month=$month?$month:date('Ym');
+            $extra="$addon_where and $tb.stat_month=$month";
+            $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
+            $extra=$addon_where;
+            $days=DB::select($sql);
+            $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
+            $months=DB::select($sql);
+        }
+        else{
+            $sql=sprintf("select %s from %s where %s",implode(",",$part1),$table,$condition);
+            $others=DB::select($sql);
+        }
 
-        $tabs=explode(" ",$table);
-        $tb=$tabs[0];
-        $month=$month?$month:date('Ym');
-        $extra="$addon_where and $tb.stat_month=$month";
-        $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
-        $extra=$addon_where;
-        $days=DB::select($sql);
-        $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
-        $months=DB::select($sql);
-  
-        
-        return Array('header'=>$header,'days'=>$days,'months'=>$months,'month'=>$month,'index_data'=>$index_data);
+        return Array('header'=>$header,'others'=>$others,'days'=>$days,'months'=>$months,'month'=>$month,'index_data'=>$index_data);
     }
 }

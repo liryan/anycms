@@ -83,7 +83,7 @@ class StatController extends AdminController
     {
         $id=$req->get("id",0);
         $action=$req->get('action');
-        $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'tablename'=>$req->get('tablename'),'condition'=>$req->get('condition'),'item'=>$req->get('item'),'group_date'=>$req->get('group_date'),'index'=>$req->get('index'));
+        $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'tablename'=>$req->get('tablename'),'condition'=>$req->get('condition'),'item'=>$req->get('item'),'group_date'=>$req->get('group_date',0),'index'=>$req->get('index'));
         switch($action){
             case "add":
             $widget=new StatWidget();
@@ -129,58 +129,62 @@ class StatController extends AdminController
         $content=new ContentTable();
         $month=$req->get('month');
         $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$data['index'],$data['group_date'],$page,$item,$month);
-        $max_day[]=0;
-        $max_month[]=0;
+       
+        $max_day=[];
+        $max_month=[];
+        $day_total=[];
+        $month_total=[];
+        $days=[];
         $emptyObj=new \StdClass();
         foreach($rows['header'] as $k=>$v){
             $emptyObj->{$k}=0; 
         }
-        $day_total=[];
-        $month_total=[];
-        foreach($rows['header'] as $k=>$v){
-            if(!isset($max_day[$k])){
-                $max_day[$k]=0;
-            }
-            foreach($rows['days'] as $row){
-                if($row->{$k} > $max_day[$k]){
-                    $max_day[$k]=$row->{$k};
-                }
-                $day_total[$k]=(isset($day_total[$k])?$day_total[$k]:0)+$row->{$k};
-            }
-
-            if(!isset($max_month[$k])){
-                $max_month[$k]=0;
-            }
-            foreach($rows['months'] as $row){
-                if($row->{$k} > $max_month[$k]){
-                    $max_month[$k]=$row->{$k};
-                }
-                $month_total[$k]=(isset($month_total[$k])?$month_total[$k]:0)+$row->{$k};
-            }
-        }
-        if(!$month){
-            $start=date('Ym')."01";
-        }
-        else{
-            $start=$month."01";
-        }
         
-        $days=[];
-        for($s=0;$s<31;$s++){
-            $tmp= clone $emptyObj;
-            $tmp->stat_day=$start+$s;
-            $days[$tmp->stat_day]=$tmp;
-        }
+        if($data['group_date']){
+            foreach($rows['header'] as $k=>$v){
+                if(!isset($max_day[$k])){
+                    $max_day[$k]=0;
+                }
+                foreach($rows['days'] as $row){
+                    if($row->{$k} > $max_day[$k]){
+                        $max_day[$k]=$row->{$k};
+                    }
+                    $day_total[$k]=(isset($day_total[$k])?$day_total[$k]:0)+$row->{$k};
+                }
+    
+                if(!isset($max_month[$k])){
+                    $max_month[$k]=0;
+                }
+                foreach($rows['months'] as $row){
+                    if($row->{$k} > $max_month[$k]){
+                        $max_month[$k]=$row->{$k};
+                    }
+                    $month_total[$k]=(isset($month_total[$k])?$month_total[$k]:0)+$row->{$k};
+                }
+            }
+            if(!$month){
+                $start=date('Ym')."01";
+            }
+            else{
+                $start=$month."01";
+            }
 
-        foreach($rows['days'] as $r){
-            $days[$r->stat_day]=$r;
-        }
-
-        if($rows['index_data']){
-            foreach($rows['index_data'] as $r){
-                if($r->key==$item){
-                    $data['name']=$r->name;
-                    break;
+            for($s=0;$s<31;$s++){
+                $tmp= clone $emptyObj;
+                $tmp->stat_day=$start+$s;
+                $days[$tmp->stat_day]=$tmp;
+            }
+    
+            foreach($rows['days'] as $r){
+                $days[$r->stat_day]=$r;
+            }
+    
+            if($rows['index_data']){
+                foreach($rows['index_data'] as $r){
+                    if($r->key==$item){
+                        $data['name']=$r->name;
+                        break;
+                    }
                 }
             }
         }
@@ -196,6 +200,7 @@ class StatController extends AdminController
             ->with('days',array_values($days))
             ->with('stat_name',$data['name'])
             ->with('curl',$req->url()."?statid=$statid")
+            ->with('others',$rows['others'])
             ->with('months',$rows['months']);
     }
 }

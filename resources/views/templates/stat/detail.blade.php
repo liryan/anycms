@@ -19,6 +19,7 @@
         </div>
       </div>
 </div>
+@if($months)
   <div class="col-md-5">
     <div class="box box-info">
       <h3 class="box-title" style="margin-left:12px">{{$stat_name}}-月</h3>
@@ -80,6 +81,32 @@
       </div>
     </div><!-- box-info-->
   </div><!--col-->
-
+@else
+<div class="col-md-10">
+    <div class="box box-info">
+      <h3 class="box-title" style="margin-left:12px">统计结果</h3>
+        <div class="box-body">
+        <table class="table tb table-bordered">
+        <tbody><tr>
+          <th style="width: 10px">#</th>
+          @foreach($header as $item=>$name)
+          <th>{{$name}}(共计:@if(isset($day_total[$item])){{$day_total[$item]}}@else 0 @endif)</th>
+          @endforeach
+        </tr>
+        @foreach($others as $k=>$row)
+        <tr>
+          <td>{{$k}}.</td>
+          @foreach($header as $item=>$name)
+          <td>
+            <span style="display:inline-block;width:20%">{{$row->{$item} }}</span>
+          </td>
+          @endforeach
+        </tr>
+        @endforeach
+      </tbody></table>
+        </div>
+      </div>
+</div>
+@endif
 </div>
 @endsection

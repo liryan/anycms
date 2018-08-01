@@ -79,8 +79,7 @@ class StatDefine extends BaseSetting
 		];
 		$olddata=$this->where("id",$id)->first();
 
-		$count=$this->where('parentid',$olddata->parentid)->where("name",$data['name'])->count();
-		if($count==0){
+		if(!$olddata){
 			return Array('code'=>0,'msg'=>'统计不存在');
 		}
 
