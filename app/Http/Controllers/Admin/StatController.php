@@ -117,15 +117,18 @@ class StatController extends AdminController
     public function getDetail(Request $req)
     {
         $statid=intval($req->get('statid'));
+        $page=intval($req->get('page'));
+        $item=intval($req->get('index'));
         if(!$statid){
         }
+        
         $stat=new StatDefine();
         $data=$stat->getDataById($statid);
         $widget=new StatWidget();
         $widget->tranformSetting($data,false);
         $content=new ContentTable();
         $month=$req->get('month');
-        $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$data['index'],$data['group_date'],$month);
+        $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$data['index'],$data['group_date'],$page,$item,$month);
         $max_day[]=0;
         $max_month[]=0;
         $emptyObj=new \StdClass();
@@ -155,8 +158,13 @@ class StatController extends AdminController
                 $month_total[$k]=(isset($month_total[$k])?$month_total[$k]:0)+$row->{$k};
             }
         }
-
-        $start=date('Ym')."01";
+        if(!$month){
+            $start=date('Ym')."01";
+        }
+        else{
+            $start=$month."01";
+        }
+        
         $days=[];
         for($s=0;$s<31;$s++){
             $tmp= clone $emptyObj;
@@ -167,7 +175,19 @@ class StatController extends AdminController
         foreach($rows['days'] as $r){
             $days[$r->stat_day]=$r;
         }
+
+        if($rows['index_data']){
+            foreach($rows['index_data'] as $r){
+                if($r->key==$item){
+                    $data['name']=$r->name;
+                    break;
+                }
+            }
+        }
         return $this->View("detail")
+            ->with('page',$page)
+            ->with('index_data',$rows['index_data'])
+            ->with('index',$item)
             ->with('max_day',$max_day)
             ->with('day_total',$day_total)
             ->with('month_total',$month_total)

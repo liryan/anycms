@@ -122,9 +122,12 @@ class ContentTable extends BaseModel
         return DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->delete();
     }
 
-    public function getStatData($condition,$items,$index,$group_date,$table,$month='')
+    public function getStatData($condition,$items,$table,$index,$group_date,$page=1,$item='',$month='')
     {
+        if($page<1)
+            $page=1;
         $part1=[];
+        $pagesize=30;
         $cols=explode(",",$items);
         $counter=0;
         $header=[];
@@ -139,15 +142,28 @@ class ContentTable extends BaseModel
             }
             $part1[]=trim($c[0])." as $col_name";
         }
+        $addon_where="1";
+        $index_data=[];
+        if($index){
+            $ar=explode("as",$index);
+            $sql="select $ar[0] as `key`,$ar[1] as `name` from $table group by $ar[0] limit ".($page-1)*$pagesize.",".$pagesize;
+            $index_data=DB::select($sql);
+            if($item){
+                $addon_where="$ar[0]=".$item;
+            }
+        }
+
         $tabs=explode(" ",$table);
         $tb=$tabs[0];
         $month=$month?$month:date('Ym');
-        $extra="$tb.stat_month=$month";
+        $extra="$addon_where and $tb.stat_month=$month";
         $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
-        $extra='1';
+        $extra=$addon_where;
         $days=DB::select($sql);
         $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
         $months=DB::select($sql);
-        return Array('header'=>$header,'days'=>$days,'months'=>$months,'month'=>$month);
+  
+        
+        return Array('header'=>$header,'days'=>$days,'months'=>$months,'month'=>$month,'index_data'=>$index_data);
     }
 }

@@ -7,16 +7,15 @@
 }
 </style>
 <div class="row">
-<div class="col-md-5">
+<div class="col-md-2">
     <div class="box box-info">
-      <h3 class="box-title" style="margin-left:12px">{{$stat_name}}-月</h3>
+      <h3 class="box-title" style="margin-left:12px">统计索引</h3>
         <div class="box-body">
         <ul  id="pages">
-        @foreach($index as $item)
-         <li> <a href="{{$url}}&page={{$page}}{{$index_name}}={{$item->value}}">{{$item->name}}</a></li>
+        @foreach($index_data as $item)
+         <li> <a href="{{$curl}}&page={{$page}}&index={{$item->key}}">{{$item->name}}</a></li>
         @endforeach
         </ul>
-        <a href="{{url}}&page={{$page+1}}">下一页</a>
         </div>
       </div>
 </div>
@@ -35,7 +34,7 @@
         @foreach($months as $k=>$row)
         <tr>
           <td>{{$k}}.</td>
-          <td><a href="{{$curl}}&month={{$row->stat_month}}">{{$row->stat_month}}</a></td>
+          <td><a href="{{$curl}}&page={{$page}}&index={{$index}}&month={{$row->stat_month}}">{{$row->stat_month}}</a></td>
           @foreach($header as $item=>$name)
           <td>
             <span style="display:inline-block;width:20%">{{$row->{$item} }}</span>
