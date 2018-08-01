@@ -20,7 +20,7 @@
     				  </div>
     				  <div class="form-group">
     					  <label for="exampleInputEmail1">统计项</label>
-                          <span style="color:red">格式示例[ count(a.orderid) as 订单数,sum(a.monty) as 日成交额 ]</span>
+                          <span style="color:red">格式示例[ count(a.orderid) as 订单数;sum(a.monty) as 日成交额 ]</span>
                           <textarea class="form-control" id="statitem" name="item" placeholder="例如:count(userid),sum(money)"></textarea>
     				  </div>
     				  <div class="form-group">
@@ -35,7 +35,7 @@
     				  </div>
     				  <div class="form-group">
     					  <label for="exampleInputEmail1">统计目录(参数字段 as 显示字段) </label>
-    					  <input type="text" name="index" class="form-control" placeholder="table.pro_id as table.name" value="">
+    					  <input type="text" name="index" class="form-control" placeholder="table1.id as table2.name" value="">
     				  </div>
     				  <div class="form-group">
                           <label>分组按日期（月，日）<input id="gsecond" checked="true" type="checkbox" value="1" name="group_date"></label>
