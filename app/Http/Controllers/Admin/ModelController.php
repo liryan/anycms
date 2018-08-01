@@ -66,6 +66,13 @@ class ModelController extends AdminController
         else{
             $tb=new DataTable();
             $re=$tb->getDataById($id);
+            if($re['setting']){
+                $setting=json_decode($re['setting'],true);
+                $re['url']=isset($setting['url'])?$setting['url']:'';
+            }
+            else{
+                $re['url']='';
+            }
             $re['action']='edit';
             $re['_token']=csrf_token();
             return json_encode($re);
@@ -80,20 +87,21 @@ class ModelController extends AdminController
             case "add":
             $name=$req->get('name');
             $note=$req->get('note');
-            $setting=$req->get('setting');
-
+            $url=$req->get('url');
+            $setting=['url'=>$url]; 
             $dtmodel=new DataTable();
-            $result=$dtmodel->addTable($name,Array('note'=>$note,'setting'=>$setting));
+            $result=$dtmodel->addTable($name,Array('note'=>$note,'setting'=>json_encode($setting)));
             return json_encode($result);
             break;
 
             case "edit":
             $id=$req->get('id');
             $note=$req->get('note');
-            $setting=$req->get('setting');
+            $url=$req->get('url');
+            $setting=['url'=>$url]; 
 
             $dtmodel=new DataTable();
-            $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>$setting));
+            $result=$dtmodel->editTable($id,Array('note'=>$note,'setting'=>json_encode($setting)));
             return json_encode($result);
             break;
         }
@@ -119,8 +127,9 @@ class ModelController extends AdminController
             $start=$req->get('start');
             $length=$req->get('length');
             $draw=intval($req->get('draw'));
+            $all=intval($req->get('all'));
             $dt=new DataTable();
-            $result=$dt->fields($id,$start,$length);
+            $result=$dt->fields($id,$start,$length,$all);
             $widget=new ModelWidget();
             $widget->translateData($result['data']);
             $data=Array(
@@ -145,7 +154,7 @@ class ModelController extends AdminController
             ];
             $dt=new DataTable();
             $tableinfo=$dt->getDataById($id);
-            $dialog_html=$table_widget->showFieldEditWidget(Array("const_url"=>$this->getUrl("consts"),'modelid'=>$id));
+            $dialog_html=$table_widget->showFieldEditWidget(Array("url"=>$this->getUrl('field'),"const_url"=>$this->getUrl("consts"),'modelid'=>$id));
             $list_html=$table_widget->showFieldListWidget(sprintf("模型-%s[%s]",$tableinfo['note'],$tableinfo['name']),$urlconfig,$dialog_html);
             return $this->View("models")->with(
                 [
@@ -187,7 +196,6 @@ class ModelController extends AdminController
             case "edit":
             $id=$req->get('id');
             $note=$req->get('note');
-            $setting=$req->get('setting');
             $name=$req->get("name");
             $allinput=$req->all();
             $fieldwidget=new ModelWidget();

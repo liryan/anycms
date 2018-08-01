@@ -7,7 +7,20 @@
 }
 </style>
 <div class="row">
-  <div class="col-md-6">
+<div class="col-md-5">
+    <div class="box box-info">
+      <h3 class="box-title" style="margin-left:12px">{{$stat_name}}-月</h3>
+        <div class="box-body">
+        <ul  id="pages">
+        @foreach($index as $item)
+         <li> <a href="{{$url}}&page={{$page}}{{$index_name}}={{$item->value}}">{{$item->name}}</a></li>
+        @endforeach
+        </ul>
+        <a href="{{url}}&page={{$page+1}}">下一页</a>
+        </div>
+      </div>
+</div>
+  <div class="col-md-5">
     <div class="box box-info">
       <h3 class="box-title" style="margin-left:12px">{{$stat_name}}-月</h3>
       <div class="box-body">
@@ -38,7 +51,7 @@
     </div><!-- box-info-->
   </div><!--col-->
 
-  <div class="col-md-6">
+  <div class="col-md-5">
     <div class="box box-info">
       <h3 class="box-title" style="margin-left:12px">{{$stat_name}}-日</h3>
       <div class="box-body">

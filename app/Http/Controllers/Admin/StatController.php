@@ -83,10 +83,10 @@ class StatController extends AdminController
     {
         $id=$req->get("id",0);
         $action=$req->get('action');
+        $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'tablename'=>$req->get('tablename'),'condition'=>$req->get('condition'),'item'=>$req->get('item'),'group_date'=>$req->get('group_date'),'index'=>$req->get('index'));
         switch($action){
             case "add":
             $widget=new StatWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'tablename'=>$req->get('tablename'),'condition'=>$req->get('condition'),'item'=>$req->get('item'));
             $widget->tranformSetting($data,true);
             $stat=new StatDefine();
             $result=$stat->addStat($id,$data);
@@ -95,7 +95,6 @@ class StatController extends AdminController
 
             case "edit":
             $widget=new StatWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'tablename'=>$req->get('tablename'),'condition'=>$req->get('condition'),'item'=>$req->get('item'));
             $widget->tranformSetting($data,true);
             $stat=new StatDefine();
             $result=$stat->editStat($id,$data);
@@ -126,7 +125,7 @@ class StatController extends AdminController
         $widget->tranformSetting($data,false);
         $content=new ContentTable();
         $month=$req->get('month');
-        $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$month);
+        $rows=$content->getStatData($data['condition'],$data['item'],$data['tablename'],$data['index'],$data['group_date'],$month);
         $max_day[]=0;
         $max_month[]=0;
         $emptyObj=new \StdClass();

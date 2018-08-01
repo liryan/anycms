@@ -43,7 +43,7 @@ class StatWidget extends Widget
 	{
 		$result=[];
 		if($in){
-			$setting=['tablename'=>$data['tablename'],'condition'=>$data['condition'],'item'=>$data['item']];
+			$setting=['tablename'=>$data['tablename'],'condition'=>$data['condition'],'item'=>$data['item'],'group_date'=>$data['group_date'],'index'=>$data['index']];
 			$result['setting']=json_encode($setting);
 			$data['setting']=$result['setting'];
             unset($data['tablename']);
@@ -55,6 +55,9 @@ class StatWidget extends Widget
 			if(is_array($obj)){
 				foreach($obj as $k=>$v){
 					$data[$k]=$v;
+				}
+				if(!isset($data['group_date'])){
+					$data['group_date']=1;
 				}
 			}
 		}

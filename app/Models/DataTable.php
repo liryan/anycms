@@ -81,7 +81,8 @@ class DataTable extends BaseSetting
         ['name'=>'id','note'=>'编号','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_INTEGER],
         ['name'=>'note','note'=>'模型名字','comment'=>'请输入模型名(中文)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
         ['name'=>'name','note'=>'表名','comment'=>'请输入数据表名(字母)','default'=>'','editable'=>true,'listable'=>true,'type'=>DataTable::DEF_CHAR],
-        ['name'=>'setting','note'=>'备注','comment'=>'请输入备注','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'url','note'=>'URL定义','comment'=>'[http://host]/page_{字段1}_{字段2}.html','default'=>'','editable'=>true,'listable'=>false,'type'=>DataTable::DEF_CHAR],
+        ['name'=>'setting','note'=>'备注','comment'=>'请输入备注','default'=>'','editable'=>false,'listable'=>false,'type'=>DataTable::DEF_CHAR],
         ['name'=>'created_at','note'=>'创建日期','comment'=>'','default'=>'','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_DATE],
         ['name'=>'_internal_field','note'=>'操作','comment'=>'','default'=>'11111','editable'=>false,'listable'=>true,'type'=>DataTable::DEF_CHAR]
     ];
@@ -97,11 +98,14 @@ class DataTable extends BaseSetting
     //视图：字段的扩展属性定义=>edit setting define
     public static $field_setting=[
         ["name"=>"tablename",'note'=>'关联表名','default'=>''],
-        ["name"=>"tablefield",'note'=>'关联表字段','default'=>''],
+        ["name"=>"tablekey",'note'=>'关联表字段','default'=>''],
+        ["name"=>"tablefield",'note'=>'引用字段','default'=>''],
         ["name"=>"editable",'note'=>'可编辑','default'=>'1'],
         ["name"=>"listable",'note'=>'可列表','default'=>'0'],
         ["name"=>"batchable",'note'=>'可批量修改','default'=>'0'],
         ["name"=>"searchable",'note'=>'可搜索','default'=>'0'],
+        ["name"=>"indexable",'note'=>'建索引','default'=>'0'],
+        ["name"=>"exportable",'note'=>'可导出','default'=>'0'],
         ["name"=>"default",'note'=>'缺省值','default'=>''],
         ['name'=>'const','note'=>'选择的常量ID','default'=>''],
         ['name'=>'size','note'=>'字段大小','default'=>''],
@@ -282,7 +286,7 @@ class DataTable extends BaseSetting
      * @param  [type] $length [description]
      * @return [type]         [description]
      */
-    public function fields($id,$start,$length)
+    public function fields($id,$start,$length,$all=0)
 	{
 		if($start<0)
 			$start=0;
@@ -291,6 +295,9 @@ class DataTable extends BaseSetting
 		}
         $total=$this->getCount($id);
 		$data=$this->getDataPageByParentId($id,$start,$length);
+        if($all){
+            $data=array_merge(DataTable::$default_columns,$data);
+        }
         return Array('total'=>$total,'data'=>$data);
 	}
 

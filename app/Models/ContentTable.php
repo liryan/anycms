@@ -23,11 +23,9 @@ class ContentTable extends BaseModel
 		foreach($table_define['columns'] as $row){
 			if($row['listable']){
 				if(!$query){
-					$query=DB::table($table_define['info']['name'])->select($row['name']);
+					$query=DB::table($table_define['info']['name']);
 				}
-				else {
-					$query->addSelect($row['name']);
-				}
+				$query->addSelect($row['name']);
 			}
 		}
         try{
@@ -36,10 +34,29 @@ class ContentTable extends BaseModel
             if($data){
                 $data=$data->toArray();
             }
-
+            //TODO: modify to left join
+            foreach($table_define['columns'] as $row){
+                if($row['tablename']){
+                    $ids=[];
+                    foreach($data as $r){
+                        $ids[]=$r->{$row['name']};
+                    } 
+                    $bind_data=DB::table($row['tablename'])->select($row['tablefield'],$row['tablekey'])->whereIn($row['tablekey'],$ids)->get();
+                    $binds=[];
+                    foreach($bind_data as $bd){
+                        $binds[$bd->{$row['tablekey']}]=$bd->{$row['tablefield']};
+                    }
+                    foreach($data as &$r){
+                        if(isset($binds[$r->{$row['name']}])){
+                            $r->{$row['name']}="[".$r->{$row['name']}."]".$binds[$r->{$row['name']}];
+                        }
+                    }
+                }
+            }
             return Array('total'=>$count,'data'=>$data);
         }
         catch(\Illuminate\Database\QueryException $e){
+            echo $e->getMessage();
             return Array('total'=>0,'data'=>[]);
         }
 	}
@@ -105,7 +122,7 @@ class ContentTable extends BaseModel
         return DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->delete();
     }
 
-    public function getStatData($condition,$items,$table,$month='')
+    public function getStatData($condition,$items,$index,$group_date,$table,$month='')
     {
         $part1=[];
         $cols=explode(",",$items);

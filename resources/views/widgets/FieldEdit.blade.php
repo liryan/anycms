@@ -33,17 +33,31 @@
     				  </div>
     				  <div class="form-group" id="const_table_panel" style="diaplay:none"></div>
     				  <div class="form-group">
-    					   <label><input type="checkbox" class="control-label" name="listable" value="1" checked="false">可列表</label>
-                           <label><input type="checkbox" class="control-label" name="editable" value="1" checked="false">可编辑</label>
-                           <label><input type="checkbox" class="control-label" name="batchable" value="1" checked="false">可批量修改</label>
-                           <label><input type="checkbox" class="control-label" name="searchable" value="1" checked="false">可搜索</label>
+        				   <label>字段选项</label>
+                           <style>.innerBox{margin-left:10px;margin-top:15px}</style>
+    					   <label class="innerBox"><input type="checkbox" class="control-label" name="listable" value="1" checked="false">可列表</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="editable" value="1" checked="false">可编辑</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="batchable" value="1" checked="false">可批量修改</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="searchable" value="1" checked="false">可搜索</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="exportable" value="1" checked="false">可导出</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="indexable" value="1" checked="false">索引</label>
     	              </div>
     				  <div class="form-group">
-        				<label>关联外表字段</label><br/>
-                        <label class="col-sm-1 control-label">表</label>
-        				<div class="col-sm-5"><input type="text" name="tablename" class="form-control" placeholder="数据表名" value=""></div>
-                        <label class="col-sm-2 control-label">字段</label>
-        				<div class="col-sm-4"><input type="text" name="tablefield" class="form-control" placeholder="字段名" value=""></div>
+        				<label>关联外表</label>
+                            <select name="tablename" id="modellist" style="margin-left:20px" onChange="fetchModelFields({id:0})">
+                            <option value="" selected>选择关联表</option>
+                            @foreach($models as $m)
+                            <option value="{{$m['name']}}">{{$m['name']}}</option>
+                            @endforeach
+                            </select>
+                            <label>key字段</label>
+                            <select id="tb_cols_1" name="tablekey">
+                            <option value="">选择关联字段</option>
+                            </select>
+                            <label>引用</label>
+                            <select id="tb_cols_2" name="tablefield">
+                                <option value="">选择引用字段</option>
+                            </select>
     				  </div>
                   </form>
                   <div class="form-group" id="string" style="display:none">
@@ -158,6 +172,7 @@ function requireConstData(id,constid){
 }
 
 beforeFillForm=function(data){
+    fetchModelFields(data);
     type=data.type;
     if(data.id>0){
         $("#fortype").attr("name","type");
@@ -192,5 +207,45 @@ beforeFillForm=function(data){
         showContext('number');
         break;
     }
+}
+
+function fetchModelFields(data)
+{
+    var objs=Array();
+    @foreach($models as $k=>$m)
+    objs[{{$k}}]={id:{{$m['id']}},name:'{{$m["name"]}}'};
+    @endforeach
+    id=$("#modellist").val();
+    if(!id){
+        return;
+    }
+    else{
+        for(i=0;i<objs.length;i++){
+            if(objs[i].name==id){
+                id=objs[i].id;
+                break;
+            }
+        }
+    }
+    $.get("{{$url}}?all=1&id="+id,function(rep){
+        $("#tb_cols_1").empty();
+        for(i=0;i<rep.data.length;i++){
+            if(data.tablekey==rep.data[i].name){
+                $("#tb_cols_1").append("<option selected>"+rep.data[i].name+"</option>");
+            }
+            else{
+                $("#tb_cols_1").append("<option>"+rep.data[i].name+"</option>");
+            }
+        }
+        $("#tb_cols_2").empty();
+        for(i=0;i<rep.data.length;i++){
+            if(data.tablefield==rep.data[i].name){
+                $("#tb_cols_2").append("<option selected>"+rep.data[i].name+"</option>");
+            }
+            else{
+                $("#tb_cols_2").append("<option>"+rep.data[i].name+"</option>");
+            }
+        }
+    },'JSON');
 }
 </script>

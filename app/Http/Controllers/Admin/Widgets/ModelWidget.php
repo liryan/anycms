@@ -64,8 +64,11 @@ class ModelWidget extends Widget
 	}
 	public function showFieldEditWidget($urlconfig)
 	{
+        $dt=new DataTable();
+        $result=$dt->tables(0,500);
 		$view=$this->getView("FieldEdit");
 		$view->with('types',DataTable::field_type());
+		$view->with('models',$result['data']);
 		$view->with($urlconfig);
 		return $view->with(['dialog_id'=>self::$DIALOG_ID++])->render();
 	}

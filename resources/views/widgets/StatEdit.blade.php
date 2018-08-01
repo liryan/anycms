@@ -34,6 +34,13 @@
                           <textarea id="condition" name="condition" class="form-control" placeholder="例如:category=2 and type=3"></textarea>
     				  </div>
     				  <div class="form-group">
+    					  <label for="exampleInputEmail1">统计目录(参数字段 as 显示字段) </label>
+    					  <input type="text" name="index" class="form-control" placeholder="table.pro_id as table.name" value="">
+    				  </div>
+    				  <div class="form-group">
+                          <label>分组按日期（月，日）<input id="gsecond" checked="true" type="checkbox" value="1" name="group_date"></label>
+    				  </div>
+    				  <div class="form-group">
     					  <label for="exampleInputEmail1">备注 </label>
     					  <input type="text" name="note" class="form-control" placeholder="请输入字符" value="">
     				  </div>
