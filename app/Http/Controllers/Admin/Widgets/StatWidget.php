@@ -59,6 +59,9 @@ class StatWidget extends Widget
 				if(!isset($data['group_date'])){
 					$data['group_date']=1;
 				}
+				if(!isset($data['index'])){
+					$data['index']='';
+				}
 			}
 		}
 		return $result;
