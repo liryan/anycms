@@ -168,7 +168,6 @@ class StatController extends AdminController
         foreach($rows['days'] as $r){
             $days[$r->stat_day]=$r;
         }
-
         return $this->View("detail")
             ->with('max_day',$max_day)
             ->with('day_total',$day_total)
