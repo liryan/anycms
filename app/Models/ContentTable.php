@@ -144,6 +144,7 @@ class ContentTable extends BaseModel
         $month=$month?$month:date('Ym');
         $extra="$tb.stat_month=$month";
         $sql=sprintf("select $tb.stat_day,%s from %s where $extra and (%s) group by $tb.stat_day order by $tb.stat_day",implode(",",$part1),$table,$condition);
+        $extra='1';
         $days=DB::select($sql);
         $sql=sprintf("select $tb.stat_month,%s from %s where $extra and (%s) group by $tb.stat_month order by $tb.stat_month",implode(",",$part1),$table,$condition);
         $months=DB::select($sql);

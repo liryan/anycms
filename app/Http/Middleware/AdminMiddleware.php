@@ -35,7 +35,7 @@ class AdminMiddleware
         }
         if($request->is("admin/content*")){
             $catid=$request->get('catid');
-            if(!$pridb->checkPri($catid,Privileges::VIEW,$request->session()->get('admin'))){
+            if($catid && !$pridb->checkPri($catid,Privileges::VIEW,$request->session()->get('admin'))){
                 return redirect("/admin/error?url=".$request->fullUrl());
             }
         }

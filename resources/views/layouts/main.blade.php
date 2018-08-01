@@ -224,7 +224,7 @@
           </a>
           <ul class="treeview-menu">
             @foreach($sys_menus as $menu)
-            <li @if($path==$menu['note']) class="active" @endif><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>{{$menu['name']}}</a></li>
+            <li @if($path==$menu['note']) class="active" @endif><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>@if(isset($menu['name'])){{$menu['name']}}@endif</a></li>
             @endforeach
           </ul>
         </li>
@@ -241,7 +241,7 @@
                 @if($row['subdata']=='>')
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-table"></i> <span>{{$row['name']}}</span>
+                        <i class="fa fa-table"></i> <span>@if(isset($row['name'])){{$row['name']}}@endif</span>
                         <span class="pull-right-container">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -250,7 +250,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/content?catid={{$row['id']}}"><i class="fa fa-table"></i>{{$row['name']}}</a></li>
+                    <li class="active"><a href="/admin/content?catid={{$row['id']}}"><i class="fa fa-table"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
@@ -273,7 +273,7 @@
                 @if($row['subdata']=='>')
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa fa-table"></i> <span>{{$row['name']}}</span>
+                        <i class="fa fa-table"></i> <span>@if(isset($row['name'])){{$row['name']}}@endif</span>
                         <span class="pull-right-container">
                           <i class="fa fa-angle-left pull-right"></i>
                         </span>
@@ -282,7 +282,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/stat/detail?statid={{$row['id']}}"><i class="fa fa-pie-chart"></i>{{$row['name']}}</a></li>
+                    <li class="active"><a href="/admin/stat/detail?statid={{$row['id']}}"><i class="fa fa-pie-chart"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
