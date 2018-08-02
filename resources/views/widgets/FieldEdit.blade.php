@@ -172,7 +172,6 @@ function requireConstData(id,constid){
 }
 
 beforeFillForm=function(data){
-    fetchModelFields(data);
     type=data.type;
     if(data.id>0){
         $("#fortype").attr("name","type");
@@ -209,6 +208,11 @@ beforeFillForm=function(data){
     }
 }
 
+endFillForm=function(data)
+{
+    fetchModelFields(data);
+}
+
 function fetchModelFields(data)
 {
     var objs=Array();
@@ -217,6 +221,9 @@ function fetchModelFields(data)
     @endforeach
     id=$("#modellist").val();
     if(!id){
+        $("#modellist").val('');
+        $("#tb_cols_1").empty();
+        $("#tb_cols_2").empty();
         return;
     }
     else{

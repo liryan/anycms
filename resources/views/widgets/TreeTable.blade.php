@@ -35,7 +35,7 @@
 <!-- 编辑对话框组件,绑定下面的js代码 -->
 <script type="text/javascript">
 beforeFillForm=function(data){}
-endFillForm=function(){}
+endFillForm=function(data){}
 beforeSubmit=function(){}
 </script>
 {!!$new_dialog!!}
@@ -177,7 +177,7 @@ function addData(){
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
         $("#edit_form").autofill(dt);
-        endFillForm();
+        endFillForm(dt);
         $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
 }
@@ -212,7 +212,7 @@ function editData(id){
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
         $("#edit_form").autofill(dt);
-        endFillForm();
+        endFillForm(dt);
         $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
     $("#model_new").modal();

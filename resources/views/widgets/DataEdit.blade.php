@@ -274,7 +274,7 @@ beforeSubmit=function()
     }
 }
 
-endFillForm=function()
+endFillForm=function(data)
 {
     for(i=0;i<Editor.length;i++)
     {

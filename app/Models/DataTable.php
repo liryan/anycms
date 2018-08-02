@@ -384,7 +384,7 @@ class DataTable extends BaseSetting
         }
 
         $tbname=$tbdata->name;
-        DB::statement("alter table `$tbname` change `$fieldname` ".$data['name']." ".$data['type']);
+        DB::statement("alter table `$tbname` change `$fieldname` `".$data['name']."` ".$data['type']);
         $newdata=[
             'note'=>$data['note'],
             'setting'=>$data['setting'],
