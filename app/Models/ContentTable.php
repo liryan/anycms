@@ -19,7 +19,7 @@ class ContentTable extends BaseModel
 	public function getList($start,$length,$table_define,$id,$search=[])
 	{
 		$field=[];
-		$query=null;
+        $query=null;
 		foreach($table_define['columns'] as $row){
 			if($row['listable']){
 				if(!$query){

@@ -25,7 +25,7 @@ class ContentController extends AdminController
 		$catid=$req->get("catid",0);
 		$cate=new Category();
 		$dt=new DataTable();
-		$modelid=$cate->getModelId($catid);
+        $modelid=$cate->getModelId($catid);
 		$table_define=$dt->tableColumns($modelid);
         if($req->ajax()){
             $start=$req->get('start');
@@ -48,7 +48,8 @@ class ContentController extends AdminController
             return json_encode($data);
         }
         else{
-            $models=new DataTable();
+            $info=$cate->getDatabyId($modelid);
+            $model_setting=json_decode($info['setting'],true);
             $this->breadcrumb=$cate->getPath($catid?$catid:Category::CATEGORY_ID);
             foreach($this->breadcrumb as &$row){
                 $row['url']=$this->getUrl()."?catid=".$row['id'];
@@ -56,6 +57,7 @@ class ContentController extends AdminController
             $widget=new ContentWidget($table_define);
 			$search_clouser=$widget->generateSearchClouser($catid,$req->all());
             $urlconfig=[
+                "model_url"=>isset($model_setting['url'])?$model_setting['url']:'',
                 "url"=>$this->getUrl()."?catid=$catid",
                 "edit_url"=>$this->getUrl("modify")."?catid=$catid",
                 "view_url"=>$this->getUrl("view")."?catid=$catid",

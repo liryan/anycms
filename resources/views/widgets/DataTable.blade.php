@@ -112,6 +112,13 @@ beforeSubmit=function(){}
             @if($pri[4]==1) //
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="modifyField('+data.id+')" class="btn  btn-info btn-sm">[-]修改字段</a> ');
             @endif
+            @if(isset($model_url))
+                var url="{{$model_url}}";
+                Object.keys(data).forEach(function(key){
+                    url=url.replace("{"+key+"}",data[key]);
+                });
+                $(row.cells[1]).html("<a title='"+url+"' href='"+url+"' target='_blank'>"+$(row.cells[1]).html()+"</a>");
+            @endif
             //data._internal_field='ok';
         },
     });
