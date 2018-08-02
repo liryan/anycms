@@ -90,7 +90,7 @@
         <tbody><tr>
           <th style="width: 10px">#</th>
           @foreach($header as $item=>$name)
-          <th>{{$name}}(共计:@if(isset($day_total[$item])){{$day_total[$item]}}@else 0 @endif)</th>
+          <th>{{$name}}</th>
           @endforeach
         </tr>
         @foreach($others as $k=>$row)
