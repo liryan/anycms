@@ -75,7 +75,7 @@ class BaseSetting extends BaseModel
 			$deep=0;
 			do{
                 $subdata=$this->whereIn("parentid",$parentids)->orderBy('order','desc')->get();
-                if($subdata){
+                if($subdata && $subdata->toArray()){
                     $children=$subdata->toArray();
                     $parentids=[];
     				foreach($children as $cld){
@@ -156,6 +156,7 @@ class BaseSetting extends BaseModel
     {
         $re=[];
         do{
+            echo "$id|";
             $data=$this->where("id",$id)->first();
             if($data){
                 array_unshift($re,['note'=>$data->note,'name'=>$data->name,'id'=>$data->id]);

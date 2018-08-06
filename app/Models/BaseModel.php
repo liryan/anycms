@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
 {
+    protected $debugFlag;
 	public function __construct()
 	{
 		DB::connection()->enableQueryLog();

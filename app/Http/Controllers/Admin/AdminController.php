@@ -58,6 +58,8 @@ class AdminController extends Controller
         if(!$avatar){
             $avatar="/avatar/avatar.jpg";
         }
+        echo Config::get("DB_DATABASE");
+        $view->with('hostname',env("DB_DATABASE")."@".env("DB_HOST").":".env('DB_PORT'));
         $view->with("path",$this->getShortPath());
         $view->with("admin",session()->get('admin'));
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
@@ -161,6 +163,7 @@ class AdminController extends Controller
         }
         return $re;
     }
+
     protected function getCategoryMenu()
     {
         $cate=new Category();
