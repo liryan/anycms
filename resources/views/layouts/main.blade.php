@@ -120,7 +120,7 @@
         <li class="header">导航</li>
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-folder-o"></i> <span>个人面板</span>
+            <i class="fa fa-user"></i> <span>个人面板</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -134,7 +134,7 @@
         @if($admin==1)
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-folder-o"></i> <span>系统面板</span>
+            <i class="fa fa-gears"></i> <span>系统面板</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -148,7 +148,7 @@
         @endif
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-folder-o"></i> <span>内容管理</span>
+            <i class="fa fa-database"></i> <span>内容管理</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -180,7 +180,7 @@
         <!-- 统计管理开始-->
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-folder-o"></i> <span>数据统计</span>
+            <i class="fa fa-bar-chart"></i> <span>数据统计</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
@@ -211,7 +211,7 @@
         <!-- 统计管理结束-->
         <li class="active treeview">
           <a href="#">
-            <i class="fa fa-folder-o"></i> <span>扩展功能</span>
+            <i class="fa fa-gg-circle"></i> <span>扩展功能</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
