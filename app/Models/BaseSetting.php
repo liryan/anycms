@@ -156,7 +156,6 @@ class BaseSetting extends BaseModel
     {
         $re=[];
         do{
-            echo "$id|";
             $data=$this->where("id",$id)->first();
             if($data){
                 array_unshift($re,['note'=>$data->note,'name'=>$data->name,'id'=>$data->id]);

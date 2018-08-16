@@ -116,8 +116,8 @@ class DataTable extends BaseSetting
     //视图+数据库：默认表中会含有以下字段（获取表的定义的时候，会把这些字段合并到定义中，因为这些字段不出现在模型定义中）
     public static $default_columns=[
         ['name'=>'id','note'=>'编号','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) auto_increment primary key','listable'=>true,'editable'=>false,'searchable'=>true],
-        ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
-        ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false,'searchable'=>true],
+        ['name'=>'updated_at','note'=>'更新时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>false,'editable'=>false,'searchable'=>true],
+        ['name'=>'created_at','note'=>'创建时间','type'=>DataTable::DEF_DATE,'def'=>'datetime not null','listable'=>true,'editable'=>false,'searchable'=>true],
         ['name'=>'category','note'=>'栏目','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
         ['name'=>'stat_year','note'=>'年统计','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
         ['name'=>'stat_month','note'=>'月统计','type'=>DataTable::DEF_INTEGER,'def'=>'int(11) default 0','listable'=>false,'editable'=>false,'searchable'=>false],
