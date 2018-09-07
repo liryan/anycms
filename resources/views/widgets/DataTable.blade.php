@@ -12,7 +12,8 @@
           {!!$search_widget!!}
           </div>
           <div class="box-body">
-            <table id="datagrid" class="table table-bordered table-hover">
+            <div class="table-responsive">
+            <table id="datagrid" class="table table-bordered table-hover text-nowrap">
               <thead>
               <tr>
                   <th>选择</th>
@@ -24,6 +25,7 @@
               <tbody>
               </tbody>
             </table>
+            </div>
             @if(isset($catid) && $catid)
             <div style="width:100%">
              <span style="float:left;display:inline-block">
