@@ -44,9 +44,6 @@ class AdminController extends Controller
             }
             $counter++;
             $curpath.="/".$p;
-            if($counter >= 2){
-                break;
-            }
         }
         return $curpath;
     }

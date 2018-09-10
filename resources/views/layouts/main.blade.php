@@ -42,7 +42,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="/admin/" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"></span>
       <!-- logo for regular state and mobile devices -->
@@ -118,7 +118,7 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
         <li class="header">导航</li>
-        <li class="active treeview">
+        <li class="treeview">
           <a href="#">
             <i class="fa fa-user"></i> <span>个人面板</span>
             <span class="pull-right-container">
@@ -126,13 +126,13 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li @if($path=="welcome") class="active" @endif><a href="/admin/personal"><i class="fa fa-coffee"></i>工作台</a></li>
-            <li @if($path=="setting") class="active" @endif><a href="/admin/personal/setting"><i class="fa fa-cog"></i>设置</a></li>
-            <li @if($path=="profile") class="active" @endif><a href="/admin/personal/profile"><i class="fa fa-user"></i>账户</a></li>
+            <li><a href="/admin/personal/welcome"><i class="fa fa-coffee"></i>工作台</a></li>
+            <li><a href="/admin/personal/setting"><i class="fa fa-cog"></i>设置</a></li>
+            <li><a href="/admin/personal/profile"><i class="fa fa-user"></i>账户</a></li>
           </ul>
         </li>
         @if($admin==1)
-        <li class="active treeview">
+        <li class="treeview">
           <a href="#">
             <i class="fa fa-gears"></i> <span>系统面板</span>
             <span class="pull-right-container">
@@ -141,12 +141,12 @@
           </a>
           <ul class="treeview-menu">
             @foreach($sys_menus as $menu)
-            <li @if($path==$menu['note']) class="active" @endif><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>@if(isset($menu['name'])){{$menu['name']}}@endif</a></li>
+            <li><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>@if(isset($menu['name'])){{$menu['name']}}@endif</a></li>
             @endforeach
           </ul>
         </li>
         @endif
-        <li class="active treeview">
+        <li class="treeview">
           <a href="#">
             <i class="fa fa-database"></i> <span>内容管理</span>
             <span class="pull-right-container">
@@ -167,7 +167,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/content?catid={{$row['id']}}"><i class="fa fa-table"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
+                    <li><a href="/admin/content?catid={{$row['id']}}"><i class="fa fa-table"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
@@ -178,7 +178,7 @@
         </li>
         <!-- 内容管理结束-->
         <!-- 统计管理开始-->
-        <li class="active treeview">
+        <li class="treeview">
           <a href="#">
             <i class="fa fa-bar-chart"></i> <span>数据统计</span>
             <span class="pull-right-container">
@@ -199,7 +199,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="/admin/stat/detail?statid={{$row['id']}}"><i class="fa fa-pie-chart"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
+                    <li><a href="/admin/stat/detail?statid={{$row['id']}}"><i class="fa fa-pie-chart"></i>@if(isset($row['name'])){{$row['name']}}@endif</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
@@ -209,7 +209,7 @@
           </ul>
         </li>
         <!-- 统计管理结束-->
-        <li class="active treeview">
+        <li class="treeview">
           <a href="#">
             <i class="fa fa-gg-circle"></i> <span>扩展功能</span>
             <span class="pull-right-container">
@@ -230,7 +230,7 @@
                 @elseif($row['subdata']=='|')
                     @if(!isset($row['id']))
                     @else
-                    <li class="active"><a href="@if(strpos(strtolower($row['note']),'http')!==false){{$row['note']}}@else/admin/ext/{{$row['note']}}@endif"><i class="{{$row['setting']}}"></i>{{$row['name']}}</a></li>
+                    <li><a href="@if(strpos(strtolower($row['note']),'http')!==false){{$row['note']}}@else/admin/ext/{{$row['note']}}@endif"><i class="{{$row['setting']}}"></i>{{$row['name']}}</a></li>
                     @endif
                 @elseif($row['subdata']=='<')
                     </ul>
@@ -276,6 +276,39 @@
 
   <div class="control-sidebar-bg"></div>
 </div>
+<script type="text/javascript">
+    var url="{{$path}}";
+    root=$(".sidebar-menu");
+    compare=function(node){ //node is li
+        var obj=node.children("a")
+        if(obj.length==0){
+            return false;
+        }
+        var cururl=$(obj).attr("href");
+        if(cururl.indexOf(url) >= 0){
+            return true;
+        }
+        var next=node.children("ul");
+        if(next.length==0)
+            return false;
+        var clds=next.children("li");
+        for(var i=0;i<clds.length;i++){
+            if(compare($(clds[i]))){
+                $(next).addClass("menu-open");
+                $(next).css("display","block");
+                return true;
+            }
+        }
+        return false;
+    }
+    childs=root.children("li");
+    for(var c=0;c<childs.length;c++){
+        if(compare($(childs[c]))){
+            $(childs[c]).attr("class","active");
+            break;
+        }
+    }
+</script>
 <!-- ./wrapper -->
 <!-- AdminLTE App -->
 <script src="/adminlte/dist/js/app.min.js"></script>
