@@ -18,6 +18,7 @@ class ContentTable extends BaseModel
 	 */
 	public function getList($start,$length,$table_define,$id,$search=[])
 	{
+        DB::enableQueryLog();
 		$field=[];
         $query=null;
 		foreach($table_define['columns'] as $row){
@@ -46,9 +47,9 @@ class ContentTable extends BaseModel
                     foreach($bind_data as $bd){
                         $binds[$bd->{$row['tablekey']}]=$bd->{$row['tablefield']};
                     }
-                    foreach($data as &$r){
-                        if(isset($binds[$r->{$row['name']}])){
-                            $r->{$row['name']}="[".$r->{$row['name']}."]".$binds[$r->{$row['name']}];
+                    foreach($data as &$ref_row){
+                        if(isset($binds[$ref_row->{$row['name']}])){
+                            $ref_row->{$row['name']}="[".$ref_row->{$row['name']}."]".$binds[$ref_row->{$row['name']}];
                         }
                     }
                 }
