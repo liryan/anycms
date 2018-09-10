@@ -12,7 +12,7 @@
           {!!$search_widget!!}
           </div>
           <div class="box-body">
-            <table id="datagrid" class="table table-bordered table-hover">
+            <table width="100%" id="datagrid" class="table table-bordered table-hover">
               <thead>
               <tr>
                   <th>选择</th>
