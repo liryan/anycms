@@ -39,7 +39,7 @@
                 <div class="form-group">
                   <label for="exampleInputFile">头像</label>
                   <input id="" type="file" name="avatar">
-                  <img style="width:200px;height:auto" src="/avatar/6c5d7fe1a44540734ba00f4ec64f783a9de86feb.jpeg" id="avatar">
+                  <img style="margin-top:10px;width:200px;height:auto" src="" id="avatar">
                 </div>
               </div>
               <!-- /.box-body -->
@@ -60,7 +60,7 @@ $(function(){
     $.get("{{$profile_url}}",function(rep){
         dt=rep;
         if(dt.code==1){
-            $("#avatar").src=dt.data.avatar;
+            $("#avatar").attr("src",dt.data.avatar);
             $("#profile_form").autofill(dt.data);
         }
     },'json');
