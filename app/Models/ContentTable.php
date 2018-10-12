@@ -106,7 +106,14 @@ class ContentTable extends BaseModel
         $id=DB::table($define['info']['name'])->where('category',$catid)->whereIn('id',$ids)->update($data);     
         return $id;
     }
-
+    public function editContentRowBatch($define,$data,$catid)
+    {
+        foreach($data as $id=>$row){
+            $row['updated_at']=date('Y-m-d H:i:s');
+            DB::table($define['info']['name'])->where('category',$catid)->where('id',$id)->update($row);  
+        }
+        return true;
+    }
     public function addContent($define,$data)
     {
         $id=DB::table($define['info']['name'])->insertGetId($data);     

@@ -53,6 +53,9 @@ class ContentWidget extends Widget
                 if($subdata['total']>0){
                     $row['const_list']=$subdata['data'];
                 }
+                else{
+                    $row['const_list']=[];
+                }
             }
 			if($row['editable']){
 				$fields[]=$row;

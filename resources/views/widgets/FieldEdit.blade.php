@@ -33,7 +33,7 @@
     				  </div>
     				  <div class="form-group" id="const_table_panel" style="diaplay:none"></div>
     				  <div class="form-group">
-        				   <label>字段选项</label>
+        				   <label>字段选项</label><br/>
                            <style>.innerBox{margin-left:10px;margin-top:15px}</style>
     					   <label class="innerBox"><input type="checkbox" class="control-label" name="listable" value="1" checked="false">可列表</label>
                            <label class="innerBox"><input type="checkbox" class="control-label" name="editable" value="1" checked="false">可编辑</label>
@@ -41,6 +41,7 @@
                            <label class="innerBox"><input type="checkbox" class="control-label" name="searchable" value="1" checked="false">可搜索</label>
                            <label class="innerBox"><input type="checkbox" class="control-label" name="exportable" value="1" checked="false">可导出</label>
                            <label class="innerBox"><input type="checkbox" class="control-label" name="indexable" value="1" checked="false">索引</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="orderable" value="1" checked="false">可批量编辑</label>
     	              </div>
     				  <div class="form-group">
         				<label>关联外表</label>
@@ -172,7 +173,7 @@ function requireConstData(id,constid){
 }
 
 beforeFillForm=function(data){
-    type=data.type;
+    type=data.type*1;
     if(data.id>0){
         $("#fortype").attr("name","type");
         $("#fortype").attr("value",type);

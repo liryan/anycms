@@ -57,7 +57,7 @@ class AdminController extends Controller
         }
         echo Config::get("DB_DATABASE");
         $view->with('hostname',env("DB_DATABASE")."@".env("DB_HOST").":".env('DB_PORT'));
-        $view->with("path",$this->getShortPath());
+        $view->with("path",$_SERVER['REQUEST_URI'] /* $this->getShortPath() */);
         $view->with("admin",session()->get('admin'));
         $view->with('breadcrumb',is_array($this->breadcrumb)?$this->breadcrumb:Array());
         $view->with('sys_menus',$this->getMenu(true));

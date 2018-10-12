@@ -106,6 +106,7 @@ class DataTable extends BaseSetting
         ["name"=>"searchable",'note'=>'可搜索','default'=>'0'],
         ["name"=>"indexable",'note'=>'建索引','default'=>'0'],
         ["name"=>"exportable",'note'=>'可导出','default'=>'0'],
+        ["name"=>"orderable",'note'=>'可批量编辑','default'=>'0'],
         ["name"=>"default",'note'=>'缺省值','default'=>''],
         ['name'=>'const','note'=>'选择的常量ID','default'=>''],
         ['name'=>'size','note'=>'字段大小','default'=>''],

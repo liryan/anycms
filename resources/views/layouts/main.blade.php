@@ -278,14 +278,14 @@
 </div>
 <script type="text/javascript">
     var url="{{$path}}";
-    root=$(".sidebar-menu");
+    root=$(".sidebar");
     compare=function(node){ //node is li
         var obj=node.children("a")
         if(obj.length==0){
             return false;
         }
         var cururl=$(obj).attr("href");
-        if(cururl.indexOf(url) >= 0){
+        if(url.indexOf(cururl) >= 0){
             return true;
         }
         var next=node.children("ul");
@@ -301,13 +301,24 @@
         }
         return false;
     }
-    childs=root.children("li");
-    for(var c=0;c<childs.length;c++){
+    
+    function compareNode(node){
+      var first=node.children("ul");
+      if(first.length==0)
+        return;
+      var childs=$(first[0]).children("li");
+      if(childs.length==0)
+        return;
+      for(var c=0;c<childs.length;c++){
+        compareNode($(childs[c]));
         if(compare($(childs[c]))){
             $(childs[c]).attr("class","active");
-            break;
         }
+      }
     }
+
+    compareNode(root);
+    
 </script>
 <!-- ./wrapper -->
 <!-- AdminLTE App -->

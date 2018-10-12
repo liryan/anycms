@@ -12,6 +12,7 @@
           {!!$search_widget!!}
           </div>
           <div class="box-body">
+            <style>.table tbody tr td{vertical-align:middle;} .form-control{padding:2px 2px;height:27px}</style>
             <table width="100%" id="datagrid" class="table table-bordered table-hover">
               <thead>
               <tr>
@@ -43,6 +44,8 @@
                 </span>
             </span>
             <span style="float:right;display:inline-block">
+            <span id="batch_submit">
+            </span>
             <button style='margin-bottom:5px;' type="button" class="btn btn-danger" onclick="submitDelete()">删除所有选择</button>
             </span>
             </div>
@@ -67,6 +70,7 @@ beforeSubmit=function(){}
 <script src="/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript">
+  var showbatchButton=false;
   var table=null;
   $(function () {
     table=$("#datagrid").DataTable({
@@ -119,6 +123,14 @@ beforeSubmit=function(){}
                 });
                 $(row.cells[1]).html("<a title='"+url+"' href='"+url+"' target='_blank'>"+$(row.cells[1]).html()+"</a>");
             @endif
+  
+            @foreach($fields as $k=>$field)
+                @if(@$field['orderable']==1)
+                showbatchButton=true;
+                $("#batch_submit").html("<button style='margin-bottom:5px' type='button' class='btn btn-warning' onclick='submitBatchEdit()'>提交本页修改</button>");
+                $(row.cells[{{$k+1}}]).html("<input type='edit' class='form-control' title='"+$(row.cells[{{$k+1}}]).html()+"' id='batch_field' value='"+$(row.cells[{{$k+1}}]).html()+"' name='{{$field['name']}}-"+data.id+"' class='' size=10>");
+                @endif
+            @endforeach
             //data._internal_field='ok';
         },
     });
@@ -172,6 +184,22 @@ function submitEdit()
         }
         data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
         $.post("/admin/content/batchedit",data,function(msg){
+            alert('已成功修改');
+            table.ajax.reload();
+        },"json");
+    }
+}
+
+function submitBatchEdit(){
+    if(confirm('确定提交每行修改的数据吗?')){
+        editbox=$("#batch_field");
+        var data={};
+        for(i=0;i<editbox.length;i++){
+            data[$(editbox[i]).attr("name")]=$(editbox[i]).val();
+        }
+        data.catid='{{isset($catid)?$catid:0}}';
+        data._token='{{csrf_token()}}';
+        $.post("/admin/content/rowedit",data,function(msg){
             alert('已成功修改');
             table.ajax.reload();
         },"json");

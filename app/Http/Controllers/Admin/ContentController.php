@@ -355,4 +355,33 @@ class ContentController extends AdminController
         $result=$content->editContentBatch($table_define,$cond,$data,$catid);
         return $this->ajax($result?1:0,'');
     }
+
+    public function postRowedit(Request $req)
+    {
+        $cate=new Category();
+		$dt=new DataTable();
+        $catid=$req->get("catid");
+		$modelid=$cate->getModelId($catid);
+		$table_define=$dt->tableColumns($modelid);
+
+        if(!$this->pridb->checkPri($modelid,Privileges::EDIT,$req->session()->get('admin'))){
+            return $this->error($req,'权限不足');
+        }
+        $data=$req->all();
+        $input=[];
+        foreach($data as $k=>$v){
+            $row=explode("-",$k);
+            if(count($row)==2){
+                $id=$row[1];
+                $field=$row[0];
+                if(!isset($input[$id])){
+                    $input[$id]=Array();
+                }
+                $input[$id][$field]=$v;
+            }
+        }
+        $content=new ContentTable();
+        $result=$content->editContentRowBatch($table_define,$input,$catid);
+        return $this->ajax($result?1:0,'');
+    }
 }
