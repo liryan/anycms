@@ -9,11 +9,6 @@ MySQL - 5.7.20-log : Database - admlite
 
 /*!40101 SET SQL_MODE=''*/;
 
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
 /*Table structure for table `t_acl` */
 
 DROP TABLE IF EXISTS `t_acl`;
@@ -23,8 +18,8 @@ CREATE TABLE `t_acl` (
   `roleid` int(11) DEFAULT NULL,
   `priitem` int(11) NOT NULL COMMENT '0超级管理员, >0 权限项目：菜单id / 表ID',
   `value` varchar(16) DEFAULT NULL COMMENT '具体设置参数',
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NOT NULL,
+  `created_at` timestamp NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
@@ -59,8 +54,8 @@ CREATE TABLE `t_setting` (
   `order` int(11) DEFAULT '0',
   `type` tinyint(4) DEFAULT '0',
   `setting` text,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL,
+  `created_at` timestamp NOT NULL,
   `status` tinyint(4) DEFAULT '1',
   `note` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -104,9 +99,5 @@ insert  into `t_setting`(`id`,`parentid`,`name`,`order`,`type`,`setting`,`update
 
 (18,11,'账号管理',0,0,'fa fa-user-plus','2018-07-19 17:48:25','2018-06-27 13:42:40',1,'/admin/account'),
 
-(20,5,'超级管理员',0,0,'','2018-06-27 09:55:55','2017-02-06 18:07:28',1,'admin'),
+(20,5,'超级管理员',0,0,'','2018-06-27 09:55:55','2017-02-06 18:07:28',1,'admin')
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

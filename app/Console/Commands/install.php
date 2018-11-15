@@ -20,7 +20,7 @@ class install extends Command
      *
      * @var string
      */
-    protected $description = 'Install Admlite system';
+    protected $description = 'Install ANYcms system';
 
     protected $stdin;
     /**
@@ -64,6 +64,7 @@ class install extends Command
         echo "Welcome Install interface\n";
         $dbname=$this->waitInput("Please input your [Database Name]");
         DB::unprepared("set names utf8");
+        DB::unprepared("create database $dbname");
         try{
             DB::unprepared("use $dbname");
             DB::unprepared(file_get_contents($file));
@@ -71,6 +72,10 @@ class install extends Command
             $password=$this->waitInput('输入管理员密码,至少6个字符:'); 
             $user=new User();
             $data=$user->modifyUser(0,Array('role'=>20,'name'=>'admin','password'=>$password,'email'=>$email));
+            $conf=base_path()."/.env";
+            $env=file_get_contents($conf);
+            $env=preg_replace("/DB_DATABASE[ ]*=[ ]*.+/i","DB_DATABASE=$dbname",$env);
+            file_put_contents($conf,$env);
             if($data['code']==1){
                 echo "Congradulation,install successfully\n";
                 echo "Please visit http://yourhost/admin/\n";
