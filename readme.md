@@ -9,7 +9,8 @@ git clone https://github.com/liryan/anycms
 1.运行　
 composer dump
 cp _env .env 
-修改.env文件中的 DB_USER,DB_PASSWORD
+
+修改.env文件中的 DB_USER,DB_PASSWORD ,此用户具有创建数据库权限
 
 3.运行　./artisan install 
 
