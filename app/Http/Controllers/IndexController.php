@@ -30,7 +30,7 @@ class IndexController extends BaseController
     	    $view=View::make("templates.web.".$name);
         }
         else{
-    	    $view=View::make("templates.frontend.".$this->getClassName().".".$name);
+    	    $view=View::make("templates.web.".$this->getClassName().".".$name);
         }
     	return $view;
     }
