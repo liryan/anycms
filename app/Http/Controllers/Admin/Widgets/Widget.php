@@ -10,7 +10,7 @@ class Widget extends Controller
 {
 	protected function getView($name)
 	{
-		return View::make("widgets.".$name);
+		return View::make("templates.admin.widgets.".$name);
 	}
 
 	protected  function getSearchWidget()
