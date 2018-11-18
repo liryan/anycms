@@ -4,40 +4,34 @@ use DB;
 use Log;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 
 class IndexController extends BaseController
 {
-	public function isStr($str)
-	{
-		if(preg_match('/a-z0-9\'"\[\]\&/i',$str)){
-			return false;
-		}
-		return true;
-	}
     public function anyIndex(Request $req)
     {
-        /*
-		$tag=$req->get('tag');
-		$type=$req->get('type');
-		$age=$req->get('age');
-		$query=DB::table('t_content')->whereRaw('id>0');
-		if($tag){
-			if(!$this->isStr($tag)){
-				$query=$query->where('tag',$tag);
-			}
-		}
-		if($type){
-			if(!$this->isStr($type)){
-				$query=$query->where('tag',$type);
-			}
-		}
-		if($age){
-			if(!$this->isStr($age)){
-				$query=$query->where('tag',$age);
-			}
-		}
-		$data=$query->take(10)->skip(0)->get();
-        return $this->View('index')->with('data',$data);
-        */
+        return $this->View('index');
+    }
+
+    protected function getClassName()
+    {
+    	$class_name=get_class($this);
+    	$path=explode("\\",$class_name);
+    	if($path){
+    		$class_name=array_pop($path);
+    	}
+    	return str_replace("controller","",strtolower($class_name));
+    }
+    protected function View($name)
+    {
+        $view='';
+        if($name[0]=='/'){
+            $name=trim($name,"/");
+    	    $view=View::make("templates.web.".$name);
+        }
+        else{
+    	    $view=View::make("templates.frontend.".$this->getClassName().".".$name);
+        }
+    	return $view;
     }
 }

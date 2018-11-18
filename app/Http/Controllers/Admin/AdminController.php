@@ -55,7 +55,6 @@ class AdminController extends Controller
         if(!$avatar){
             $avatar="/avatar/avatar.jpg";
         }
-        echo Config::get("DB_DATABASE");
         $view->with('hostname',env("DB_DATABASE")."@".env("DB_HOST").":".env('DB_PORT'));
         $view->with("path",$_SERVER['REQUEST_URI'] /* $this->getShortPath() */);
         $view->with("admin",session()->get('admin'));

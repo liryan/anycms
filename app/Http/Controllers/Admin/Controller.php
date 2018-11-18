@@ -20,10 +20,10 @@ class Controller extends BaseController
         $view='';
         if($name[0]=='/'){
             $name=trim($name,"/");
-    	    $view=View::make("templates.".$name);
+    	    $view=View::make("templates.admin.".$name);
         }
         else{
-    	    $view=View::make("templates.".$this->getClassName().".".$name);
+    	    $view=View::make("templates.admin.".$this->getClassName().".".$name);
         }
     	return $view;
     }
