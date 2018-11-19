@@ -14,7 +14,7 @@ git clone https://github.com/liryan/anycms
 
 `./artisan install`
 
-`chown -R xxx:xxx`  storage xxx为php运行身份
+`chown -R xxx:xxx storage`  #xxx为php运行身份
 
 2.测试
 
