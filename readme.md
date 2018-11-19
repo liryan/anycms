@@ -1,12 +1,12 @@
 # 通用CMS管理系统，基于Laravel框架+PHP+MySQL开发
 
-运行
+## 安装
 
 git clone https://github.com/liryan/anycms
 
-# 初始化安装
+# 初始化
 
-1.运行　
+## 1.运行　
 
 ```
 composer dump
@@ -15,7 +15,7 @@ cp _env .env  #修改.env文件中的 DB_USER,DB_PASSWORD ,此用户具有创建
 chown -R xxx:xxx storage  #xxx为php运行身份
 ```
 
-2.测试
+## 2.测试
 
 访问 http://yourhost/admin
 
