@@ -8,15 +8,12 @@ git clone https://github.com/liryan/anycms
 
 1.运行　
 
-composer dump
+`composer dump`
+`cp _env .env ` #修改.env文件中的 DB_USER,DB_PASSWORD ,此用户具有创建数据库权限
+`./artisan install`
+`chown -R xxx:xxx`  storage xxx为php运行身份
 
-cp _env .env 
-
-修改.env文件中的 DB_USER,DB_PASSWORD ,此用户具有创建数据库权限
-
-3.运行　./artisan install 
-
-4. chown -R xxx:xxx storage xxx为php运行身份
+2.测试
 
 访问 http://yourhost/admin
 
