@@ -7,6 +7,7 @@ git clone https://github.com/liryan/anycms
 # 初始化安装
 
 1.运行　
+
 composer dump
 
 cp _env .env 
