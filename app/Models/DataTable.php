@@ -32,14 +32,14 @@ class DataTable extends BaseSetting
                 }],
                 ['name'=>'字符串','value'=>DataTable::DEF_CHAR,'type'=>'varchar','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
-                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                        return sprintf("varchar(%d) default '%s' character set utf8 collate utf8_general_ci",$data['size'],$data['default']);
+                    return sprintf("varchar(%d) character set utf8 collate utf8_general_ci",$data['size']?$data['size']:255);
                 }],
                 ['name'=>'文本','value'=>DataTable::DEF_TEXT,'type'=>'text','DBdefine'=>function($data){
-                    return "text";
+                    return "text character set utf8 collate utf8_general_ci";
                 }],
                 ['name'=>'编辑器','value'=>DataTable::DEF_EDITOR,'type'=>'text','DBdefine'=>function($data){
-                    return "text";
+                    return "text character set utf8 collate utf8_general_ci";
                 }],
                 ['name'=>'日期','value'=>DataTable::DEF_DATE,'type'=>'datetime','DBdefine'=>function($data){
                     return $data['size']==1?'datetime':'date';
@@ -51,16 +51,16 @@ class DataTable extends BaseSetting
                 }],
                 ['name'=>'多选列表','value'=>DataTable::DEF_MULTI_LIST,'type'=>'varchar','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
-                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                        return sprintf("varchar(%d) default '%s' character set utf8 collate utf8_general_ci",$data['size'],$data['default']);
+                    return sprintf("varchar(%d) character set utf8 collate utf8_general_ci",$data['size']?$data['size']:255);
                 }],
                 ['name'=>'图片','value'=>DataTable::DEF_IMAGE,'type'=>'varchar','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
-                        return sprintf("varchar(%d) default '%s'",$data['size'],$data['default']);
-                    return sprintf("varchar(%d)",$data['size']?$data['size']:255);
+                        return sprintf("varchar(%d) default '%s' character set utf8 collate utf8_general_ci",$data['size'],$data['default']);
+                    return sprintf("varchar(%d) character set utf8 collate utf8_general_ci",$data['size']?$data['size']:255);
                 }],
                 ['name'=>'多图片','value'=>DataTable::DEF_IMAGES,'type'=>'text','DBdefine'=>function($data){
-                    return sprintf("text");
+                    return sprintf("text character set utf8 collate utf8_general_ci");
                 }],
                 ['name'=>'小数点数字','value'=>DataTable::DEF_FLOAT,'type'=>'number','DBdefine'=>function($data){
                     if(strlen($data['default'])>0)
