@@ -45,9 +45,11 @@ class CategoryWidget extends Widget
 			$setting=[];
 			foreach(Category::$field_setting as $row){
 				if(!isset($data[$row['name']])){
-					$data[$row['name']]=0;
+					$data[$row['name']]=$row['default'];
 				}
-				$setting[$row['name']]=$data[$row['name']];
+                else{
+				    $setting[$row['name']]=$data[$row['name']];
+                }
 			}
 			$result['setting']=json_encode($setting);
 			$data['setting']=$result['setting'];
@@ -58,6 +60,11 @@ class CategoryWidget extends Widget
 				foreach($obj as $k=>$v){
 					$data[$k]=$v;
 				}
+			    foreach(Category::$field_setting as $row){
+                    if(!isset($data[$row['name']])){
+                        $data[$row['name']]=$row['default'];
+                    }
+                }
 			}
 		}
 		return $result;

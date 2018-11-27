@@ -18,6 +18,8 @@ class Category extends BaseSetting
 
 	public static $field_setting=[
         ["name"=>"modelid",'note'=>'关联模型','default'=>''],
+        ["name"=>"nav",'note'=>'前端导航','default'=>'0'],
+        ["name"=>"tpl",'note'=>'模板选定','default'=>'list'],
 	];
 
 	const CATEGORY_ID=1;
@@ -63,7 +65,7 @@ class Category extends BaseSetting
 		}
 
 		$this->newData($id,$newdata);
-		return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
+		return Array('code'=>1,'msg'=>'成功修改'.$data['name']);
 	}
 
 	public function editCategory($id,$data)
@@ -85,7 +87,7 @@ class Category extends BaseSetting
 		}
 
 		$this->editData($id,$newdata);
-		return Array('code'=>1,'msg'=>'成功修改'.$data['note']);
+		return Array('code'=>1,'msg'=>'成功修改'.$data['name']);
 	}
 
 	public function deleteCat($id)
@@ -112,6 +114,7 @@ class Category extends BaseSetting
 		}
 		return 0;
 	}
+
 	public function getModelId($id)
 	{
 		$data=$this->getDataById($id);

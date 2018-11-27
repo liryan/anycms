@@ -6,32 +6,20 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
-class IndexController extends BaseController
+class IndexController extends WebController
 {
-    public function anyIndex(Request $req)
+    public function index(Request $req)
     {
-        return $this->View('index');
+        $data=$this->getNav();
+        $view=$this->View('index');
+        $view->with('nav',$data);
+        return $view;
     }
 
-    protected function getClassName()
+    public function category(Request $req,$catid)
     {
-    	$class_name=get_class($this);
-    	$path=explode("\\",$class_name);
-    	if($path){
-    		$class_name=array_pop($path);
-    	}
-    	return str_replace("controller","",strtolower($class_name));
-    }
-    protected function View($name)
-    {
-        $view='';
-        if($name[0]=='/'){
-            $name=trim($name,"/");
-    	    $view=View::make("templates.web.".$name);
-        }
-        else{
-    	    $view=View::make("templates.web.".$this->getClassName().".".$name);
-        }
-    	return $view;
+        $data=$this->getNav();
+        $view=$this->View('list');
+        return $view->with('nav',$data);
     }
 }

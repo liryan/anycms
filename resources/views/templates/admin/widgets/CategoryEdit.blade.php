@@ -30,6 +30,10 @@
 							@endforeach
 						</select>
 					 </div>
+    				  <div class="form-group">
+    					  <strong>前端配置</strong><label><input style="margin-left:10px;width:90%" type="text" name="tpl" class="form-control" placeholder="输入模板名" value=""></label>([模板名].blade.php)
+                          <label><input type="checkbox" name="nav" value="1" style="margin-left:20px">显示为前端导航菜单</label>
+    				  </div>
                   </form>
               </div>
               <!-- /.box-body -->

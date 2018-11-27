@@ -1,8 +1,12 @@
-<html>
-<body>
-<h1>Hello world!</h1>
-<p>前端控制器：app/Http/Controllers</p>
-<p>前端模型：app/Modes</p>
-<p>前端路径：resource/templates/web</p>
-</body>
-</html>
+@extends("templates.web.layouts.common")
+@section('title','首页')
+@section('page_css')
+<link rel="stylesheet" href="/web/assets/css/index.min.css" />
+@endsection
+@section("content")
+@include("templates.web.components.index_nav")
+@include("templates.web.components.index_price_list")
+@include("templates.web.components.index_position_large_icon")
+@include("templates.web.components.index_content")
+@include("templates.web.components.footer")
+@endsection

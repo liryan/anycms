@@ -88,7 +88,7 @@ class CategoryController extends AdminController
         switch($action){
             case "add":
             $widget=new CategoryWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
+            $data=$req->all();
             $widget->tranformSetting($data,true);
             $cate=new Category();
             $result=$cate->addCategory($id,$data);
@@ -97,7 +97,7 @@ class CategoryController extends AdminController
 
             case "edit":
             $widget=new CategoryWidget();
-            $data=Array('name'=>$req->get('name'),'note'=>$req->get('note'),'modelid'=>$req->get('modelid'));
+            $data=$req->all();
             $widget->tranformSetting($data,true);
             $cate=new Category();
             $result=$cate->editCategory($id,$data);
