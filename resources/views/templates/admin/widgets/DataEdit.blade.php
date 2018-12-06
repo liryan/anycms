@@ -42,7 +42,7 @@
 
     function changeValue()
     {
-        ids=[]; 
+        ids=[];
         for(i=0;i<UploadFile.length;i++){
             id=UploadFile[i].id;
             if(ids.indexOf(id)!=-1){
@@ -57,7 +57,7 @@
             for(i=0;i<UploadFile.length;i++){
                 if(id==UploadFile[i].id){
                     if(fileobj.attr("single")=="1"){
-                        fileobj.val(UploadFile[i].url); 
+                        fileobj.val(UploadFile[i].url);
                     }
                     else{
                         vals.push(UploadFile[i].url);
@@ -72,12 +72,17 @@
 
     function uploaded(event,data,preview_id){
         url=data.response.url;
-        id=data.response.id.replace("file_","");
-        obj=$("#"+id);
-        fileobj=$("#"+data.response.id);
-        UploadFile.push({id:id,url:url,keyid:preview_id});
-        changeValue();
-        $("#token").val(data.response._token);
+        if(url==""){
+            alert("上传图片出现问题："+data.response.state);
+        }
+        else{
+            id=data.response.id.replace("file_","");
+            obj=$("#"+id);
+            fileobj=$("#"+data.response.id);
+            UploadFile.push({id:id,url:url,keyid:preview_id});
+            changeValue();
+            $("#token").val(data.response._token);
+        }
     }
 
 
@@ -209,7 +214,7 @@
                         <input type="hidden" id="{{$input['name']}}" single="1" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_EDITOR)
                           <label for="exampleInputEmail1">{{$input['note']}}</label>
-                        <script type="text/javascript">Editor.push("{{$input['id']}}");</script>  
+                        <script type="text/javascript">Editor.push("{{$input['id']}}");</script>
                         <script type="text/plain" id="editor_{{$input['id']}}" style="width:auto;height:240px;">
                             <p>这里我可以写一些输入提示</p>
                         </script>
@@ -233,8 +238,8 @@
 <script type="text/javascript">
 $(function(){
     editor_config={
-        imageUrl:"/admin/content/uploadfile" 
-        ,imagePath:"" 
+        imageUrl:"/admin/content/uploadfile"
+        ,imagePath:""
         ,imageFieldName:"upload_file"
     };
 

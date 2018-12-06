@@ -1,3 +1,11 @@
+<style>
+    table tbody tr td{
+        overflow:hidden;
+        word-break:keep-all;
+        max-width:300px;
+        white-space:nowrap;
+    }
+</style>
 <div class="row">
     <div class="col-xs-12">
         <div class="box box-info">
@@ -28,9 +36,9 @@
             @if(isset($catid) && $catid)
             <div style="width:100%">
              <span style="float:left;display:inline-block">
-                全选  
+                全选
                 <input type="checkbox" class="control-label" style="margin-top:5px" id="selectAll" "checked"=false onclick="checkAll()">
-                把 
+                把
                 <select id="edit_field" value="0">
                     <option value="0">选择要修改的字段</option>
                     @foreach($fields as $field)
@@ -123,7 +131,7 @@ beforeSubmit=function(){}
                 });
                 $(row.cells[1]).html("<a title='"+url+"' href='"+url+"' target='_blank'>"+$(row.cells[1]).html()+"</a>");
             @endif
-  
+
             @foreach($fields as $k=>$field)
                 @if(@$field['orderable']==1)
                 showbatchButton=true;

@@ -89,12 +89,12 @@
               <li class=""><a href="/">首页</a></li>
               @foreach($nav as $row)
               <li>
-                <a href="/cat-{{$row['id']}}">{{{$row['name']}}}</a>
+                <a href="/c/{{$row['id']}}">{{{$row['name']}}}</a>
                 <!-- sub-menu start-->
                 @if(isset($row['subdata']) && $row['subdata'])
                 <ul class="sub-menu">
                   @foreach($row['subdata'] as $sub)
-                  <li class="menu-item"><a href="/cat-{{$sub['id']}}">{{$sub['name']}}</a></li>
+                  <li class="menu-item"><a href="/c/{{$sub['id']}}">{{$sub['name']}}</a></li>
                   @endforeach
                 </ul>
                 @endif

@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Models;
-class CacheDB {
-	public function set($key,$value,$time)
-	{
 
-	}
+class CacheDB
+{
+    public function set($key, $value, $time)
+    {
 
-	public function get($key)
-	{
+    }
 
-	}
+    public function get($key)
+    {
+
+    }
 }

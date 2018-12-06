@@ -1,7 +1,7 @@
 @extends("templates.web.layouts.common")
 @section('title','首页')
 @section('page_css')
-<link rel="stylesheet" href="/web/assets/css/index.min.css" />
+<link rel="stylesheet" href="/web/assets/css/news.min.css" />
 @endsection
 @section("content")
 @include("templates.web.components.index_nav")

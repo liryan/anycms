@@ -1,8 +1,10 @@
 <?php
 namespace App\Http\Controllers;
-use DB;
-use Log;
-use Illuminate\Routing\Controller as BaseController;
+
+use App\Models\Category;
+use App\Models\ContentTable;
+use App\Models\DataTable;
+use Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -10,16 +12,42 @@ class IndexController extends WebController
 {
     public function index(Request $req)
     {
-        $data=$this->getNav();
-        $view=$this->View('index');
-        $view->with('nav',$data);
+        $data = $this->getNav();
+        $view = $this->View('index');
+        $view->with('nav', $data);
         return $view;
     }
-
-    public function category(Request $req,$catid)
+    /**
+     * process the category of contents
+     *
+     * @param \Illuminate\Http\Request $req
+     * @param int $catid
+     * @param int $page
+     * @return void
+     */
+    public function category(Request $req, $catid, $page = 1)
     {
-        $data=$this->getNav();
-        $view=$this->View('list');
-        return $view->with('nav',$data);
+        $pagesize = Config::get("PAGE_SIZE", 20);
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $start = $pagesize * ($page - 1);
+        $cat = new Category();
+        $dt = new DataTable();
+        $info = $cat->getCategoryInfo($catid);
+        $modelid = $info['modelid'];
+        $table_define = $dt->tableColumns($modelid);
+        if ($info['setting']['nav'] != 1) {
+            return redirect("/");
+        }
+        $view = $this->View($info['setting']['tpl']);
+        $content = new ContentTable();
+        $list = $content->getList($start, $pagesize, $table_define, $catid);
+        $nav = $this->getNav();
+        return $view->with('nav', $nav)
+            ->with("description", $info['setting']['description'])
+            ->with('page_title', $info['name'])
+            ->with('list', $list['data']);
     }
 }
