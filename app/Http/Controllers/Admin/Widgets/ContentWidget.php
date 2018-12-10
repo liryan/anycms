@@ -267,6 +267,11 @@ class ContentWidget extends Widget
                 }
             },
             'order' => function () use ($input) {
+                if (isset($input['order'])) {
+                    $col = $input['order'][0]['column'];
+                    $dir = $input['order'][0]['dir'];
+                    return sprintf("%s %s", $input['columns'][$col]['data'], $dir);
+                }
                 return "id desc";
             },
         ];

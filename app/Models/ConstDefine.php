@@ -91,7 +91,7 @@ class ConstDefine extends BaseSetting
 
         $olddata = $this->where("id", $id)->first();
 
-        $count = $this->where('parentid', $olddata->parentid)->where("name", $data['name'])->count();
+        $count = $this->where('parentid', $olddata->parentid)->where("name", $olddata['name'])->count();
         if ($count == 0) {
             return array('code' => 0, 'msg' => '常量不存在');
         }

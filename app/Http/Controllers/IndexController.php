@@ -46,8 +46,25 @@ class IndexController extends WebController
         $list = $content->getList($start, $pagesize, $table_define, $catid);
         $nav = $this->getNav();
         return $view->with('nav', $nav)
+            ->with("catid", $catid)
             ->with("description", $info['setting']['description'])
             ->with('page_title', $info['name'])
             ->with('list', $list['data']);
+    }
+
+    public function page(Request $req, $catid, $id)
+    {
+        $cat = new Category();
+        $dt = new DataTable();
+        $info = $cat->getCategoryInfo($catid);
+        $modelid = $info['modelid'];
+        $table_define = $dt->tableColumns($modelid);
+        $content = new ContentTable();
+        $content = $content->getContent($table_define, $id);
+        $nav = $this->getNav();
+
+        return $this->View("page")
+            ->with('nav', $nav)
+            ->with('content', $content);
     }
 }

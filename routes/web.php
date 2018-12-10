@@ -70,4 +70,4 @@ Route::group(['prefix' => 'admin', 'middleware' => ['AdminAuth']], function () {
 Route::get('/', "IndexController@index");
 Route::get('/c/{id}', "IndexController@category");
 Route::get('/c/{id}-{page}', "IndexController@category");
-Route::get('/a/{id}', "IndexController@article");
+Route::get('/a/{catid}/{id}', "IndexController@page");

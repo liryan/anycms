@@ -44,19 +44,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-		if(env('APP_DEBUG')==true){
+        if (env('APP_DEBUG') == true) {
+            if ($request->ajax()) {
+                return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+            }
             return parent::render($request, $exception);
-		}
-        if($exception instanceof Symfony\Component\HttpKernel\Exception\NotFoundHttpException){
-            if($exception->getStatusCode()==404){
-                return redirect('/admin/error404?url='.$request->fullUrl());
-            }
         }
-        else{
-            if($request->ajax()){
-                return response(json_encode(['code'=>0,'msg'=>$exception->getMessage()]),200);
+        if ($exception instanceof Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            if ($exception->getStatusCode() == 404) {
+                return redirect('/admin/error404?url=' . $request->fullUrl());
             }
-            else{
+        } else {
+            if ($request->ajax()) {
+                return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+            } else {
                 return redirect("/admin/login");
             }
         }
@@ -75,9 +76,9 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
         //针对后台的认证跳转
-        if($request->is("admin/*")){
-            return redirect()->guest('admin/login?return_url='.urlencode($request->fullurl()));
+        if ($request->is("admin/*")) {
+            return redirect()->guest('admin/login?return_url=' . urlencode($request->fullurl()));
         }
-        return redirect()->guest('login?return_url='.urlencode($request->fullurl()));
+        return redirect()->guest('login?return_url=' . urlencode($request->fullurl()));
     }
 }

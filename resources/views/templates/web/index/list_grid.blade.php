@@ -1,15 +1,21 @@
 @extends("templates.web.layouts.common")
-@section('title','首页')
+@section('title',"aa")
 @section('page_css')
 <link rel="stylesheet" href="/web/assets/css/news.min.css" />
 @endsection
 @section("content")
 @include("templates.web.components.index_nav")
+<style>
+  .section{
+    padding:20px 0;
+  }
+</style>
     <!--===========layout-container================-->
     <div class="layout-container">
       <div class="page-header">
         <div class="am-container">
           <h1 class="page-header-title">{{$page_title}}</h1>
+          <p>{{$description}}</p>
         </div>
       </div>
 
@@ -25,13 +31,6 @@
 
     <div class="section">
       <div class="container">
-        <div class="section--header">
-            <h2 class="section--title">Latest News</h2>
-            <p class="section--description">
-                {{$description}}
-            </p>
-		</div>
-
         <div class="news-contaier">
           <div class="blog">
             <div class="am-g">
@@ -42,7 +41,7 @@
                     <img src="{{$item->cover}}" alt="{{$item->title}}" />
                   </div>
                   <div class="article-header">
-                    <h2><a href="/a/{{$item->id}}" rel="">{{$item->title}}</a></h2>
+                    <h2><a href="/a/{{$catid}}/{{$item->id}}" rel="">{{$item->title}}</a></h2>
                     <ul class="article--meta">
                       <li class="article--meta_item -date">{{$item->created_at}}</li>
                       <li class="article--meta_item comments">0 Views</li>
@@ -52,7 +51,7 @@
 						        <p>{{$item->description}}</p>
 				          </div>
                   <div class="article--footer">
-  				          <a href="/a/{{$item->id}}" class="link">Read More</a>
+  				          <a href="/a/{{$catid}}/{{$item->id}}" class="link">Read More</a>
   				        </div>
                 </div>
               </div>
