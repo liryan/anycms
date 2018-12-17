@@ -31,7 +31,6 @@ class IndexController extends WebController
         if ($page < 1) {
             $page = 1;
         }
-
         $start = $pagesize * ($page - 1);
         $cat = new Category();
         $dt = new DataTable();

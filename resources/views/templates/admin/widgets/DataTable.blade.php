@@ -158,7 +158,7 @@ $(function(){
                     alert(rep.msg);
                     if(rep.code==1){
                         $("#model_new").modal('hide');
-                        table.ajax.reload();
+                        table.ajax.reload(null,false);
                     }
                 }
     });
