@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Config;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -44,21 +45,30 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if (env('APP_DEBUG') == true) {
-            if ($request->ajax()) {
-                return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
-            }
-            return parent::render($request, $exception);
+        if ($request->ajax()) {
+            return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
         }
-        if ($exception instanceof Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            if ($exception->getStatusCode() == 404) {
-                return redirect('/admin/error404?url=' . $request->fullUrl());
+        else{
+            if (env('APP_DEBUG') == true) {
+                return parent::render($request, $exception);
             }
-        } else {
-            if ($request->ajax()) {
-                return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
-            } else {
-                return redirect("/admin/login");
+            else{
+                if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+                    if($request->is("admin*")){
+                        return redirect(env('404_URL_ADMIN'));
+                    }
+                    else{
+                        return redirect(env('404_URL_WEB'));
+                    }
+                }
+                else{
+                    if($request->is("admin*")){
+                        return redirect(env('500_URL_ADMIN'));
+                    }
+                    else{
+                        return redirect(env('500_URL_WEB'));
+                    }
+                }
             }
         }
     }

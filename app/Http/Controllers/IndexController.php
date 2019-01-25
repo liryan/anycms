@@ -66,4 +66,9 @@ class IndexController extends WebController
             ->with('nav', $nav)
             ->with('content', $content);
     }
+
+    public function error(Request $req)
+    {
+        return "Error code is ".$req->get('code');
+    }
 }
