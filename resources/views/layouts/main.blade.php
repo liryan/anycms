@@ -141,7 +141,7 @@
           </a>
           <ul class="treeview-menu">
             @foreach($sys_menus as $menu)
-            <li><a href="{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>@if(isset($menu['name'])){{$menu['name']}}@endif</a></li>
+            <li><a href="/admin{{$menu['note']}}"><i class="{{$menu['setting']}}"></i>@if(isset($menu['name'])){{$menu['name']}}@endif</a></li>
             @endforeach
           </ul>
         </li>
