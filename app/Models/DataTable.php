@@ -10,6 +10,8 @@ class DataTable extends BaseSetting
     const TREE_ID = 4;
 
     const DEF_INTEGER = 1;
+    const DEF_UINT = 11;
+    const DEF_MONEY = 12;
     const DEF_CHAR = 2;
     const DEF_TEXT = 3;
     const DEF_DATE = 4;
@@ -29,6 +31,20 @@ class DataTable extends BaseSetting
                 ['name' => '整数字', 'value' => DataTable::DEF_INTEGER, 'type' => 'integer', 'DBdefine' => function ($data) {
                     if (strlen($data['default']) > 0) {
                         return sprintf("integer(%d) default %d", $data['size'], $data['default']);
+                    }
+
+                    return sprintf("integer(%d)", $data['size'] ? $data['size'] : 11);
+                }],
+                ['name' => '无符号整数字', 'value' => DataTable::DEF_UINT, 'type' => 'integer', 'DBdefine' => function ($data) {
+                    if (strlen($data['default']) > 0) {
+                        return sprintf("integer(%d) unsigned default %d", $data['size'], $data['default']);
+                    }
+
+                    return sprintf("integer(%d)", $data['size'] ? $data['size'] : 11);
+                }],
+                ['name' => '金额', 'value' => DataTable::DEF_MONEY, 'type' => 'number', 'DBdefine' => function ($data) {
+                    if (strlen($data['default']) > 0) {
+                        return sprintf("decimal(8,2) unsigned default %d", $data['size'], $data['default']);
                     }
 
                     return sprintf("integer(%d)", $data['size'] ? $data['size'] : 11);
