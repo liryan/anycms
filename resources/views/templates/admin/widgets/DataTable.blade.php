@@ -132,6 +132,11 @@ beforeSubmit=function(){}
             @if($pri[4]==1) //
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="modifyField('+data.id+')" class="btn  btn-info btn-sm">[-]修改字段</a> ');
             @endif
+            for(var i=0;i<row.cells.length;i++){
+              if($(row.cells[i]).html().toLowerCase().indexOf(".jpg")!=-1||$(row.cells[i]).html().toLowerCase().indexOf(".png")!=-1){
+                $(row.cells[i]).html("<img src='"+$(row.cells[i]).html()+"' style='width:100px;height:auto'>");
+              }
+            }
             @if(isset($model_url))
                 var url="{{$model_url}}";
                 Object.keys(data).forEach(function(key){
@@ -201,7 +206,7 @@ function submitEdit()
         data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
         $.post("/admin/content/batchedit",data,function(msg){
             alert('已成功修改');
-            table.ajax.reload();
+            table.ajax.reload(null,false);
         },"json");
     }
 }
@@ -217,7 +222,7 @@ function submitBatchEdit(){
         data._token='{{csrf_token()}}';
         $.post("/admin/content/rowedit",data,function(msg){
             alert('已成功修改');
-            table.ajax.reload();
+            table.ajax.reload(null,false);
         },"json");
     }
 }
@@ -237,7 +242,7 @@ function submitDelete()
             $.post("/admin/content/batchdel",data,function(msg){
                 if(msg.code==1){
                     alert('已成功删除');
-                    table.ajax.reload();
+                    table.ajax.reload(null,false);
                 }
                 else{
                     alert('删除失败');
@@ -336,7 +341,7 @@ function deleteData(id){
                 alert(rep.msg);
             else {
                 alert("删除成功");
-                table.ajax.reload();
+                table.ajax.reload(null,false);
             }
         },'json');
     }
