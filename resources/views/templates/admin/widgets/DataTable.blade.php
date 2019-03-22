@@ -5,6 +5,14 @@
         max-width:300px;
         white-space:nowrap;
     }
+    .form-horizontal .form-group{
+      margin-left:15px;
+      margin-right:15px;
+    }
+    .form-control{
+      margin-top:4px;
+    }
+
 </style>
 <div class="row">
     <div class="col-xs-12">
