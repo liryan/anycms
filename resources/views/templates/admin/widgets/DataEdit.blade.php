@@ -229,6 +229,8 @@
           </form>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="editBack" style="float:left;"> 上一条 </button>
+        <button type="button" class="btn btn-default" style="float:left;" id="editNext"> 下一条 </button>
         <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
         <button type="button" class="btn btn-primary" id="submitBt">提交修改</button>
       </div>
@@ -242,7 +244,12 @@ $(function(){
         ,imagePath:""
         ,imageFieldName:"upload_file"
     };
-
+    $('#editNext').on('click',function(e){
+      editNextData();
+    });
+    $('#editBack').on('click',function(e){
+      editBackData();
+    });
     for(i=0;i<Editor.length;i++)
     {
         UM.getEditor("editor_"+Editor[i],editor_config);

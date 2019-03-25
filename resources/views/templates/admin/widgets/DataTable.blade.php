@@ -88,6 +88,8 @@ beforeSubmit=function(){}
 <script type="text/javascript">
   var showbatchButton=false;
   var table=null;
+  var tableIDS=[];
+  var currentEditID=0;
   $(function () {
     table=$("#datagrid").DataTable({
         "oLanguage" : {
@@ -119,6 +121,7 @@ beforeSubmit=function(){}
 			@endforeach
         ],
         "rowCallback": function( row, data ,index) {//添加单击事件，改变行的样式
+            tableIDS.push(data.id);
             $(row.cells[0]).html('<input type="checkbox" class="control-label"value="'+data.id+'">');
             @if($pri[0]==1)
                 $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+',{{isset($catid)?1:0}})" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
@@ -353,6 +356,7 @@ function editData(id){
         alert("无效的参数");
         return;
     }
+    currentEditID=id;
     $.get(formatUrl("{{$view_url}}","id="+id),function(rep){
         dt=rep;
         $("#dialogTitle").html("修改")
@@ -362,6 +366,36 @@ function editData(id){
         $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
     $("#model_new").modal();
+}
+
+function editBackData()
+{
+  for(var i=0;i<tableIDS.length;i++){
+    if(tableIDS[i]==currentEditID){
+      if(i>0){
+        editData(tableIDS[i-1]);
+      }
+      else{
+        alert("已超出本页可编辑的范围，请返回列表页点击向下页切换");
+      }
+      return;
+    }
+  }
+}
+
+function editNextData()
+{
+  for(var i=0;i<tableIDS.length;i++){
+    if(tableIDS[i]==currentEditID){
+      if((i+1)<tableIDS.length){
+        editData(tableIDS[i+1]);
+      }
+      else{
+        alert("已超出本页可编辑的范围，请返回列表页点击向下页切换");
+      }
+      return;
+    }
+  }
 }
 
 //其他编辑url
