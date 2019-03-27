@@ -43,11 +43,11 @@
             </table>
             @if(isset($catid) && $catid)
             <div style="width:100%">
-             <span style="float:left;display:inline-block">
+             <span style="float:left;display:inline-block;width:50%">
                 全选
                 <input type="checkbox" class="control-label" style="margin-top:5px" id="selectAll" "checked"=false onclick="checkAll()">
                 把
-                <select id="edit_field" value="0">
+                <select class="form-control" id="edit_field" value="0" style="width:150px;display:inline-block">
                     <option value="0">选择要修改的字段</option>
                     @foreach($fields as $field)
                     @if(@$field['batchable']==1)
@@ -90,16 +90,17 @@ beforeSubmit=function(){}
   var table=null;
   var tableIDS=[];
   var currentEditID=0;
+  var currentPage = 0;
   $(function () {
     table=$("#datagrid").DataTable({
         "oLanguage" : {
             "sLengthMenu": "每页显示 _MENU_ 条记录",
             "sZeroRecords": "抱歉， 没有找到",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfo": "跳转到 <input type='text' size='4' value='"+currentPage+"' class='form-control' id='pageNO'> <button class='btn btn-sm' style='margin-top:3px' onclick='gopage()'>GO</button> 从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
             "sInfoEmpty": "没有数据",
             "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
             "sZeroRecords": "没有检索到数据",
-             "sSearch": "名称:",
+            "sSearch": "名称:",
             "oPaginate": {
                 "sFirst": "首页",
                 "sPrevious": "前一页",
@@ -158,6 +159,14 @@ beforeSubmit=function(){}
             //data._internal_field='ok';
         },
     });
+    table.on('page.dt',function(){
+      var info= table.page.info();
+      currentPage = (info.page);
+      console.log(currentPage);
+    });
+    table.on('draw',function(){
+      $("#pageNO").val(currentPage+1);
+    });
 });
 //数据表中的编辑对话框的提交处理
 
@@ -171,10 +180,14 @@ $(function(){
         url:'{{$edit_url}}',
         dataType:'json',
         success:function(rep){
-                    alert(rep.msg);
                     if(rep.code==1){
+                      if(confirm(rep.msg+",退出编辑吗?")){
                         $("#model_new").modal('hide');
                         table.ajax.reload(null,false);
+                      }
+                    }
+                    else{
+                      alert(rep.msg);
                     }
                 }
     });
@@ -396,6 +409,13 @@ function editNextData()
       return;
     }
   }
+}
+
+function gopage(){
+  var page = 1*$('#pageNO').val();
+  if(page < 1)
+    page = 1;
+  table.page(page-1).draw(false);
 }
 
 //其他编辑url
