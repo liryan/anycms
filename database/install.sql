@@ -39,6 +39,7 @@ CREATE TABLE `t_admin` (
   `name` varchar(32) DEFAULT NULL,
   `role` varchar(256) DEFAULT NULL,
   `avatar` varchar(256) DEFAULT NULL,
+  `remember_token` varchar(256) DEFAULT '',
   `setting` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
