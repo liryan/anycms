@@ -36,6 +36,7 @@
   </script>
   <!-- Bootstrap 3.3.6 -->
   <script src="/adminlte/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/js/tool.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -46,7 +47,7 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg">后台数据管理系统</span>
+      <span class="logo-lg">AnyCMS 控制面板</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -209,6 +210,7 @@
           </ul>
         </li>
         <!-- 统计管理结束-->
+        <!-- 扩展功能 -->
         <li class="treeview">
           <a href="#">
             <i class="fa fa-gg-circle"></i> <span>扩展功能</span>
@@ -239,7 +241,13 @@
               @endforeach
           </ul>
         </li>
+        <!-- 扩展功能结束-->
       </ul>
+      <span style="color:#FFF;text-align:right;display:inline-block;width:100%;margin-right:5px">&lt;&lt;便签</span>
+      <textarea id="note_content" style="width:100%;min-height:400px"></textarea>
+      <span style="display:inline-block;width:100%;text-align:center">
+      <button type="button" class="btn btn-primary" id="submitNote" style="width:95%">保存</button>
+      </span>
     </section>
     <!-- /.sidebar -->
   </aside>
@@ -318,7 +326,16 @@
     }
 
     compareNode(root);
-    
+    $(function(){
+      $.get("/admin/tools/note",function(data){
+        $("#note_content").val(data.note);
+      },'json');
+
+      $("#submitNote").on('click',function(e){
+        $.post("/admin/tools/notesave",{note:$("#note_content").val(),'_token':"{{csrf_token()}}"},function(data){
+        });
+      });
+    });     
 </script>
 <!-- ./wrapper -->
 <!-- AdminLTE App -->

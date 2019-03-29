@@ -46,7 +46,12 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($request->ajax()) {
-            return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+            if($exception->getMessage()=='Unauthenticated.'){
+              return response(json_encode(['code' => 401, 'msg' => $exception->getMessage()]), 200);
+            }
+            else{
+              return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+            }
         }
         else{
             if (env('APP_DEBUG') == true) {

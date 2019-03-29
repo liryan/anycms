@@ -67,6 +67,7 @@ class UserController extends Controller
     public function getLogout(Request $req)
     {
         Auth::logout();
+        session()->flush();
         if ($req->is("admin/*")) {
             return redirect("admin/login");
         } else {

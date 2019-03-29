@@ -159,13 +159,25 @@ beforeSubmit=function(){}
             //data._internal_field='ok';
         },
     });
+
     table.on('page.dt',function(){
       var info= table.page.info();
       currentPage = (info.page);
       console.log(currentPage);
+      tableIDS=[];
     });
+
     table.on('draw',function(){
       $("#pageNO").val(currentPage+1);
+    });
+
+    table.on('xhr.dt',function(e,settings,json,xhr){
+      if(json.code != undefined && json.code == 401) {
+        alert('需要重新登录才可以操作');
+        window.location.href="/admin/login";
+        return false;
+      }
+      console.log(json);
     });
 });
 //数据表中的编辑对话框的提交处理
@@ -220,7 +232,7 @@ function submitEdit()
             }
         }
         data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
-        $.post("/admin/content/batchedit",data,function(msg){
+        ajax_post("/admin/content/batchedit",data,function(msg){
             alert('已成功修改');
             table.ajax.reload(null,false);
         },"json");
@@ -236,7 +248,7 @@ function submitBatchEdit(){
         }
         data.catid='{{isset($catid)?$catid:0}}';
         data._token='{{csrf_token()}}';
-        $.post("/admin/content/rowedit",data,function(msg){
+        ajax_post("/admin/content/rowedit",data,function(msg){
             alert('已成功修改');
             table.ajax.reload(null,false);
         },"json");
@@ -255,7 +267,7 @@ function submitDelete()
                 }
             }
             data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,'_token':'{{csrf_token()}}'};
-            $.post("/admin/content/batchdel",data,function(msg){
+            ajax_post("/admin/content/batchdel",data,function(msg){
                 if(msg.code==1){
                     alert('已成功删除');
                     table.ajax.reload(null,false);
@@ -285,7 +297,7 @@ function changeSelectField()
         else if(option[1]==5){  //常量列表
             data=$("#"+option[0]).attr('data');
             $("#edit_panel").html("<select id='field_value'></select>");
-            $.get("/admin/const/?id="+data+"&draw=1",function(msg){
+            ajax_get("/admin/const/?id="+data+"&draw=1",function(msg){
                 if(msg.recordsTotal>0){
                     for(i=0;i<msg.data.length;i++){
                         node = msg.data[i];
@@ -322,7 +334,7 @@ function addData(){
     var origin_id=@if(isset($id)){{$id}}@else 0 @endif;
     $("#edit_form")[0].reset();
 
-    $.get(formatUrl("{{$view_url}}","id=0"),function(rep){
+    ajax_get(formatUrl("{{$view_url}}","id=0"),function(rep){
         dt=rep;
         dt.id=origin_id;
         beforeFillForm(dt);
@@ -337,7 +349,7 @@ function addData(){
 function viewData(id,priview){
     if(priview){
         @if(isset($preview_url))
-        $.get("{{$preview_url}}&id="+id,function(html){
+        ajax_get("{{$preview_url}}&id="+id,function(html){
             $("#model_view").html(html);
             $("#model_view").modal({backdrop: 'static', keyboard: false});
         });
@@ -352,7 +364,7 @@ function viewData(id,priview){
 //删除数据
 function deleteData(id){
     if(confirm("确定要删除吗")){
-        $.get(formatUrl("{{$delete_url}}","id="+id),function(rep){
+        ajax_get(formatUrl("{{$delete_url}}","id="+id),function(rep){
             if(rep.code==0)
                 alert(rep.msg);
             else {
@@ -370,7 +382,7 @@ function editData(id){
         return;
     }
     currentEditID=id;
-    $.get(formatUrl("{{$view_url}}","id="+id),function(rep){
+    ajax_get(formatUrl("{{$view_url}}","id="+id),function(rep){
         dt=rep;
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
