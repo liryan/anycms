@@ -172,7 +172,7 @@ function formatUrl(url,paramstring)
 function addData(){
     $("#edit_form")[0].reset();
 
-    $.get(formatUrl("{{$view_url}}","id=0"),function(rep){
+    ajax_get(formatUrl("{{$view_url}}","id=0"),function(rep){
         dt=rep;
         beforeFillForm(dt);
         $("#dialogTitle").html("添加")
@@ -190,7 +190,7 @@ function viewData(id){
 //删除数据
 function deleteData(id){
     if(confirm("确定要删除吗")){
-        $.get(formatUrl("{{$delete_url}}","id="+id),function(rep){
+        ajax_get(formatUrl("{{$delete_url}}","id="+id),function(rep){
             if(rep.code==0)
                 alert(rep.msg);
             else {
@@ -207,7 +207,7 @@ function editData(id){
         alert("无效的参数");
         return;
     }
-    $.get(formatUrl("{{$view_url}}","id="+id),function(rep){
+    ajax_get(formatUrl("{{$view_url}}","id="+id),function(rep){
         dt=rep;
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);

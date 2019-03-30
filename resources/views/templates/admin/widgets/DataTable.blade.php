@@ -5,6 +5,14 @@
         max-width:300px;
         white-space:nowrap;
     }
+    .form-horizontal .form-group{
+      margin-left:15px;
+      margin-right:15px;
+    }
+    .form-control{
+      margin-top:4px;
+    }
+
 </style>
 <div class="row">
     <div class="col-xs-12">
@@ -35,11 +43,11 @@
             </table>
             @if(isset($catid) && $catid)
             <div style="width:100%">
-             <span style="float:left;display:inline-block">
+             <span style="float:left;display:inline-block;width:50%">
                 全选
                 <input type="checkbox" class="control-label" style="margin-top:5px" id="selectAll" "checked"=false onclick="checkAll()">
                 把
-                <select id="edit_field" value="0">
+                <select class="form-control" id="edit_field" value="0" style="width:150px;display:inline-block">
                     <option value="0">选择要修改的字段</option>
                     @foreach($fields as $field)
                     @if(@$field['batchable']==1)
@@ -80,16 +88,19 @@ beforeSubmit=function(){}
 <script type="text/javascript">
   var showbatchButton=false;
   var table=null;
+  var tableIDS=[];
+  var currentEditID=0;
+  var currentPage = 0;
   $(function () {
     table=$("#datagrid").DataTable({
         "oLanguage" : {
             "sLengthMenu": "每页显示 _MENU_ 条记录",
             "sZeroRecords": "抱歉， 没有找到",
-            "sInfo": "从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
+            "sInfo": "跳转到 <input type='text' size='4' value='"+currentPage+"' class='form-control' id='pageNO'> <button class='btn btn-sm' style='margin-top:3px' onclick='gopage()'>GO</button> 从 _START_ 到 _END_ /共 _TOTAL_ 条数据",
             "sInfoEmpty": "没有数据",
             "sInfoFiltered": "(从 _MAX_ 条数据中检索)",
             "sZeroRecords": "没有检索到数据",
-             "sSearch": "名称:",
+            "sSearch": "名称:",
             "oPaginate": {
                 "sFirst": "首页",
                 "sPrevious": "前一页",
@@ -111,6 +122,7 @@ beforeSubmit=function(){}
 			@endforeach
         ],
         "rowCallback": function( row, data ,index) {//添加单击事件，改变行的样式
+            tableIDS.push(data.id);
             $(row.cells[0]).html('<input type="checkbox" class="control-label"value="'+data.id+'">');
             @if($pri[0]==1)
                 $(row.cells[row.cells.length-1]).html('<a onclick="viewData('+data.id+',{{isset($catid)?1:0}})" class="btn btn-success btn-sm" id="viewbt">查看</a> ');
@@ -124,6 +136,11 @@ beforeSubmit=function(){}
             @if($pri[4]==1) //
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="modifyField('+data.id+')" class="btn  btn-info btn-sm">[-]修改字段</a> ');
             @endif
+            for(var i=0;i<row.cells.length;i++){
+              if($(row.cells[i]).html().toLowerCase().indexOf(".jpg")!=-1||$(row.cells[i]).html().toLowerCase().indexOf(".png")!=-1){
+                $(row.cells[i]).html("<img src='"+$(row.cells[i]).html()+"' style='width:100px;height:auto'>");
+              }
+            }
             @if(isset($model_url))
                 var url="{{$model_url}}";
                 Object.keys(data).forEach(function(key){
@@ -142,6 +159,26 @@ beforeSubmit=function(){}
             //data._internal_field='ok';
         },
     });
+
+    table.on('page.dt',function(){
+      var info= table.page.info();
+      currentPage = (info.page);
+      console.log(currentPage);
+      tableIDS=[];
+    });
+
+    table.on('draw',function(){
+      $("#pageNO").val(currentPage+1);
+    });
+
+    table.on('xhr.dt',function(e,settings,json,xhr){
+      if(json.code != undefined && json.code == 401) {
+        alert('需要重新登录才可以操作');
+        window.location.href="/admin/login";
+        return false;
+      }
+      console.log(json);
+    });
 });
 //数据表中的编辑对话框的提交处理
 
@@ -155,10 +192,14 @@ $(function(){
         url:'{{$edit_url}}',
         dataType:'json',
         success:function(rep){
-                    alert(rep.msg);
                     if(rep.code==1){
+                      if(confirm(rep.msg+",退出编辑吗?")){
                         $("#model_new").modal('hide');
                         table.ajax.reload(null,false);
+                      }
+                    }
+                    else{
+                      alert(rep.msg);
                     }
                 }
     });
@@ -191,9 +232,9 @@ function submitEdit()
             }
         }
         data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,"_token":"{{csrf_token()}}"};
-        $.post("/admin/content/batchedit",data,function(msg){
+        ajax_post("/admin/content/batchedit",data,function(msg){
             alert('已成功修改');
-            table.ajax.reload();
+            table.ajax.reload(null,false);
         },"json");
     }
 }
@@ -207,9 +248,9 @@ function submitBatchEdit(){
         }
         data.catid='{{isset($catid)?$catid:0}}';
         data._token='{{csrf_token()}}';
-        $.post("/admin/content/rowedit",data,function(msg){
+        ajax_post("/admin/content/rowedit",data,function(msg){
             alert('已成功修改');
-            table.ajax.reload();
+            table.ajax.reload(null,false);
         },"json");
     }
 }
@@ -226,10 +267,10 @@ function submitDelete()
                 }
             }
             data={catid:'{{isset($catid)?$catid:0}}',name:$("#edit_field").val(),value:$("#field_value").val(),ids:ids,'_token':'{{csrf_token()}}'};
-            $.post("/admin/content/batchdel",data,function(msg){
+            ajax_post("/admin/content/batchdel",data,function(msg){
                 if(msg.code==1){
                     alert('已成功删除');
-                    table.ajax.reload();
+                    table.ajax.reload(null,false);
                 }
                 else{
                     alert('删除失败');
@@ -256,7 +297,7 @@ function changeSelectField()
         else if(option[1]==5){  //常量列表
             data=$("#"+option[0]).attr('data');
             $("#edit_panel").html("<select id='field_value'></select>");
-            $.get("/admin/const/?id="+data+"&draw=1",function(msg){
+            ajax_get("/admin/const/?id="+data+"&draw=1",function(msg){
                 if(msg.recordsTotal>0){
                     for(i=0;i<msg.data.length;i++){
                         node = msg.data[i];
@@ -293,7 +334,7 @@ function addData(){
     var origin_id=@if(isset($id)){{$id}}@else 0 @endif;
     $("#edit_form")[0].reset();
 
-    $.get(formatUrl("{{$view_url}}","id=0"),function(rep){
+    ajax_get(formatUrl("{{$view_url}}","id=0"),function(rep){
         dt=rep;
         dt.id=origin_id;
         beforeFillForm(dt);
@@ -308,7 +349,7 @@ function addData(){
 function viewData(id,priview){
     if(priview){
         @if(isset($preview_url))
-        $.get("{{$preview_url}}&id="+id,function(html){
+        ajax_get("{{$preview_url}}&id="+id,function(html){
             $("#model_view").html(html);
             $("#model_view").modal({backdrop: 'static', keyboard: false});
         });
@@ -323,12 +364,12 @@ function viewData(id,priview){
 //删除数据
 function deleteData(id){
     if(confirm("确定要删除吗")){
-        $.get(formatUrl("{{$delete_url}}","id="+id),function(rep){
+        ajax_get(formatUrl("{{$delete_url}}","id="+id),function(rep){
             if(rep.code==0)
                 alert(rep.msg);
             else {
                 alert("删除成功");
-                table.ajax.reload();
+                table.ajax.reload(null,false);
             }
         },'json');
     }
@@ -340,7 +381,8 @@ function editData(id){
         alert("无效的参数");
         return;
     }
-    $.get(formatUrl("{{$view_url}}","id="+id),function(rep){
+    currentEditID=id;
+    ajax_get(formatUrl("{{$view_url}}","id="+id),function(rep){
         dt=rep;
         $("#dialogTitle").html("修改")
         beforeFillForm(dt);
@@ -349,6 +391,43 @@ function editData(id){
         $("#model_new").modal({backdrop: 'static', keyboard: false});
     },'json');
     $("#model_new").modal();
+}
+
+function editBackData()
+{
+  for(var i=0;i<tableIDS.length;i++){
+    if(tableIDS[i]==currentEditID){
+      if(i>0){
+        editData(tableIDS[i-1]);
+      }
+      else{
+        alert("已超出本页可编辑的范围，请返回列表页点击向下页切换");
+      }
+      return;
+    }
+  }
+}
+
+function editNextData()
+{
+  for(var i=0;i<tableIDS.length;i++){
+    if(tableIDS[i]==currentEditID){
+      if((i+1)<tableIDS.length){
+        editData(tableIDS[i+1]);
+      }
+      else{
+        alert("已超出本页可编辑的范围，请返回列表页点击向下页切换");
+      }
+      return;
+    }
+  }
+}
+
+function gopage(){
+  var page = 1*$('#pageNO').val();
+  if(page < 1)
+    page = 1;
+  table.page(page-1).draw(false);
 }
 
 //其他编辑url

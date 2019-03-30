@@ -36,30 +36,22 @@ class Handler extends ExceptionHandler
     parent::report($exception);
   }
 
-  /**
-   * Render an exception into an HTTP response.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \Exception  $exception
-   * @return \Illuminate\Http\Response
-   */
-  public function render($request, Exception $exception)
-  {
-    if ($request->ajax()) {
-      return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
-    }
-    else{
-      if (env('APP_DEBUG') == true) {
-        return parent::render($request, $exception);
-      }
-      else{
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-          if($request->is("admin*")){
-            return redirect(env('404_URL_ADMIN'));
-          }
-          else{
-            return redirect(env('404_URL_WEB'));
-          }
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception  $exception
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Exception $exception)
+    {
+        if ($request->ajax()) {
+            if($exception->getMessage()=='Unauthenticated.'){
+              return response(json_encode(['code' => 401, 'msg' => $exception->getMessage()]), 200);
+            }
+            else{
+              return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+            }
         }
         else{
           if($request->is("admin*")){

@@ -142,7 +142,7 @@ function showContext(id){
 }
 
 function requireConstData(id,constid){
-	$.get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
+	ajax_get("{{$const_url}}?id="+id+"&start=0&length=100&draw=1",function(req){
 		//if(req.data.length==1)
 		//	return;
 		if(id==0){
@@ -235,7 +235,7 @@ function fetchModelFields(data)
             }
         }
     }
-    $.get("{{$url}}?all=1&id="+id,function(rep){
+    ajax_get("{{$url}}?all=1&id="+id,function(rep){
         $("#tb_cols_1").empty();
         for(i=0;i<rep.data.length;i++){
             if(data.tablekey==rep.data[i].name){

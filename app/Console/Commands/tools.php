@@ -69,7 +69,7 @@ class tools extends Command
         ->when('reset',function() use($cls){
             $passwd=$cls->waitInput("Please input your new password");
             $user=new User();
-            $data=$user->modifyUser(3,Array('role'=>20,'name'=>'admin1','password'=>$passwd));
+            $data=$user->modifyUser(4,Array('role'=>20,'name'=>'admin','password'=>$passwd));
             echo "Modify password successfully";
         })
         ->when('echo',function(){

@@ -57,10 +57,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['AdminAuth']], function () {
     RouteController("/menu", "Admin\\MenuController");
     RouteController("/stat", "Admin\\StatController");
     RouteController("/ext", "Admin\\ExtController");
+    RouteController("/tools", "Admin\\ToolsController");
     Route::get("/index", "Admin\\PersonalController@index");
     Route::get("/personal/welcome", "Admin\\PersonalController@index");
     Route::get("/login", "Admin\\UserController@getLogin");
-    Route::get("/logout", "Admin\\UserController@getLogin");
+    Route::get("/logout", "Admin\\UserController@getLogout");
     Route::post("/dologin", "Admin\\UserController@postDoLogin");
     Route::get("/error", "Admin\\AdminController@authFailed");
     Route::get("/error404", "Admin\\AdminController@notFoundError");
