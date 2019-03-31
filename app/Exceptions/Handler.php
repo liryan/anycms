@@ -45,24 +45,27 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->ajax()) {
-            if($exception->getMessage()=='Unauthenticated.'){
-              return response(json_encode(['code' => 401, 'msg' => $exception->getMessage()]), 200);
-            }
-            else{
-              return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
-            }
+      if ($request->ajax()) {
+        if($exception->getMessage()=='Unauthenticated.'){
+           return response(json_encode(['code' => 401, 'msg' => $exception->getMessage()]), 200);
         }
         else{
-          if($request->is("admin*")){
-            return redirect(env('500_URL_ADMIN'));
-          }
-          else{
-            return redirect(env('500_URL_WEB'));
-          }
+          return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
         }
       }
-    }
+      else{
+        if($request->is("admin*")){
+          if($exception->getMessage()=='Unauthenticated.'){
+            return redirect("/admin/login");
+          }
+          else{
+            return redirect(env('500_URL_ADMIN'));
+          }
+        }
+        else{
+          return redirect(env('500_URL_WEB'));
+        }
+      }
   }
 
   /**

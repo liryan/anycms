@@ -164,7 +164,6 @@ beforeSubmit=function(){}
       var info= table.page.info();
       currentPage = (info.page);
       console.log(currentPage);
-      tableIDS=[];
     });
 
     table.on('draw',function(){
@@ -172,6 +171,7 @@ beforeSubmit=function(){}
     });
 
     table.on('xhr.dt',function(e,settings,json,xhr){
+      tableIDS=[];
       if(json.code != undefined && json.code == 401) {
         alert('需要重新登录才可以操作');
         window.location.href="/admin/login";
