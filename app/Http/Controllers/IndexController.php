@@ -12,6 +12,7 @@ class IndexController extends WebController
 {
     public function index(Request $req)
     {
+      return redirect('/admin/');
         $data = $this->getNav();
         $view = $this->View('index');
         $view->with('nav', $data);
