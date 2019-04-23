@@ -41,7 +41,7 @@
                            <label class="innerBox"><input type="checkbox" class="control-label" name="searchable" value="1" checked="false">可搜索</label>
                            <label class="innerBox"><input type="checkbox" class="control-label" name="exportable" value="1" checked="false">可导出</label>
                            <label class="innerBox"><input type="checkbox" class="control-label" name="indexable" value="1" checked="false">索引</label>
-                           <label class="innerBox"><input type="checkbox" class="control-label" name="orderable" value="1" checked="false">可批量编辑</label>
+                           <label class="innerBox"><input type="checkbox" class="control-label" name="orderable" value="1" checked="false">可排序</label>
     	              </div>
     				  <div class="form-group">
         				<label>关联外表</label>

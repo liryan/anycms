@@ -175,7 +175,9 @@
           @if(count($inputs)>0)
               @foreach($inputs as $k=>$input)
               <div class="form-group">
-                    @if($input['type']==DataTable::DEF_INTEGER)
+                    @if($input['type']==DataTable::DEF_INTEGER ||   
+                        $input['type']==DataTable::DEF_UINT ||
+                        $input['type']==DataTable::DEF_MONEY)
                           <label for="exampleInputEmail1">{{$input['note']}}</label>
                           <input type="text" name="{{$input['name']}}" class="form-control" placeholder="{{$input['comment']}}" value="{{$input['default']}}">
                     @elseif($input['type']==DataTable::DEF_CHAR)

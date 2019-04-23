@@ -14,10 +14,10 @@ class BaseModel extends Model
     protected $debugFlag;
     public function __construct()
     {
-        DB::connection()->enableQueryLog();
+        //DB::connection()->enableQueryLog();
     }
     public function __destruct()
     {
-        Log::info(DB::connection()->getQueryLog());
+        //Log::info(DB::connection()->getQueryLog());
     }
 }

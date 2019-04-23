@@ -49,7 +49,7 @@ class ContentTable extends BaseModel
             }
             //TODO: modify to left join
             foreach ($table_define['columns'] as $row) {
-                if ($row['tablename']) {
+                if ($row['tablename'] && $row['listable']==1) { //绑定了某个表的另外一个字段，一定需要是可见的，不然没必要获取另外一个表的数据
                     $ids = [];
                     foreach ($data as $r) {
                         $ids[] = $r->{$row['name']};

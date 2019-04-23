@@ -352,7 +352,7 @@ function viewData(id,priview){
         ajax_get("{{$preview_url}}&id="+id,function(html){
             $("#model_view").html(html);
             $("#model_view").modal({backdrop: 'static', keyboard: false});
-        });
+        },'text');
         @else
             alert('没提供查看功能');
         @endif
