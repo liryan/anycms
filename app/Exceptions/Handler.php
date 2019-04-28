@@ -15,11 +15,8 @@ class Handler extends ExceptionHandler
    * @var array
    */
   protected $dontReport = [
-    \Illuminate\Auth\AuthenticationException::class,
-    \Illuminate\Auth\Access\AuthorizationException::class,
     \Symfony\Component\HttpKernel\Exception\HttpException::class,
     \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-    \Illuminate\Session\TokenMismatchException::class,
     \Illuminate\Validation\ValidationException::class,
   ];
 
@@ -45,12 +42,23 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+      if($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ){
+        if ($request->ajax()) {
+           return response(json_encode(['code' => 404, 'msg' => 'Not found']), 404);
+        }
+      }
+      if($exception instanceof \Illuminate\Session\TokenMismatchException ){
+        if ($request->ajax()) {
+           return response(json_encode(['code' => 500, 'msg' => 'Verifiy Csrf Token failed']), 500);
+        }
+      }
       if ($request->ajax()) {
-        if($exception->getMessage()=='Unauthenticated.'){
+        $msg = $exception->getMessage();
+        if($msg=='Unauthenticated.'){
            return response(json_encode(['code' => 401, 'msg' => $exception->getMessage()]), 200);
         }
-        else{
-          return response(json_encode(['code' => 0, 'msg' => $exception->getMessage()]), 200);
+        else if($msg){
+          return response(json_encode(['code' => 500, 'msg' => $msg]), 500);
         }
       }
       else{
@@ -66,6 +74,7 @@ class Handler extends ExceptionHandler
           return redirect(env('500_URL_WEB'));
         }
       }
+      return parent::render($request,$exception);
   }
 
   /**

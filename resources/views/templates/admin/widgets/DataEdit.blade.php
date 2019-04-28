@@ -215,12 +215,12 @@
                         <script type="text/javascript">init_image("kv-explorer_{{$input['name']}}");</script>
                         <input type="hidden" id="{{$input['name']}}" single="1" value="" name="{{$input['name']}}">
                     @elseif($input['type']==DataTable::DEF_EDITOR)
-                          <label for="exampleInputEmail1">{{$input['note']}}</label>
+                        <label for="exampleInputEmail1">{{$input['note']}}</label>
                         <script type="text/javascript">Editor.push("{{$input['id']}}");</script>
-                        <script type="text/plain" id="editor_{{$input['id']}}" style="width:auto;height:240px;">
+                        <script type="text/plain" id="editor_{{$input['id']}}" style="max-height:400px;overflow-y: auto;width:auto;height:240px;">
                             <p>这里我可以写一些输入提示</p>
                         </script>
-                          <input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
+                        <input type="hidden" name="{{$input['name']}}" id="editor_value_{{$input['id']}}">
                     @endif
               </div>
             @endforeach

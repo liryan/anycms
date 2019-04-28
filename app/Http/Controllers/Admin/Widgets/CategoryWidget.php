@@ -9,7 +9,7 @@ class CategoryWidget extends Widget
     private static $DIALOG_ID = 1;
     public function showListWidget($name, $urlconfig, $new_dialog_html = "")
     {
-        $view = $this->getDataTableView();
+        $view = $this->getDataTableView("DataTable_setting");
         $fields = [];
         foreach (Category::$cate_fields as $row) {
             if ($row['listable']) {

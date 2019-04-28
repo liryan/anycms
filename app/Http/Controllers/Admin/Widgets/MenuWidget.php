@@ -9,7 +9,7 @@ class MenuWidget extends Widget
     private static $DIALOG_ID = 1;
     public function showListWidget($name, $urlconfig, $new_dialog_html = "")
     {
-        $view = $this->getDataTableView();
+        $view = $this->getDataTableView("DataTable_setting");
         $fields = [];
         foreach (Privileges::$menu_fields as $row) {
             if ($row['listable']) {

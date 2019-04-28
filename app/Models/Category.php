@@ -125,4 +125,13 @@ class Category extends BaseSetting
         }
         return 0;
     }
+
+    public function modifyOrder($data)
+    {
+      $total = 0;
+      foreach($data as $k=>$v){
+        $total += $this->editData($k, ['order'=>$v,'updated_at'=>date('Y-m-d H:i:s')]);
+      }
+      return $total;
+    }
 }

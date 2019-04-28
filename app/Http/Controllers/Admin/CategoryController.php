@@ -109,4 +109,18 @@ class CategoryController extends AdminController
         }
         return json_encode(array('code' => 0, 'msg' => '删除失败'));
     }
+
+    public function anyModifyorder(Request $req)
+    {
+      $post = $req->all();
+      $data = [];
+      foreach($post as $k=>$v){
+        if(strpos($k,'order_')!==false){
+          $data[str_replace("order_","",$k)]=$v;
+        }
+      }
+      $cat = new Category();
+      $num = $cat->modifyOrder($data);
+      return json_encode(['code'=>200,'num'=>$num]);
+    }
 }
