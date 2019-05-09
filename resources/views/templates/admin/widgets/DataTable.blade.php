@@ -137,7 +137,10 @@ beforeSubmit=function(){}
                 $(row.cells[row.cells.length-1]).html($(row.cells[row.cells.length-1]).html()+'<a onclick="modifyField('+data.id+')" class="btn  btn-info btn-sm">[-]修改字段</a> ');
             @endif
             for(var i=0;i<row.cells.length;i++){
-              if($(row.cells[i]).html().toLowerCase().indexOf(".jpg")!=-1||$(row.cells[i]).html().toLowerCase().indexOf(".png")!=-1){
+              if($(row.cells[i]).html().toLowerCase().indexOf(".jpg")!=-1
+                ||$(row.cells[i]).html().toLowerCase().indexOf(".png")!=-1
+                ||$(row.cells[i]).html().toLowerCase().indexOf(".jpeg")!=-1
+              ){
                 $(row.cells[i]).html("<img src='"+$(row.cells[i]).html()+"' style='width:100px;height:auto'>");
               }
             }
