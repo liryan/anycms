@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
       if($exception instanceof \InvalidArgumentException 
         ||$exception instanceof \UnexpectedValueException
         ||$exception instanceof \LogicException) {
-           return response($exception->getMessage(), 500);
+        return parent::render($request,$exception);
       }
       if($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ){
         if ($request->ajax()) {

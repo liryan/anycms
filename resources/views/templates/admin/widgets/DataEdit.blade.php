@@ -199,7 +199,7 @@
                     @elseif($input['type']==DataTable::DEF_MULTI_LIST)
                         <label for="exampleInputEmail1">{{$input['note']}}</label>
                         @foreach($input['const_list'] as $it)
-                        <label><input type="checkbox" name="{{$input['name']}}_{{$it['value']}}" value="1">{{$it['name']}}</label>
+                        <span style="display:inline-block;margin-left:5px"><input type="checkbox" name="{{$input['name']}}_{{$it['value']}}" value="1">{{$it['name']}}</span>
                         @endforeach
                     @elseif($input['type']==DataTable::DEF_FLOAT)
                           <label for="exampleInputEmail1">{{$input['note']}}</label>

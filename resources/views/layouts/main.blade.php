@@ -108,7 +108,7 @@
       <!-- search form -->
       <form action="#" method="get" class="sidebar-form">
         <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
+          <input type="text" name="q" class="form-control" placeholder="Search..." style="margin-top:0px">
               <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                 </button>
@@ -243,8 +243,8 @@
         </li>
         <!-- 扩展功能结束-->
       </ul>
-      <span style="color:#FFF;text-align:right;display:inline-block;width:100%;margin-right:5px">&lt;&lt;便签</span>
-      <textarea id="note_content" style="width:100%;min-height:400px"></textarea>
+      <span style="color:#FFF;text-align:center;display:inline-block;width:98%;margin-right:9px"> 便签 </span>
+      <textarea id="note_content" style="color:#AAA;width:100%;min-height:300px;margin-right:5px;background-color:#374850;border-radius:5px;border:1px solid #444"></textarea>
       <span style="display:inline-block;width:100%;text-align:center">
       <button type="button" class="btn btn-primary" id="submitNote" style="width:95%">保存</button>
       </span>

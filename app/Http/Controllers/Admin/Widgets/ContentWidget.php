@@ -172,6 +172,14 @@ class ContentWidget extends Widget
             }
         }
     }
+    /**
+     * translateData
+     *
+     * @param  mixed $data
+     * @param  mixed $skipList = false, 多选则会把 "1,2,3,4"=>"name1,name2,name3,name4"
+     *
+     * @return void
+     */
     public function translateData(&$data, $skipList = false)
     {
         $const = new ConstDefine();
@@ -197,22 +205,38 @@ class ContentWidget extends Widget
                     break;
                 case DataTable::DEF_MULTI_LIST:
                     if ($skipList) {
-                        break;
-                    }
-                    $const_data = $const->getConstArray($rd['const']);
-                    foreach ($data as &$row) {
-                        if (!property_exists($row, $rd['name'])) {
-                            continue;
-                        }
-                        if (strlen($rd['name']) == 0) {
-                            continue;
-                        }
+                      foreach ($data as &$row) {
                         $ids = explode(",", $row->{$rd['name']});
-                        $tmp = [];
-                        foreach ($ids as $id) {
-                            $tmp[] = $const_data[$id];
+                        foreach($ids as $id){
+                          if($id){
+                            $row->{$rd['name']."_".$id}=1;
+                          }
                         }
-                        $row->{$rd['name']} = implode(",", $tmp);
+                      }
+                    }
+                    else{
+                      $const_data = $const->getConstArray($rd['const']);
+                      foreach ($data as &$row) {
+                          if (!property_exists($row, $rd['name'])) {
+                              continue;
+                          }
+                          if (strlen($rd['name']) == 0) {
+                              continue;
+                          }
+                          $ids = explode(",", $row->{$rd['name']});
+                          $tmp = [];
+                          foreach ($ids as $id) {
+                            if($id){
+                              $tmp[] = $const_data[$id];
+                            }
+                          }
+                          if($tmp){
+                            $row->{$rd['name']} = implode(",", $tmp);
+                          }
+                          else{
+                            $row->{$rd['name']} ='';
+                          }
+                      }
                     }
                     break;
                 case DataTable::DEF_IMAGES:
