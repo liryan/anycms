@@ -113,6 +113,7 @@ beforeSubmit=function(){}
         "serverSide":true,
         "paging": true,
         "striped":true,
+        "aaSorting":[[1,'desc']],
         "searching":false,
         "ajax":"{{$url}}",
         "columns":[

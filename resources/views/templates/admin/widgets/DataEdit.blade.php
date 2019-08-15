@@ -109,6 +109,9 @@
     }
 
     beforeFillForm=function(data){
+        $("input:checkbox").each(function() {  
+            $(this).removeAttr("checked");  
+        });  
         for(i=0;i<Editor.length;i++)//清理编辑器
         {
             $("#editor_value_"+Editor[i]).val('');

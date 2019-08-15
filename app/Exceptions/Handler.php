@@ -44,7 +44,7 @@ class Handler extends ExceptionHandler
     {
       if($exception instanceof \InvalidArgumentException 
         ||$exception instanceof \UnexpectedValueException
-        ||$exception instanceof \LogicException) {
+        ||$exception instanceof \LogicException ){
         return parent::render($request,$exception);
       }
       if($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ){
@@ -72,7 +72,12 @@ class Handler extends ExceptionHandler
             return redirect("/admin/login");
           }
           else{
-            return redirect(env('500_URL_ADMIN'));
+            if($request->is("admin/error")){
+              return response($exception->getMessage(),500);
+            }
+            else{
+              return redirect(env('500_URL_ADMIN'));
+            }
           }
         }
         else{

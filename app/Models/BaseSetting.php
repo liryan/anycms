@@ -29,13 +29,13 @@ class BaseSetting extends BaseModel
     protected function getDataPageByParentId($id, $start = 0, $length = 0)
     {
         if ($start == 0 && $length == 0) {
-            $data = $this->where('parentid', $id)->orderBy('order', 'desc')->get();
+            $data = $this->where('parentid', $id)->orderBy('id', 'asc')->get();
             if ($data) {
                 return $data->toArray();
             }
             return array();
         } else {
-            $data = $this->where('parentid', $id)->orderBy('order', 'desc')->skip($start)->take($length)->get();
+            $data = $this->where('parentid', $id)->orderBy('id', 'asc')->skip($start)->take($length)->get();
             if ($data) {
                 return $data->toArray();
             }
