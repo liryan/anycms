@@ -165,7 +165,18 @@ class ContentController extends AdminController
                 $dt->filterForEdit($data);
                 $content = new ContentTable();
                 $contentid = $req->get('id');
+                $old = $content->getContent($table_define, $contentid);
                 $result = $content->editContent($table_define, $contentid, $data, $catid);
+                if($result){
+                    $tf=dirname(__FILE__)."/Trigger/update_trigger.php";
+                    if(file_exists($tf)){
+                        require_once($tf);
+                        $trigger='after_edit_'.$catid;
+                        if(function_exists($trigger)){
+                            $trigger($contentid,$old,$data);
+                        }
+                    }
+                }
                 $re = ['code' => $result ? 1 : 0, 'msg' => $result ? "成功修改数据" : "修改失败了"];
                 break;
             case 'add':
@@ -175,6 +186,18 @@ class ContentController extends AdminController
                 }
                 $content = new ContentTable();
                 $result = $content->addContent($table_define, $data);
+
+                if($result){
+                    $tf=dirname(__FILE__)."/Trigger/add_trigger.php";
+                    if(file_exists($tf)){
+                        require_once($tf);
+                        $trigger='after_add_'.$catid;
+                        if(function_exists($trigger)){
+                            $trigger($data);
+                        }
+                    }
+                }
+
                 $re = ['code' => $result ? 1 : 0, 'msg' => $result ? "成功增加数据" : "增加失败了"];
                 break;
         }
@@ -307,6 +330,17 @@ class ContentController extends AdminController
         $content = new ContentTable();
         $id = $req->get("id");
         $result = $content->deleteContent($table_define, $id, $catid);
+
+        if($result){
+            $tf=dirname(__FILE__)."/Trigger/delete_trigger.php";
+            if(file_exists($tf)){
+                require_once($tf);
+                $trigger='after_delete_'.$catid;
+                if(function_exists($trigger)){
+                    $trigger($id);
+                }
+            }
+        }
         $re = ['code' => $result ? 1 : 0, 'msg' => $result ? 'success' : 'failed'];
         return json_encode($re);
     }
@@ -325,6 +359,18 @@ class ContentController extends AdminController
         $cond = explode("-", $req->get("ids"));
         $content = new ContentTable();
         $result = $content->deleteContentBatch($table_define, $cond, $catid);
+        if($result){
+          $tf=dirname(__FILE__)."/Trigger/delete_trigger.php";
+          if(file_exists($tf)){
+              require_once($tf);
+              $trigger='after_delete_'.$catid;
+              if(function_exists($trigger)){
+                foreach($cond as $index=>$id){
+                  $trigger($id);
+                }
+              }
+          }
+        }
         return $this->ajax($result ? 1 : 0, '');
     }
 
@@ -347,7 +393,25 @@ class ContentController extends AdminController
 
         $data = array($name[0] => $value);
         $content = new ContentTable();
+        $old=[];
+        foreach($cond as $index=>$id){
+          if($id){
+            $old[$id]=$content->getContent($table_define,$id); 
+          }
+        }
         $result = $content->editContentBatch($table_define, $cond, $data, $catid);
+        if($result){
+          $tf=dirname(__FILE__)."/Trigger/update_trigger.php";
+          if(file_exists($tf)){
+              require_once($tf);
+              $trigger='after_edit_'.$catid;
+              if(function_exists($trigger)){
+                foreach($old as $id=>$old_data){
+                  $trigger($id,$old_data,$data);
+                }
+              }
+          }
+        }
         return $this->ajax($result ? 1 : 0, '');
     }
 
